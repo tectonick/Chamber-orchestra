@@ -1,16 +1,28 @@
 body{
     font-family: Cambria, serif;
     overflow-x: hidden;
+
+    
 }
 
 html, body{ height:100%; margin:0; }
 
-
+body{
+    background-image: url("/img/background.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
 
 /*footer */
 
 footer{
     background-color: #F9F9F9;
+
+
+    background-color: rgba(230, 230, 230, 0.2);
+    border-top:1px solid rgba(0,0,0,0.05);
+
     margin-top:auto; 
     width: 100%;
     padding:10px 0px;
@@ -41,6 +53,7 @@ footer .row div{
 
 .navbar{
     padding:0px;
+
 }
 
   .navbar-nav li:hover>.dropdown-menu {
@@ -83,6 +96,11 @@ footer .row div{
 
 .concert{
     background-color: #F9F9F9;
+
+    background-color: rgba(230, 230, 230, 0.2);
+    border:1px solid rgba(0,0,0,0);
+    
+
     font-size:1.4vw;
     font-size:1.5em;
     font-size: 100%;
