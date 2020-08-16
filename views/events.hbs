@@ -1,4 +1,4 @@
-<div class="container-fluid mt-5">
+<div class="container-fluid m-1">
 
     {{#each months}}
     <h4 class="text-center mb-3">{{this.name}}</h4>
@@ -7,16 +7,16 @@
     <div class="row event-row">
 
 
-        <div class="concert col-lg-8 col-sm-10 offset-lg-2 offset-sm-1">
+        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
             <div class="row">
 
-                <div class="col-4 p-0">
+                <div class="col-12 col-md-4 p-0">
                     <img class="poster" src="/img/posters/{{this.id}}.jpg" alt="">
                 </div>
-                <div class="col-8 p-4">
+                <div class="col-12 col-md-8 p-4">
                     <p>{{this.title}}</p>                    
                     <pre>{{this.description}}</pre>
-                    <div class="concert-day">{{this.day}}</div>
+                    <div class="concert-day d-none d-md-block">{{this.day}}</div>
                     <div class="concert-place">{{this.place}}</div>
                 </div>
             </div>
