@@ -32,7 +32,7 @@ router.get("/events", (req, res) => {
 
     db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date",
         function (err, results) {
-            console.log(err);
+            if (err) console.log(err);
             var months=[];
 
                 results.forEach(element => {

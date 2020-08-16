@@ -1,5 +1,6 @@
 body{
     font-family: Cambria, serif;
+    overflow-x: hidden;
 }
 
 html, body{ height:100%; margin:0; }
@@ -10,7 +11,7 @@ html, body{ height:100%; margin:0; }
 
 footer{
     background-color: #F9F9F9;
-
+    margin-top:auto; 
     width: 100%;
     padding:10px 0px;
     font-size:1.2em;
@@ -20,14 +21,8 @@ body{
     display:flex; 
     flex-direction:column; 
   }
-  
-  footer{
-    margin-top:auto; 
-  }
-   
 
-
-footer .container{
+footer .container-fluid{
     padding:0px;
     word-wrap: break-word;
 }
@@ -88,9 +83,26 @@ footer .row div{
 
 .concert{
     background-color: #F9F9F9;
+    font-size:1.4vw;
     font-size:1.5em;
-    font-size:1.2vw;
+    font-size: 100%;
 }
+
+@media (min-width: 768px) {
+.concert{ font-size: 80%}
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .concert{ font-size: 110%}
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .concert{ font-size: 1.3vw}
+ }
+
+
 
 .concert-day{
     position: absolute;
@@ -104,7 +116,7 @@ footer .row div{
     position: absolute;
     bottom:8px;
     right: 8px;
-    font-size:1vw;
+    font-size:100%;
     color:#AAAAAA;
     
 }
