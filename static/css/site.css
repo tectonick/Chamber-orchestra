@@ -1,3 +1,61 @@
-h1{
-    color:blue;
+body{
+    font-family: Cambria, serif;
+}
+
+footer{
+    background-color: #EEEEEE;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    padding:10px 0px;
+    
+    font-size:1.2em;
+}
+footer .container{
+    padding:0px;
+    word-wrap: break-word;
+}
+
+footer .row div{
+    padding: 0 30px;
+}
+
+.navbar{
+    padding:0px;
+}
+
+  .navbar-nav li:hover>.dropdown-menu {
+    display: block;
+  }
+  .dropdown > .dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+
+#social img{
+    margin-top:3px;
+    width: 35px;
+}
+
+
+#main_orchestra{
+    width: 100%;
+}
+
+#logo{
+    width: 180px;
+}
+
+
+.navbar-nav a{
+    font-size:1.5em;
+}
+
+.nav-item{
+    margin:0px 10px;
 }
