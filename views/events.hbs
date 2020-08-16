@@ -1,0 +1,33 @@
+<div class="container-fluid mt-5">
+
+    {{#each months}}
+    <h4 class="text-center mb-3">{{this.name}}</h4>
+
+    {{#each this.concerts}}
+    <div class="row event-row">
+
+
+        <div class="concert col-lg-8 col-sm-10 offset-lg-2 offset-sm-1">
+            <div class="row">
+
+                <div class="col-4 p-0">
+                    <img class="poster" src="/img/posters/{{this.id}}.jpg" alt="">
+                </div>
+                <div class="col-8 p-4">
+                    <p>{{this.title}}</p>                    
+                    <pre>{{this.description}}</pre>
+                    <div class="concert-day">{{this.day}}</div>
+                    <div class="concert-place">{{this.place}}</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    {{/each}}
+
+    {{/each}}
+
+
+
+</div>
