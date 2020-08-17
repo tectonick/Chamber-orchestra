@@ -5,7 +5,7 @@ body{
     
 }
 
-html, body{ height:100%; margin:0; }
+html{ height:100%; margin:0; }
 
 body{
     background-image: url("/img/background.jpg");
@@ -68,10 +68,6 @@ footer .row div{
     display: none;
 }
 
-#main_orchestra{
-    width: 100%;
-}
-
 #logo{
     width: 180px;
 }
@@ -85,7 +81,26 @@ footer .row div{
 
 
 
+/*Main*/
+#main_orchestra{
+    width: 100%;
+}
+.carousel-container{
+    padding:0px 12vw;
+}
 
+.img-fluid{
+ opacity: 70%;
+}
+.img-fluid:hover{
+    opacity: 100%;
+   }
+
+
+
+
+
+/*Concerts*/
 .poster{
     
     max-width: 100%;
@@ -147,4 +162,14 @@ pre {
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+
+
+
+
+
+
+.card-body{
+    padding:0px;
 }

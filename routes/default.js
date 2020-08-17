@@ -25,7 +25,36 @@ const router = express.Router();
 const MonthNames=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]
 
 router.get("/", (req, res) => {
-    res.render("index.hbs");
+    db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
+        function (err, results) {
+            var triplets=[];
+            var triplet=[];
+            for (let i = 0; i < results.length; i++) {
+                triplet.push(results[i]);
+                if ((i+1)%3==0) {
+                    triplets.push(triplet);
+                    triplet=[];                    
+                }                
+            }
+
+
+            if (triplet.length>0){
+                triplet.push({id:"placeholder"});
+                triplet.push({id:"placeholder"});
+                triplets.push(triplet);
+
+            } else if (triplet.length>1){
+                triplet.push({id:"placeholder"})
+                triplets.push(triplet);
+            }
+            
+            res.render("index.hbs",{triplets});
+            
+
+        });
+
+
+    
 });
 
 router.get("/events", (req, res) => {
