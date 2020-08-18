@@ -10,12 +10,18 @@
     integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/site.css">
 
+    <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.css">
+    <link rel="stylesheet" href="thumbnail-gallery.css">
+
 </head>
 
 <body>
   {{> navbar}}
-
-    {{{body}}}
+<div id="main">
+{{{body}}}
+</div>
+    
   
 <br>
   {{> footer}}
@@ -29,6 +35,23 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
     integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
     crossorigin="anonymous"></script>
+
+    <script>
+      window.addEventListener('beforeunload', (event) => {
+  // Cancel the event as stated by the standard.
+  event.preventDefault();
+  document.getElementById('main').style.opacity=0;
+
+
+});
+
+      window.addEventListener('load', (event) => {
+  // Cancel the event as stated by the standard.
+  event.preventDefault();
+  document.getElementById('main').style.opacity=1;
+
+});
+    </script>
 </body>
 
 </html>

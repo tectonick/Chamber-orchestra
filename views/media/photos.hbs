@@ -1,0 +1,30 @@
+
+<div class="container-fluid gallery-container">
+    
+    <div class="tz-gallery">
+    <h4 class="text-center mb-3">Фотогалерея</h4>
+        <div class="card-columns">
+            
+            {{#each names}}
+            <div class="card photo-card">
+                <div class="thumbnail">
+                    <a class="lightbox " style="overflow:hidden;"  href="/img/gallery/{{this}}.jpg">
+                        <img class="card-img-top" style=" width: 100%;" src="/img/gallery/{{this}}.jpg" alt="Traffic">
+                    </a>
+                    <div class="caption card-body">
+
+                        <p>{{this}}</p>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
+<script>
+    baguetteBox.run('.tz-gallery');
+</script>
