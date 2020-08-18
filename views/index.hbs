@@ -13,7 +13,7 @@
                     <div class="card-deck">
                         {{#each this}}
                         <div class="card card-body">
-                            <a href="/events#{{this.id}}">
+                            <a href="/events#{{this.id}}" onclick="swup.cache.empty()" >
                             <img class="img-fluid" src="/img/posters/{{this.id}}.jpg">
                             </a>
                             
