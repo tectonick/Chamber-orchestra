@@ -1,4 +1,7 @@
 
+const fs = require('fs');
+const path=require('path');
+
 const MonthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 function OrganizeConcertsInMonths(concerts) {
     var months = [];
@@ -42,5 +45,16 @@ function OrganizeConcertsInTriplets(concerts) {
     return triplets;
 }
 
+async function NamesOfDirFilesWOExtension(basepath){
+    var names=[];
+    var realpath=path.join(__dirname, basepath);
+    await fs.readdir(realpath, (err, files) => {        
+        files.forEach(file => {
+          names.push(path.basename(file, ".jpg"));
+        });
+        
+      });
+      return names;
+}
 
-module.exports={OrganizeConcertsInMonths,OrganizeConcertsInTriplets};
+module.exports={OrganizeConcertsInMonths,OrganizeConcertsInTriplets,NamesOfDirFilesWOExtension};
