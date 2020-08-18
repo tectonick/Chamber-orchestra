@@ -109,7 +109,7 @@ footer .row div{
     margin-bottom:3.5vw;
 }
 
-.concert{
+.concert, .group{
     background-color: #F9F9F9;
 
     background-color: rgba(230, 230, 230, 0.2);
@@ -123,16 +123,19 @@ footer .row div{
 
 @media (min-width: 768px) {
 .concert{ font-size: 80%}
+.musicians { font-size: 100%; }
 }
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
     .concert{ font-size: 110%}
+    .musicians { font-size: 110%; }
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
     .concert{ font-size: 1.3vw}
+    .musicians { font-size: 1.3vw; }
  }
 
 
@@ -164,12 +167,52 @@ pre {
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-
-
-
-
-
-
 .card-body{
     padding:0px;
 }
+
+
+
+/*about*/
+.musicians-pic{
+    max-width: 100%;
+}
+.musicians p{
+    font-size: 100%;
+    margin-bottom:1px;
+}
+.group{
+    margin-bottom:30px;
+    display: flex;
+    align-items: center;
+}
+
+/*artists*/
+  
+  @media (min-width: 576px) {
+    .card-columns {
+      column-count: 2;
+    }
+  }
+  @media (min-width: 768px) {
+    .card-columns {
+      column-count: 3;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .card-columns {
+      column-count: 4;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .card-columns {
+      column-count: 5;
+    }
+}
+
+.artists{
+    margin:5px 40px;
+}
+

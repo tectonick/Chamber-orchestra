@@ -3,7 +3,7 @@ const handlebars=require("express-handlebars");
 const mainRouter=require("./routes/main");
 const aboutRouter=require("./routes/about");
 const mediaRouter=require("./routes/media");
-const path=require('path')
+const path=require('path');
 
 
 const PORT = process.env.PORT || 5000;
