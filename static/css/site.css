@@ -109,7 +109,7 @@ footer .row div{
     margin-bottom:3.5vw;
 }
 
-.concert, .group{
+.concert, .group, .block{
     background-color: #F9F9F9;
 
     background-color: rgba(230, 230, 230, 0.2);
@@ -216,3 +216,10 @@ pre {
     margin:5px 40px;
 }
 
+
+
+
+
+.full-width{
+    max-width: 100%;
+}
