@@ -56,13 +56,59 @@ footer .row div{
 
 }
 
-  .navbar-nav li:hover>.dropdown-menu {
+/*Auto-show dropdown (bugged)*/
+/*
+.navbar-nav li:hover>.dropdown-menu {
     display: block;
   }
   .dropdown > .dropdown-toggle:active {
-    /*Without this, clicking will make it sticky*/
     pointer-events: none;
 }
+*/
+
+@media (min-width: 992px) {
+    .animate {
+      animation-duration: 0.3s;
+      -webkit-animation-duration: 0.3s;
+      animation-fill-mode: both;
+      -webkit-animation-fill-mode: both;
+    }
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateY(1rem);
+      opacity: 0;
+    }
+    100% {
+      transform:translateY(0rem);
+      opacity: 1;
+    }
+    0% {
+      transform: translateY(1rem);
+      opacity: 0;
+    }
+  }
+  
+  @-webkit-keyframes slideIn {
+    0% {
+      -webkit-transform: transform;
+      -webkit-opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateY(0);
+      -webkit-opacity: 1;
+    }
+    0% {
+      -webkit-transform: translateY(1rem);
+      -webkit-opacity: 0;
+    }
+  }
+  
+  .slideIn {
+    -webkit-animation-name: slideIn;
+    animation-name: slideIn;
+  }
 
 .dropdown-toggle::after {
     display: none;
@@ -88,6 +134,12 @@ footer .row div{
 .carousel-container{
     padding:0px 12vw;
 }
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+
 
 .img-fluid{
  opacity: 70%;
@@ -352,4 +404,8 @@ a:hover{
 a{
     color:black;
     word-wrap: break-word;
+}
+
+.page-link{
+ cursor: pointer;
 }
