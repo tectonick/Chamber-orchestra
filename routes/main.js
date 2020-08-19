@@ -54,6 +54,19 @@ router.get("/api/news", (req, res) => {
     });
 });
 
+router.get("/api/news/count", (req, res) => {
+    db.query(`SELECT COUNT(id) as count FROM news`,
+    function (err, results) {
+        if (err) console.log(err);
+        res.json(results);
+    });
+});
+
+
+
+
+
+
 
 
 

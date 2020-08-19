@@ -45,22 +45,15 @@
 
         <h4 class="text-center my-3">Последние новости</h4>
         <div class="news-container">
-            
+
 
         </div>
 
-        <nav aria-label="..." class="pagination">
+        <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item ">
-                    <p class="page-link"><</p>
-                </li>
-                <li class="page-item active" id="1"><p class="page-link">1</p></li>
-                <li class="page-item " id="2">
-                    <p class="page-link">2 </span></p>
-                </li>
-                <li class="page-item" id="3"><p class="page-link">3</p></li>
-                <li class="page-item">
-                    <p class="page-link" >></p>
+                    <p class="page-link">
+                        <</p>
                 </li>
             </ul>
         </nav>
@@ -69,43 +62,38 @@
 
 
     <script>
-        const MAXPAGE=3; //!!!!!!
+        var MAXPAGE;
+        var newsContainer = $(".news-container");
+        var pagination = $(".pagination");
+        var activePageLI;
+        var activePage = 1;
 
 
-
-        $(document).ready(function () {
+        function addPaginationClickEvents() {
             $(".page-link").click(function () {
-                event.preventDefault();
-                var newsContainer=$(".news-container");
-                var pagination=$(".pagination");
-                var activePageLI=$(".active", pagination);
-                var activePage=Number($(activePageLI).children().first().text());
-                var pageButtonText=$(this).text();
+                var pageButtonText = $(this).text();
 
-                 
-
-                
                 var pageNum;
-                if (Number.isInteger(Number(pageButtonText))){
-                    activePage=Number(pageButtonText);
-                    pageNum=activePage;
+                if (Number.isInteger(Number(pageButtonText))) {
+                    activePage = Number(pageButtonText);
+                    pageNum = activePage;
                 } else {
-                    if (pageButtonText==="<"){
-                        activePage=(activePage-1>=1)?(activePage-1):(1); 
-                    } else{
-                        activePage=(activePage+1>MAXPAGE)?(MAXPAGE):(activePage+1);
+                    if (pageButtonText === "<") {
+                        activePage = (activePage - 1 >= 1) ? (activePage - 1) : (1);
+                    } else {
+                        activePage = (activePage + 1 > MAXPAGE) ? (MAXPAGE) : (activePage + 1);
                     }
-                    pageNum=activePage;
+                    pageNum = activePage;
                 }
 
                 activePageLI.removeClass("active");
-                newActivePageLI=$(`#${activePage}`);
-                newActivePageLI.addClass("active");
-               
+                activePageLI = $(`#${activePage}`);
+                activePageLI.addClass("active");
+
                 newsContainer.empty();
-                $.getJSON("/api/news?block="+pageNum, function (result) {
+                $.getJSON("/api/news?block=" + pageNum, function (result) {
                     $.each(result, function (i, field) {
-                        let html=`<div class="block row my-1">\
+                        let html = `<div class="block row my-1">\
                             <div class="col-5 p-0">\
                                 <img class="musicians-pic" src="/img/news/${field.id}.jpg" alt="">\
                             </div>\
@@ -119,6 +107,26 @@
                     });
                 });
 
+            });
+        }
+
+
+        $(document).ready(function () {
+
+            $.getJSON("/api/news/count", function (result) {
+                MAXPAGE = Math.ceil(result[0].count / 5);
+                for (var i = 1; i <= MAXPAGE; i++) {
+                    var active = "";
+                    if (i == 1) {
+                        active = "active";
+                    }
+                    pagination.append(`<li class="page-item ${active}" id="${i}"><p class="page-link">${i}</p></li>`);
+                }
+                pagination.append(`<li class="page-item"><p class="page-link" >></p></li>`);
+                activePageLI= $(".active", pagination);
+                addPaginationClickEvents();
+                activePageLI.children().first().trigger( "click" );
+                
             });
         });
     </script>
