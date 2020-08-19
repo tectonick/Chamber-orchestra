@@ -51,7 +51,7 @@
 
         <nav aria-label="...">
             <ul class="pagination">
-                <li class="page-item ">
+                <li class="page-item ml-auto">
                     <p class="page-link">
                         <</p>
                 </li>
@@ -68,11 +68,9 @@
         var activePageLI;
         var activePage = 1;
 
-
         function addPaginationClickEvents() {
             $(".page-link").click(function () {
                 var pageButtonText = $(this).text();
-
                 var pageNum;
                 if (Number.isInteger(Number(pageButtonText))) {
                     activePage = Number(pageButtonText);
@@ -85,34 +83,37 @@
                     }
                     pageNum = activePage;
                 }
-
                 activePageLI.removeClass("active");
                 activePageLI = $(`#${activePage}`);
                 activePageLI.addClass("active");
 
-                newsContainer.empty();
+
                 $.getJSON("/api/news?block=" + pageNum, function (result) {
+                    newsContainer.empty();
                     $.each(result, function (i, field) {
-                        let html = `<div class="block row my-1">\
+                        let dateString=(new Date(field.date)).toDateString();
+                        let html = `<div class="block row my-3">\
                             <div class="col-5 p-0">\
                                 <img class="musicians-pic" src="/img/news/${field.id}.jpg" alt="">\
                             </div>\
                             <div class="col-7 px-4 py-1">\
                                 <h3>${field.title}</h3>\
                                 <p>${field.text}</p>\
-                                <div class="concert-place">${field.date}</div>\
+                                <div class="concert-place">${dateString}</div>\
                                 </div>\
                             </div>`;
                         newsContainer.append(html);
                     });
+
                 });
+
+
+                newsContainer.animate({ opacity: 1 }, 1000);
 
             });
         }
 
-
         $(document).ready(function () {
-
             $.getJSON("/api/news/count", function (result) {
                 MAXPAGE = Math.ceil(result[0].count / 5);
                 for (var i = 1; i <= MAXPAGE; i++) {
@@ -122,14 +123,12 @@
                     }
                     pagination.append(`<li class="page-item ${active}" id="${i}"><p class="page-link">${i}</p></li>`);
                 }
-                pagination.append(`<li class="page-item"><p class="page-link" >></p></li>`);
-                activePageLI= $(".active", pagination);
+                pagination.append(`<li class="page-item mr-auto"><p class="page-link" >></p></li>`);
+                activePageLI = $(".active", pagination);
                 addPaginationClickEvents();
-                activePageLI.children().first().trigger( "click" );
-                
+                activePageLI.children().first().trigger("click");
             });
         });
     </script>
-
 
 </div>
