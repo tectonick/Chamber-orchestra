@@ -44,6 +44,17 @@ router.get("/partners", (req, res) => {
 });
 
 
+router.get("/api/news", (req, res) => {
+    var blockNum=(req.query.block -1)|| 0;
+    var offset=blockNum*5;
+    db.query(`SELECT * FROM news ORDER BY date DESC LIMIT 5 OFFSET ${offset}`,
+    function (err, results) {
+        if (err) console.log(err);
+        res.json(results);
+    });
+});
+
+
 
 
 
