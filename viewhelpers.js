@@ -33,15 +33,16 @@ function OrganizeConcertsInTriplets(concerts) {
             triplet = [];
         }
     }
+    if (triplet.length > 1) {
+        triplet.push({ id: "placeholder" })
+        triplets.push(triplet);
+    }else
     if (triplet.length > 0) {
         triplet.push({ id: "placeholder" });
         triplet.push({ id: "placeholder" });
         triplets.push(triplet);
 
-    } else if (triplet.length > 1) {
-        triplet.push({ id: "placeholder" })
-        triplets.push(triplet);
-    }
+    }  
     return triplets;
 }
 
