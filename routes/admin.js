@@ -15,10 +15,6 @@ function isAuthorized(id){
     return (id===sessionId);
 }
 
-
-
-
-
 router.get("/concerts", (req,res)=>{
     if (isAuthorized(req.cookies.id)){
         
@@ -26,9 +22,7 @@ router.get("/concerts", (req,res)=>{
       } else {
           
         res.redirect("/admin/login");
-      }
-
-    
+      }    
 });
 
 router.get("/news", (req,res)=>{
@@ -41,15 +35,6 @@ router.get("/news", (req,res)=>{
       }    
 });
 
-router.get("/composers", (req,res)=>{
-    if (isAuthorized(req.cookies.id)){
-        
-        res.render('admin/composers.hbs',{layout: false});
-      } else {
-          
-        res.redirect("/admin/login");
-      }    
-});
 
 router.get("/artists", (req,res)=>{
     if (isAuthorized(req.cookies.id)){
@@ -88,15 +73,82 @@ router.post("/artists/upload", urlencodedParser, (req,res)=>{
 });
 
 
+router.get("/composers", (req,res)=>{
+  if (isAuthorized(req.cookies.id)){
+      var names= viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
+      res.render('admin/composers.hbs',   {names, layout: false});
+    } else {
+        
+      res.redirect("/admin/login");
+    }    
+});
+
+router.post("/composers/delete", urlencodedParser, (req,res)=>{
+  if (isAuthorized(req.cookies.id)){
+      fs.unlinkSync(path.join(__dirname, '../','/static/',req.body.filename));        
+    } else {
+      res.redirect("/admin/login");
+    }    
+});
+
+router.post("/composers/upload", urlencodedParser, (req,res)=>{
+  if (isAuthorized(req.cookies.id)){
+      if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).send('No files were uploaded.');
+        }        
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        let fileToUpload = req.files.fileToUpload;        
+        // Use the mv() method to place the file somewhere on your server
+        fileToUpload.mv(path.join(__dirname,'..','/static/img/about/composers/',fileToUpload.name), function(err) {
+          if (err)   return res.status(500).send(err);        
+          res.render('admin/admin', {id:5});
+        });
+
+    } else {
+      res.redirect("/admin/login");
+    }    
+});
+
+
+
+
+
+
 
 router.get("/gallery", (req,res)=>{
-    if (isAuthorized(req.cookies.id)){
+  if (isAuthorized(req.cookies.id)){
+      var names= viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
+      res.render('admin/gallery.hbs',   {names, layout: false});
+    } else {
         
-        res.render('admin/gallery.hbs',{layout: false});
-      } else {
-          
-        res.redirect("/admin/login");
-      }    
+      res.redirect("/admin/login");
+    }    
+});
+
+router.post("/gallery/delete", urlencodedParser, (req,res)=>{
+  if (isAuthorized(req.cookies.id)){
+      fs.unlinkSync(path.join(__dirname, '../','/static/',req.body.filename));        
+    } else {
+      res.redirect("/admin/login");
+    }    
+});
+
+router.post("/gallery/upload", urlencodedParser, (req,res)=>{
+  if (isAuthorized(req.cookies.id)){
+      if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).send('No files were uploaded.');
+        }        
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        let fileToUpload = req.files.fileToUpload;        
+        // Use the mv() method to place the file somewhere on your server
+        fileToUpload.mv(path.join(__dirname,'..','/static/img/gallery/',fileToUpload.name), function(err) {
+          if (err)   return res.status(500).send(err);        
+          res.render('admin/admin', {id:3});
+        });
+
+    } else {
+      res.redirect("/admin/login");
+    }    
 });
 
 
@@ -132,7 +184,7 @@ router.get("/login",(req,res)=>{
     if ((req.body.username===admin.user)&&(req.body.password===admin.password)){
       sessionId=uuidV4();
       
-      res.cookie("id",sessionId,{maxAge: 360000});
+      res.cookie("id",sessionId,{maxAge: 24*60*60});
       res.redirect("/admin");
     } else{
         
