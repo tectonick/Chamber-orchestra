@@ -6,6 +6,7 @@ const mediaRouter=require("./routes/media");
 const adminRouter=require("./routes/admin");
 const path=require('path');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 
 
@@ -26,6 +27,7 @@ app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
 app.use(cookieParser());
+app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "static")));
 app.use(mainRouter);
 app.use('/about',aboutRouter);
@@ -39,5 +41,7 @@ app.listen(PORT, ()=>{
 })
 
 
-
+var fileManager = require('express-file-manager');
+ 
+app.use('/filemanager', fileManager('static'));
 

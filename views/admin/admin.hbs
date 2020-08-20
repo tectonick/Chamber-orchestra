@@ -5,11 +5,11 @@
                 <div class="bg-light border-right" id="sidebar-wrapper">
                     <div class="sidebar-heading">Кабинет администратора</div>
                     <div class="list-group list-group-flush">
-                        <a href="#" onclick="$('.edit-container').load('/admin/concerts');" class="list-group-item list-group-item-action bg-light">Афиши</a>
-                        <a href="#" onclick="$('.edit-container').load('/admin/news');" class="list-group-item list-group-item-action bg-light">Новости</a>
-                        <a href="#" onclick="$('.edit-container').load('/admin/gallery');" class="list-group-item list-group-item-action bg-light">Галерея</a>
-                        <a href="#" onclick="$('.edit-container').load('/admin/artists');" class="list-group-item list-group-item-action bg-light">Приглашенные артисты</a>
-                        <a href="#" onclick="$('.edit-container').load('/admin/composers');" class="list-group-item list-group-item-action bg-light">Композиторы</a>
+                        <a href="#" id="1" onclick="$('.edit-container').load('/admin/concerts');" class="list-group-item list-group-item-action bg-light">Афиши</a>
+                        <a href="#" id="2" onclick="$('.edit-container').load('/admin/news');" class="list-group-item list-group-item-action bg-light">Новости</a>
+                        <a href="#" id="3" onclick="$('.edit-container').load('/admin/gallery');" class="list-group-item list-group-item-action bg-light">Галерея</a>
+                        <a href="#" id="4" onclick="$('.edit-container').load('/admin/artists');" class="list-group-item list-group-item-action bg-light">Приглашенные артисты</a>
+                        <a href="#" id="5" onclick="$('.edit-container').load('/admin/composers');" class="list-group-item list-group-item-action bg-light">Композиторы</a>
                         <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
                     </div>
                 </div>
@@ -28,7 +28,12 @@
 <script src="https://cdn.tiny.cloud/1/1sb38u376a8ulm88ac0aab6gulkw3lx4avevpvcg3dglkqn0/tinymce/5/tinymce.min.js"
     referrerpolicy="origin"></script>
 <script>
-    
+$(document).ready(function(){
+    var id={{id}};
+    $(`#${id}`).trigger("click");
+});
+
+
     tinymce.init({
         selector: '#mytextarea',
         language: "ru", language_url: "/tinymce/langs/ru.js",

@@ -1,4 +1,35 @@
-<form action="/admin/artists" method="post" enctype="multipart/form-data">
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit">
-</form>
+<div>
+    <form action="/admin/artists/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="fileToUpload" id="fileToUpload">
+        <input type="submit" value="Upload Image" name="submit">
+    </form>
+
+
+    <div class="artists">
+        <div class="card-columns">
+            {{#each names}}
+            <div class="card "> <img class="card-img-top" src="/img/about/artists/{{this}}.jpg" alt="Card image cap">
+                <div class="card-footer">
+                    <p>{{this}}</p>                 
+                        <input id="/img/about/artists/{{this}}.jpg" class='delete-button' type="submit" value="Удалить"></input>
+                    
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+
+
+<script>
+
+$(document).ready(function(){
+  $(".delete-button").click(function(){
+      $(this).parent().parent().css('display','none');
+    $.post("/admin/artists/delete", {filename:$(this).attr('id')});
+  });
+});
+</script>
+
+
+</div>
