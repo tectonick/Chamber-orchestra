@@ -1,0 +1,40 @@
+<div class="container-fluid">
+
+    <div class="ml-auto my-3 w-75" >
+        <form action="/admin/composers/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Upload Image" name="submit">
+        </form>
+
+    </div>
+    
+
+
+    <div class="composers">
+        <div class="card-columns">
+            {{#each names}}
+            <div class="card "> <img class="card-img-top" src="/img/about/composers/{{this}}.jpg" alt="Card image cap">
+                <div class="card-footer">
+                    <p>{{this}}</p>                 
+                        <input id="/img/about/composers/{{this}}.jpg" class='delete-button' type="submit" value="Удалить"></input>
+                    
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+
+
+<script>
+
+$(document).ready(function(){
+  $(".delete-button").click(function(){
+      $(this).parent().parent().css('display','none');
+    $.post("/admin/composers/delete", {filename:$(this).attr('id')});
+  });
+});
+</script>
+
+
+</div>
