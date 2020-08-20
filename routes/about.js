@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const viewhelpers = require("../viewhelpers");
- 
+
 
 router.get("/", (req,res)=>{
     res.render('about/about.hbs');
@@ -14,17 +14,17 @@ router.get("/musicians", (req,res)=>{
 });
 
  
-router.get("/artists", async (req,res)=>{
+router.get("/artists",  (req,res)=>{
 
-    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
+    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
     res.render('about/artists.hbs',{names});
 });
 
 
 
 
-router.get("/composers", async (req,res)=>{
-    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
+router.get("/composers",  (req,res)=>{
+    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
     res.render("about/composers.hbs",{names});
 });
 router.get("/press", (req,res)=>{

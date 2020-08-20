@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const uuidV4 = require("uuid.v4");
+const viewhelpers = require("../viewhelpers");
+
+const fs = require('fs');
+const path=require('path');
 
 // создаем парсер для данных application/x-www-form-urlencoded
 const urlencodedParser = bodyParser.urlencoded({extended: false});
@@ -49,13 +53,41 @@ router.get("/composers", (req,res)=>{
 
 router.get("/artists", (req,res)=>{
     if (isAuthorized(req.cookies.id)){
-        
-        res.render('admin/artists.hbs',{layout: false});
+        var names= viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
+        res.render('admin/artists.hbs',   {names, layout: false});
       } else {
           
         res.redirect("/admin/login");
       }    
 });
+
+router.post("/artists/delete", urlencodedParser, (req,res)=>{
+    if (isAuthorized(req.cookies.id)){
+        fs.unlinkSync(path.join(__dirname, '../','/static/',req.body.filename));        
+      } else {
+        res.redirect("/admin/login");
+      }    
+});
+
+router.post("/artists/upload", urlencodedParser, (req,res)=>{
+    if (isAuthorized(req.cookies.id)){
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).send('No files were uploaded.');
+          }        
+          // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+          let fileToUpload = req.files.fileToUpload;        
+          // Use the mv() method to place the file somewhere on your server
+          fileToUpload.mv(path.join(__dirname,'..','/static/img/about/artists/',fileToUpload.name), function(err) {
+            if (err)   return res.status(500).send(err);        
+            res.render('admin/admin', {id:4});
+          });
+
+      } else {
+        res.redirect("/admin/login");
+      }    
+});
+
+
 
 router.get("/gallery", (req,res)=>{
     if (isAuthorized(req.cookies.id)){
