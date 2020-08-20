@@ -2,6 +2,8 @@ const express = require("express");
 const mysql = require("mysql2");
 const viewhelpers = require("../viewhelpers");
 
+
+
 //db connection
 const db = mysql.createConnection({
     host: "localhost",
@@ -61,9 +63,6 @@ router.get("/api/news/count", (req, res) => {
         res.json(results);
     });
 });
-
-
-
 
 
 
