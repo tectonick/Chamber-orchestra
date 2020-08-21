@@ -58,6 +58,9 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
     db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
       function (err, results) {
         if (err) console.log(err);
+
+        let imgToDel=path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg");
+        fs.unlinkSync(imgToDel);
         res.render('admin/admin', { id: 1 });
       });
   } else {
@@ -128,15 +131,103 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
 
 
 
+
+
 router.get("/news", (req, res) => {
   if (isAuthorized(req.cookies.id)) {
+    db.query("SELECT * FROM news ORDER BY date DESC",
+      function (err, results) {
+        if (err) console.log(err);
+        var events = results;
+        events.forEach(element => {
+          // JS interprets db date as local and converts to UTC 
+          var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
+          element.date = new Date(date).toISOString();
+        });
+        res.render('admin/news.hbs', { events, layout: false });
+      });
 
-    res.render('admin/news.hbs', { layout: false });
   } else {
-
     res.redirect("/admin/login");
   }
 });
+
+
+router.post("/news/delete", urlencodedParser, (req, res) => {
+  if (isAuthorized(req.cookies.id)) {
+    db.query(`DELETE FROM news WHERE id=${req.body.id}`,
+      function (err, results) {
+        if (err) console.log(err);
+
+        let imgToDel=path.join(__dirname, '..', '/static/img/news/', req.body.id + ".jpg");
+        fs.unlinkSync(imgToDel);
+        res.render('admin/admin', { id: 2 });
+      });
+  } else {
+    res.redirect("/admin/login");
+  }
+});
+
+
+router.post("/news/add", urlencodedParser, (req, res) => {
+  if (isAuthorized(req.cookies.id)) {
+    db.query(`INSERT INTO news VALUES (0,'Новая новость','2999-01-01 00:00','Текст')`,
+      function (err, results) {
+        if (err) console.log(err);
+        let src=path.join(__dirname, '..', '/static/img/news/', "placeholder.jpg");
+        let dest=path.join(__dirname, '..', '/static/img/news/', results.insertId + ".jpg");
+        fs.copyFile(src,dest,()=>{
+          req.session.menuId = 2;
+          res.redirect("/admin/");
+        } );
+        
+      });
+  } else {
+    res.redirect("/admin/login");
+  }
+});
+
+
+router.post("/news/edit", urlencodedParser, (req, res) => {
+  if (isAuthorized(req.cookies.id)) {
+    var date = req.body.date.slice(0, 19).replace('T', ' ');
+    db.query(`UPDATE news SET title = '${req.body.title}', \
+    date = '${date}',\
+    text = '${req.body.text}' WHERE ${req.body.id}=id;`,
+      function (err, results) {
+        if (err) {
+          console.log(err);
+          res.sendStatus(400);
+        } else {
+          res.sendStatus(200);
+        }
+
+      });
+  } else {
+    res.redirect("/admin/login");
+  }
+});
+
+router.post("/news/posterupload", urlencodedParser, (req, res) => {
+  if (isAuthorized(req.cookies.id)) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send('No files were uploaded.');
+    }
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let fileToUpload = req.files.fileToUpload;
+    // Use the mv() method to place the file somewhere on your server
+    fileToUpload.mv(path.join(__dirname, '..', '/static/img/news/', req.body.id + ".jpg"), function (err) {
+      if (err) return res.status(500).send(err);
+      req.session.menuId=2;
+      res.redirect('/admin/');
+    });
+
+  } else {
+    res.redirect("/admin/login");
+  }
+});
+
+
 
 
 router.get("/artists", (req, res) => {

@@ -1,1 +1,130 @@
-NEWS
+<div>
+    <div class="ml-auto my-3">
+        <form action="/admin/news/add" method="post">
+            <input class='form-control' type="submit" value="Добавить новость" name="submit">
+        </form>
+
+    </div>
+    {{#each events}}
+    <div newsId="{{this.id}}" class="row event-row">
+
+
+        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+            <div  class="row">
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" src="/img/news/{{this.id}}.jpg" alt="">
+                    <form class="form-group" action="/admin/news/posterupload" method="post"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <input class='form-control' type="file" name="fileToUpload">
+                        <input class='form-control' type="submit" value="Загрузить изображение" name="submit">
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 p-4">
+
+                    <form class='form-group' action="/admin/news/edit" id="edit-form-{{this.id}}" method="POST">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <textarea name="title" class="form-control w-100" rows="1">{{this.title}}</textarea>
+                        <textarea name="text" class="form-control w-100"
+                            rows="10">{{this.text}}</textarea>
+                        <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea>
+                    </form>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <input name='{{this.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary" type="submit"
+                            value="Удалить новость"></input>
+                        <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
+                            value="Сохранить новость"></input>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    {{/each}}
+
+
+
+
+    <!-- Modal -->
+<div class="modal fade" id="deleteModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Подтверждение удаления</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <p>Вы действительно хотите удалить новость? Это действие невозможно отменить!</p>
+        
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button id="modal-delete" type="button" class="btn btn-danger">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript" src="http://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $(".delete-button").click(function () {
+            //$(this).parent().parent().parent().css('display', 'none');
+            //$.post("/admin/concerts/delete", { id: $(this).attr('name') });
+            var modal=$('#deleteModal');
+            modal.attr('name',$(this).attr('name') );
+            modal.modal();
+        });
+    });
+
+    $("#modal-delete").click(function () {
+        let modal = $('#deleteModal');
+        let idToDelete = modal.attr('name');
+        console.log(idToDelete);
+        $(`[newsId=${idToDelete}]`).css('display', 'none');
+        $.post("/admin/news/delete", { id: idToDelete });
+        modal.modal('hide');
+
+    });
+
+
+
+    $(document).ready(function () {
+        $(".save-button").click(function () {
+
+            var formName = $(this).attr('name');
+            var formData = $('#' + formName).serialize();
+            $.post("/admin/news/edit", formData, (data, status) => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            }).fail(()=>{
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            });
+
+        });
+    });
+</script>
