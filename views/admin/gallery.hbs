@@ -1,22 +1,22 @@
 <div class="container-fluid">
 
-    <div class="ml-auto my-3 w-75" >
+    <div class="ml-auto my-3" >
         <form action="/admin/gallery/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="fileToUpload" id="fileToUpload">
-            <input type="submit" value="Загрузить изображение" name="submit">
+            <input class='form-control' type="file" name="fileToUpload" id="fileToUpload">
+            <input class='form-control' type="submit" value="Загрузить изображение" name="submit">
         </form>
 
     </div>
     
 
 
-    <div class="composers">
+    <div>
         <div class="card-columns">
             {{#each names}}
             <div class="card "> <img class="card-img-top" src="/img/gallery/{{this}}.jpg" alt="Card image cap">
                 <div class="card-footer">
                     <p>{{this}}</p>                 
-                        <input id="/img/gallery/{{this}}.jpg" class='delete-button' type="submit" value="Удалить"></input>
+                        <input id="/img/gallery/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
                     
                 </div>
             </div>
