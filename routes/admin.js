@@ -41,9 +41,9 @@ router.get("/concerts", (req, res) => {
         var events = results;
         events.forEach(element => {
           // JS interprets db date as local and converts to UTC 
-          var date=element.date-element.date.getTimezoneOffset()*60*1000;
-          element.date=new Date(date).toISOString();          
-        });        
+          var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
+          element.date = new Date(date).toISOString();
+        });
         res.render("admin/concerts.hbs", { events, layout: false });
       });
 
@@ -68,10 +68,16 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
 
 router.post("/concerts/add", urlencodedParser, (req, res) => {
   if (isAuthorized(req.cookies.id)) {
-    db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','2000-01-01 00:00','Описание', 'Зал')`,
+    db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','2999-01-01 00:00','Описание', 'Зал')`,
       function (err, results) {
         if (err) console.log(err);
-        res.render('admin/admin', { id: 1 });
+        let src=path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
+        let dest=path.join(__dirname, '..', '/static/img/posters/', results.insertId + ".jpg");
+        fs.copyFile(src,dest,()=>{
+          req.session.menuId = 1;
+          res.redirect("/admin/");
+        } );
+        
       });
   } else {
     res.redirect("/admin/login");
@@ -81,7 +87,7 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   if (isAuthorized(req.cookies.id)) {
-    var date=req.body.date.slice(0, 19).replace('T', ' ');
+    var date = req.body.date.slice(0, 19).replace('T', ' ');
     db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
     description = '${req.body.description}' WHERE ${req.body.id}=id;`,
@@ -89,10 +95,10 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
         if (err) {
           console.log(err);
           res.sendStatus(400);
-        } else{
+        } else {
           res.sendStatus(200);
-        }        
-        
+        }
+
       });
   } else {
     res.redirect("/admin/login");
@@ -109,7 +115,8 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
     // Use the mv() method to place the file somewhere on your server
     fileToUpload.mv(path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg"), function (err) {
       if (err) return res.status(500).send(err);
-      res.render('admin/admin', { id: 1 });
+      req.session.menuId=1;
+      res.redirect('/admin/');
     });
 
   } else {
@@ -160,7 +167,8 @@ router.post("/artists/upload", urlencodedParser, (req, res) => {
     // Use the mv() method to place the file somewhere on your server
     fileToUpload.mv(path.join(__dirname, '..', '/static/img/about/artists/', fileToUpload.name), function (err) {
       if (err) return res.status(500).send(err);
-      res.render('admin/admin', { id: 4 });
+      req.session.menuId=4;
+      res.redirect('/admin/');
     });
 
   } else {
@@ -197,7 +205,8 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
     // Use the mv() method to place the file somewhere on your server
     fileToUpload.mv(path.join(__dirname, '..', '/static/img/about/composers/', fileToUpload.name), function (err) {
       if (err) return res.status(500).send(err);
-      res.render('admin/admin', { id: 5 });
+      req.session.menuId=5;
+      res.redirect('/admin/');
     });
 
   } else {
@@ -239,7 +248,8 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
     // Use the mv() method to place the file somewhere on your server
     fileToUpload.mv(path.join(__dirname, '..', '/static/img/gallery/', fileToUpload.name), function (err) {
       if (err) return res.status(500).send(err);
-      res.render('admin/admin', { id: 3 });
+      req.session.menuId=3;
+      res.redirect('/admin/');
     });
 
   } else {
@@ -265,8 +275,8 @@ var sessionId = 'none';
 router.get('/', function (req, res) {
 
   if (isAuthorized(req.cookies.id)) {
-
-    res.render("admin/admin");
+    let id = req.session.menuId;
+    res.render("admin/admin", {id});
   } else {
 
     res.redirect("/admin/login");
