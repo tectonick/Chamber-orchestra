@@ -353,6 +353,7 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 
 
 router.get("/login", (req, res) => {
+  req.session.menuId=1;
   res.render("admin/login");
 });
 
