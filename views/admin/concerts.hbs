@@ -1,1 +1,61 @@
-asdasdadkadhasdhakdh
+<div>
+
+    <div class="ml-auto my-3 w-75">
+        <form action="/admin/concerts/add" method="post">
+            <input type="submit" value="Добавить концерт" name="submit">
+        </form>
+
+    </div>
+    {{#each events}}
+    <div class="row event-row">
+
+
+        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+            <div id="{{this.id}}" class="row">
+
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" src="/img/posters/{{this.id}}.jpg" alt="">
+
+                    <input class='delete-button' class="btn btn-sm btn-secondary" type="submit" value="Удалить"></input>
+                    <input form='edit-form-{{this.id}}' class='save-button' class="btn btn-sm btn-secondary" type="submit"
+                        value="Сохранить"></input>
+
+                    <form class="form-group" action="/admin/concerts/posterupload" method="post"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <input type="file" name="fileToUpload" id="fileToUpload">
+                        <input type="submit" value="Upload Image" name="submit">
+
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 p-4">
+                    <form action="/admin/concerts/edit" id="edit-form-{{this.id}}" method="POST">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <textarea name="title" class=" w-100" rows="1">{{this.title}}</textarea>
+                        <textarea name="description" class="w-100" rows="10">{{this.description}}</textarea>
+                        <textarea name="date" class="w-100">{{this.date}}</textarea>
+                        <textarea name="place" class="w-100" rows="1">{{this.place}}</textarea>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    {{/each}}
+
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $(".delete-button").click(function () {
+            $(this).parent().parent().css('display', 'none');
+            $.post("/admin/concerts/delete", { id: $(this).parent().parent().attr('id') });
+        });
+    });
+</script>
