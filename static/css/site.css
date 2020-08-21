@@ -364,7 +364,7 @@ pre {
     background:none !important;
 }
 
-#main{
+#page-container{
     opacity: 0;
     transition: opacity 0.15s;    
 }

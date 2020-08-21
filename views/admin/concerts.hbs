@@ -12,30 +12,36 @@
 
         <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
             <div id="{{this.id}}" class="row">
-
                 <div class="col-12 col-md-4 p-0">
                     <img class="poster" src="/img/posters/{{this.id}}.jpg" alt="">
-
-                    <input class='delete-button' class="btn btn-sm btn-secondary" type="submit" value="Удалить"></input>
-                    <input form='edit-form-{{this.id}}' class='save-button' class="btn btn-sm btn-secondary" type="submit"
-                        value="Сохранить"></input>
-
                     <form class="form-group" action="/admin/concerts/posterupload" method="post"
                         enctype="multipart/form-data">
                         <input type="hidden" name="id" value="{{this.id}}">
-                        <input type="file" name="fileToUpload" id="fileToUpload">
-                        <input type="submit" value="Upload Image" name="submit">
-
+                        <input class='form-control' type="file" name="fileToUpload">
+                        <input class='form-control' type="submit" value="Загрузить афишу" name="submit">
                     </form>
                 </div>
                 <div class="col-12 col-md-8 p-4">
-                    <form action="/admin/concerts/edit" id="edit-form-{{this.id}}" method="POST">
+
+                    <form class='form-group' action="/admin/concerts/edit" id="edit-form-{{this.id}}" method="POST">
                         <input type="hidden" name="id" value="{{this.id}}">
-                        <textarea name="title" class=" w-100" rows="1">{{this.title}}</textarea>
-                        <textarea name="description" class="w-100" rows="10">{{this.description}}</textarea>
-                        <textarea name="date" class="w-100">{{this.date}}</textarea>
-                        <textarea name="place" class="w-100" rows="1">{{this.place}}</textarea>
+                        <textarea name="title" class="form-control w-100" rows="1">{{this.title}}</textarea>
+                        <textarea name="description" class="form-control w-100"
+                            rows="10">{{this.description}}</textarea>
+                        <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea>
+                        <textarea name="place" class="form-control w-100" rows="1">{{this.place}}</textarea>
                     </form>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <input class='delete-button form-control' class="btn btn-sm btn-secondary" type="submit"
+                            value="Удалить концерт"></input>
+                        <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
+                            value="Сохранить концерт"></input>
+
+                    </div>
 
                 </div>
             </div>
@@ -49,13 +55,33 @@
 
 
 
-
+<script type="text/javascript" src="http://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 <script>
 
     $(document).ready(function () {
         $(".delete-button").click(function () {
             $(this).parent().parent().css('display', 'none');
             $.post("/admin/concerts/delete", { id: $(this).parent().parent().attr('id') });
+        });
+    });
+
+    $(document).ready(function () {
+        $(".save-button").click(function () {
+
+            var formName = $(this).attr('name');
+            var formData = $('#' + formName).serialize();
+            $.post("/admin/concerts/edit", formData, (data, status) => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            }).fail(()=>{
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            });
+
         });
     });
 </script>

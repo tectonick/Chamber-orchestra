@@ -81,14 +81,18 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   if (isAuthorized(req.cookies.id)) {
-    console.log(req.body.id);
     var date=req.body.date.slice(0, 19).replace('T', ' ');
     db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
     description = '${req.body.description}' WHERE ${req.body.id}=id;`,
       function (err, results) {
-        if (err) console.log(err);
-        res.render('admin/admin', { id: 1 });
+        if (err) {
+          console.log(err);
+          res.sendStatus(400);
+        } else{
+          res.sendStatus(200);
+        }        
+        
       });
   } else {
     res.redirect("/admin/login");
