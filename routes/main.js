@@ -21,6 +21,16 @@ router.get("/events", (req, res) => {
             res.render("events.hbs", { months });
         });
 });
+
+router.get("/archive", (req, res) => {
+    db.query("SELECT * FROM concerts WHERE date<NOW() ORDER BY date DESC",
+        function (err, results) {
+            if (err) console.log(err);
+            var months = viewhelpers.OrganizeConcertsInMonths(results);
+            res.render("archive.hbs", { months });
+        });
+});
+
 router.get("/contacts", (req, res) => {
     res.render('contacts.hbs');
 });
