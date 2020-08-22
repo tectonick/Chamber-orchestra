@@ -3,7 +3,7 @@
     <div class="ml-auto my-3" >
         <form action="/admin/composers/upload" method="post" enctype="multipart/form-data">
             <input class='form-control' type="file" name="fileToUpload" id="fileToUpload">
-            <input class='form-control' type="submit" value="Загрузить изображение" name="submit">
+            <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
         </form>
 
     </div>
@@ -32,6 +32,16 @@ $(document).ready(function(){
   $(".delete-button").click(function(){
       $(this).parent().parent().css('display','none');
     $.post("/admin/composers/delete", {filename:$(this).attr('id')});
+  });
+
+    $("#fileToUpload").change(function(){
+      if ($(this).val().endsWith(".jpg")){
+        $(this).css('background-color','#bfff00');
+        $(this).siblings('.form-control').prop('disabled', false);
+      } else{
+        $(this).css('background-color','#EE0000');
+        $(this).siblings('.form-control').prop('disabled', true);
+      }
   });
 });
 </script>
