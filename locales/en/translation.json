@@ -1,0 +1,19 @@
+{
+    "layout": {
+        "navbar":{
+            "events": "Events",
+            "about": "About us",
+            "media": "Media",
+            "contacts": "Contacts",
+            "partners": "Partners",
+            "history":"Our history",
+            "conductor":"Chef conductor",
+            "musicians":"Musicians",
+            "artists":"Guest artists",
+            "composers":"Composers",
+            "archive":"Events archive",
+            "photos":"Photos",
+            "videos":"Videos"
+        }
+    }
+}
