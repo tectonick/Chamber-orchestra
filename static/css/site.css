@@ -67,8 +67,18 @@ footer .row div{
 
 .navbar{
     padding:0px;
-
+    background-color: rgba(255, 255, 255, 1);
+    transition:0.2s;
 }
+.navbar-brand{
+  width: 180px;
+}
+
+#logo{
+  transition: 0.2s width;
+}
+
+
 
 /*Auto-show dropdown (bugged)*/
 /*
