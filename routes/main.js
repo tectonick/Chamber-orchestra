@@ -3,8 +3,8 @@ const mysql = require("mysql2");
 const viewhelpers = require("../viewhelpers");
 const db = require("../db");
 
-
 const router = express.Router();
+
 router.get("/", (req, res) => {
     db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
         function (err, results) {
@@ -46,11 +46,6 @@ router.get("/api/news/count", (req, res) => {
         res.json(results);
     });
 });
-
-
-
-
-
 
 
 module.exports = router;

@@ -12,10 +12,8 @@ router.get("/conductor", (req,res)=>{
 router.get("/musicians", (req,res)=>{
     res.render('about/musicians.hbs');
 });
-
  
 router.get("/artists",  (req,res)=>{
-
     var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
     res.render('about/artists.hbs',{names});
 });
