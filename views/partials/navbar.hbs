@@ -4,6 +4,8 @@
     <img id="logo" class="ml-3" src="/img/logo.png" alt="">
   </a>
 
+
+
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -11,38 +13,38 @@
   <div class="collapse navbar-collapse nav-items" id="navbarSupportedContent">
     <ul class="navbar-nav m-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/events">Афиша <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/events">{{t 'layout.navbar.events'}} <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          О нас
+          {{t 'layout.navbar.about'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/about">История коллектива</a>
+          <a class="dropdown-item" href="/about">{{t 'layout.navbar.history'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/about/conductor">Главный дирижер</a>
-          <a class="dropdown-item" href="/about/musicians">Музыканты </a>
-          <a class="dropdown-item" href="/about/artists">Приглашенные артисты</a>
-          <a class="dropdown-item" href="/about/composers">Композиторы </a>
+          <a class="dropdown-item" href="/about/conductor">{{t 'layout.navbar.conductor'}}</a>
+          <a class="dropdown-item" href="/about/musicians">{{t 'layout.navbar.musicians'}}</a>
+          <a class="dropdown-item" href="/about/artists">{{t 'layout.navbar.artists'}}</a>
+          <a class="dropdown-item" href="/about/composers">{{t 'layout.navbar.composers'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/archive">Архив концертов</a>
+          <a class="dropdown-item" href="/archive">{{t 'layout.navbar.archive'}}</a>
           <!--<a class="dropdown-item" href="/about/press">Пресса о нас </a>   -->
         </div>
       </li>
         <li class="nav-item dropdown ">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Медиа
+          {{t 'layout.navbar.media'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/media/photos">Фотогалерея</a>
-          <a class="dropdown-item" href="/media/videos">Видео</a>
+          <a class="dropdown-item" href="/media/photos">{{t 'layout.navbar.photos'}}</a>
+          <a class="dropdown-item" href="/media/videos">{{t 'layout.navbar.videos'}}</a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/contacts">Контакты</a>
+        <a class="nav-link" href="/contacts">{{t 'layout.navbar.contacts'}}</a>
       </li>
       <li class="nav-item">
-        <!--<a class="nav-link" href="/partners">Партнеры</a>-->
+        <!--<a class="nav-link" href="/partners">{{t 'layout.navbar.partners'}}</a>-->
       </li>
     </ul>
   </div>
