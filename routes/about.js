@@ -20,9 +20,6 @@ router.get("/artists",  (req,res)=>{
     res.render('about/artists.hbs',{names});
 });
 
-
-
-
 router.get("/composers",  (req,res)=>{
     var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
     res.render("about/composers.hbs",{names});
