@@ -5,9 +5,11 @@ const path=require('path');
 const MonthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 function OrganizeConcertsInMonths(concerts) {
     var months = [];
+    if (typeof concerts =='undefined') {return months;}
     concerts.forEach(element => {
         var nameMonth = MonthNames[element.date.getMonth()] + " " + element.date.getFullYear();
         element.day = element.date.getDate();
+        element.time = element.date.toTimeString().slice(0, 5);
         let index = months.findIndex((val) => {
             return val.name == nameMonth;
         });

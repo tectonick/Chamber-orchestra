@@ -225,6 +225,15 @@ footer .row div{
     
 }
 
+.concert-time{
+  position: absolute;
+  bottom:32px;
+  right: 8px;
+  font-size:100%;
+  color:#AAAAAA;
+  
+}
+
 
 pre {
     font-family: Cambria, serif;
@@ -408,9 +417,6 @@ pre {
     height: 100%;
   }
 
-
-
-
 a:hover{
     text-decoration:none;
 
@@ -442,11 +448,7 @@ a{
     border-color: #dee2e6;
 }
 
-
-
 /*sidebar*/
-
-
 #sidebar-wrapper {
     min-height: 100%;
     margin-left: -15rem;
@@ -485,4 +487,12 @@ a{
     #wrapper.toggled .sidebar-wrapper {
       margin-left: -15rem;
     }
+  }
+
+
+  .ya-share2{
+    position: absolute;
+    bottom: 8px;
+    left: 0px;
+    opacity: 0.6;
   }

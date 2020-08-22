@@ -1,7 +1,4 @@
 <div class="container-fluid m-3">
-<script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
-<script src="https://yastatic.net/share2/share.js" async="async"></script>
-
 
     {{#each months}}
     <h4 class="text-center mb-3">{{this.name}}</h4>
@@ -19,10 +16,7 @@
                 <div class="col-12 col-md-8 p-4">
                     <p>{{this.title}}</p>                    
                     <pre>{{this.description}}</pre>
-                    <div class="ya-share2 ml-4" data-image="belsco.net/img/posters/{{this.id}}.jpg" 
-                     data-title="{{this.title}}" data-url="belsco.net/events#{{this.id}}" data-services="vkontakte,twitter,facebook,odnoklassniki,viber,telegram"></div>
                     <div class="concert-day d-none d-md-block">{{this.day}}</div>
-                    <div class="concert-time">{{this.time}}</div>
                     <div class="concert-place">{{this.place}}</div>
                 </div>
             </div>
