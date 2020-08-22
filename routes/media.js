@@ -5,7 +5,6 @@ const viewhelpers = require("../viewhelpers");
 
 
 router.get("/photos",  (req,res)=>{
-    
     var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
     res.render('media/photos.hbs',{names});
 });

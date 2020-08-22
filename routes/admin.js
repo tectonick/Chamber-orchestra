@@ -4,9 +4,15 @@ const bodyParser = require("body-parser");
 const uuidV4 = require("uuid.v4");
 const viewhelpers = require("../viewhelpers");
 const db = require("../db");
-
 const fs = require('fs');
 const path = require('path');
+
+
+const admin = {
+  user: "root",
+  password: "devpassword123"
+}
+var sessionId = 'none';
 
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -90,13 +96,6 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
   });
 
 });
-
-
-
-
-
-
-
 router.get("/news", (req, res) => {
   db.query("SELECT * FROM news ORDER BY date DESC",
     function (err, results) {
@@ -112,7 +111,6 @@ router.get("/news", (req, res) => {
 
 });
 
-
 router.post("/news/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM news WHERE id=${req.body.id}`,
     function (err, results) {
@@ -123,7 +121,6 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
       res.render('admin/admin', { id: 2 });
     });
 });
-
 
 router.post("/news/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO news VALUES (0,'Новая новость','2999-01-01 00:00','Текст')`,
@@ -138,7 +135,6 @@ router.post("/news/add", urlencodedParser, (req, res) => {
 
     });
 });
-
 
 router.post("/news/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
@@ -160,9 +156,7 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400);
   }
-  // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   let fileToUpload = req.files.fileToUpload;
-  // Use the mv() method to place the file somewhere on your server
   fileToUpload.mv(path.join(__dirname, '..', '/static/img/news/', req.body.id + ".jpg"), function (err) {
     if (err) return res.status(500).send(err);
     req.session.menuId = 2;
@@ -170,8 +164,6 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
   });
 
 });
-
-
 
 
 router.get("/artists", (req, res) => {
@@ -218,11 +210,6 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
 });
 
 
-
-
-
-
-
 router.get("/gallery", (req, res) => {
   var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
   res.render('admin/gallery.hbs', { names, layout: false });
@@ -244,47 +231,27 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
   });
 });
 
-
-
-
-
 router.get("/login", (req, res) => {
   req.session.menuId = 1;
   res.render("admin/login");
 });
 
-const admin = {
-  user: "root",
-  password: "devpassword123"
-}
-var sessionId = 'none';
-
-
 router.get('/', function (req, res) {
-
   let id = req.session.menuId;
   res.render("admin/admin", { id });
 
 });
 
-
-
-
-
-
 router.post("/login", urlencodedParser, (req, res) => {
 
   if ((req.body.username === admin.user) && (req.body.password === admin.password)) {
     sessionId = uuidV4();
-
     res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 1000 });
     res.redirect("/admin");
   } else {
-
     res.redirect("/admin/login");
   }
 });
-
 
 router.get('/logout', function (req, res) {
   res.clearCookie('id');
