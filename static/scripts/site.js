@@ -24,3 +24,10 @@ function scrollFunction() {
     document.getElementById("logo").style.width = "180px";
   }
 }
+document.getElementById('en').onclick=()=>{
+    document.cookie = "locale=en; expires=Thu, 18 Dec 2999 12:00:00 UTC";
+};
+document.getElementById('ru').onclick=()=>{
+    document.cookie = "locale=ru; expires=Thu, 18 Dec 2999 12:00:00 UTC";
+};
+

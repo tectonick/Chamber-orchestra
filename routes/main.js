@@ -5,14 +5,19 @@ const db = require("../db");
 
 const router = express.Router();
 
+
+
 router.get("/", (req, res) => {
-    db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
-        function (err, results) {
-            if (err) console.log(err);
-            var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
-            res.render("index.hbs", { triplets });
-        });
-});
+    // res.cookie("locale", req.query.lang);
+  
+      db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
+          function (err, results) {
+              if (err) console.log(err);
+              var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
+              res.render("index.hbs", { triplets });
+          });
+  });
+
 router.get("/events", (req, res) => {
     db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date",
         function (err, results) {

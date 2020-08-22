@@ -13,39 +13,43 @@
   <div class="collapse navbar-collapse nav-items" id="navbarSupportedContent">
     <ul class="navbar-nav m-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="/events">{{t 'layout.navbar.events'}} <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/events">{{__ 'layout.navbar.events'}} <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{t 'layout.navbar.about'}}
+          {{__ 'layout.navbar.about'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/about">{{t 'layout.navbar.history'}}</a>
+          <a class="dropdown-item" href="/about">{{__ 'layout.navbar.history'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/about/conductor">{{t 'layout.navbar.conductor'}}</a>
-          <a class="dropdown-item" href="/about/musicians">{{t 'layout.navbar.musicians'}}</a>
-          <a class="dropdown-item" href="/about/artists">{{t 'layout.navbar.artists'}}</a>
-          <a class="dropdown-item" href="/about/composers">{{t 'layout.navbar.composers'}}</a>
+          <a class="dropdown-item" href="/about/conductor">{{__ 'layout.navbar.conductor'}}</a>
+          <a class="dropdown-item" href="/about/musicians">{{__ 'layout.navbar.musicians'}}</a>
+          <a class="dropdown-item" href="/about/artists">{{__ 'layout.navbar.artists'}}</a>
+          <a class="dropdown-item" href="/about/composers">{{__ 'layout.navbar.composers'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/archive">{{t 'layout.navbar.archive'}}</a>
+          <a class="dropdown-item" href="/archive">{{__ 'layout.navbar.archive'}}</a>
           <!--<a class="dropdown-item" href="/about/press">Пресса о нас </a>   -->
         </div>
       </li>
         <li class="nav-item dropdown ">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{t 'layout.navbar.media'}}
+          {{__ 'layout.navbar.media'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/media/photos">{{t 'layout.navbar.photos'}}</a>
-          <a class="dropdown-item" href="/media/videos">{{t 'layout.navbar.videos'}}</a>
+          <a class="dropdown-item" href="/media/photos">{{__ 'layout.navbar.photos'}}</a>
+          <a class="dropdown-item" href="/media/videos">{{__ 'layout.navbar.videos'}}</a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/contacts">{{t 'layout.navbar.contacts'}}</a>
-      </li>
-      <li class="nav-item">
-        <!--<a class="nav-link" href="/partners">{{t 'layout.navbar.partners'}}</a>-->
+        <a class="nav-link" href="/contacts">{{__ 'layout.navbar.contacts'}}</a>
       </li>
     </ul>
+    
+    <span class='mx-3'>
+      <a class='locale-change' href="" id='en'><img src="/img/icons8-great-britain-30.png" alt=""></a>
+        <a class='locale-change' href="" id='ru'><img src="/img/icons8-russian-federation-30.png" alt=""></a>
+        
+    </span>
+
   </div>
 </nav>
