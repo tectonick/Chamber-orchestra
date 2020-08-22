@@ -8,31 +8,36 @@ const path=require('path');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 const session = require('express-session');
-const i18next = require('i18next');
-const i18nextMiddleware = require('i18next-express-middleware');
-const Backend = require('i18next-node-fs-backend');
+const i18n = require('i18n');
+
+
+i18n.configure({
+  // setup some locales - other locales default to en silently
+  locales: ['en', 'ru'],
+  defaultLocale: 'en',
+ 
+  // sets a custom cookie name to parse locale settings from
+  cookie: 'locale',
+  // where to store json files - defaults to './locales'
+  directory: path.join(__dirname,'locales'),
 
 
 
-i18next
-    .use(Backend)
-    .use(i18nextMiddleware.LanguageDetector)
-    .init({
-      backend: {
-        loadPath: path.join(__dirname, '/locales/{{lng}}/{{ns}}.json'),
-      },
-      detection: {
-        order: ['querystring', 'cookie'],
-        caches: ['cookie']
-      },
-      fallbackLng: 'ru',
-      preload: ['en', 'ru']
-    });
-
-
-
-
-
+    // setting of log level DEBUG - default to require('debug')('i18n:debug')
+    logDebugFn: function (msg) {
+      console.log('debug', msg)
+    },
+  
+    // setting of log level WARN - default to require('debug')('i18n:warn')
+    logWarnFn: function (msg) {
+      console.log('warn', msg)
+    },
+  
+    // setting of log level ERROR - default to require('debug')('i18n:error')
+    logErrorFn: function (msg) {
+      console.log('error', msg)
+    },
+});
 
 
 
@@ -42,24 +47,23 @@ const app=express();
 const hbs=handlebars.create({
   defaultLayout:"main",
   extname:"hbs",
-  helpers: {
-    t: function(str){
-      return (i18next != undefined ? i18next.t(str) : str);
-    
-    }
-  }
+  i18n:i18n
 });
 
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
-app.use(i18nextMiddleware.handle(i18next, {
-      ignoreRoutes: ["/foo"], // or function(req, res, options, i18next) { /* return true to ignore */ }
-      removeLngFromUrl: false
-    }));
-app.use(session({secret: 'ssshhhhh'}));
+
+
 app.use(cookieParser());
+
+app.use(i18n.init);
+
+app.use(session({secret: 'ssshhhhh'}));
+
 app.use(fileUpload());
+
+
 app.use(express.static(path.join(__dirname, "static")));
 app.use(mainRouter);
 app.use('/about',aboutRouter);
@@ -69,3 +73,20 @@ app.use('/admin',adminRouter);
 app.listen(PORT, ()=>{
   console.log("Server started");
 })
+
+
+const viewhelpers = require("./viewhelpers");
+const db = require("./db");
+
+app.get("/", (req, res) => {
+  //res.send(res.__('layout.navbar.media'));
+  console.log(req.locale);
+  console.log(i18n.__('layout.navbar.media'));
+
+    db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
+        function (err, results) {
+            if (err) console.log(err);
+            var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
+            res.render("index.hbs", { triplets });
+        });
+});

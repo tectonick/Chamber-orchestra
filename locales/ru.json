@@ -1,0 +1,32 @@
+{
+	"layout": {
+		"navbar": {
+			"events": "Афиша",
+			"about": "О нас",
+			"media": "Медиа",
+			"contacts": "Контакты",
+			"partners": "Партнеры",
+			"history": "История коллектива",
+			"conductor": "Главный дирижер",
+			"musicians": "Музыканты",
+			"artists": "Приглашенные артисты",
+			"composers": "Композиторы",
+			"archive": "Архив",
+			"photos": "Фотогалерея",
+			"videos": "Видеогалерея"
+		}
+	},
+	"layout.navbar.events": "Афиша",
+	"layout.navbar.about": "О нас",
+	"layout.navbar.history": "История коллектива",
+	"layout.navbar.conductor": "Главный дирижер",
+	"layout.navbar.musicians": "Музыканты",
+	"layout.navbar.artists": "Приглашенные артисты",
+	"layout.navbar.composers": "Композиторы",
+	"layout.navbar.archive": "Архив",
+	"layout.navbar.media": "Медиа",
+	"layout.navbar.photos": "Фотогалерея",
+	"layout.navbar.videos": "Видеогалерея",
+	"layout.navbar.contacts": "Контакты",
+	"layout.navbar.partners": "Партнеры"
+}

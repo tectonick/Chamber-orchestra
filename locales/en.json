@@ -1,0 +1,32 @@
+{
+	"layout": {
+		"navbar": {
+			"events": "Events",
+			"about": "About us",
+			"media": "Media",
+			"contacts": "Contacts",
+			"partners": "Partners",
+			"history": "Our history",
+			"conductor": "Chef conductor",
+			"musicians": "Musicians",
+			"artists": "Guest artists",
+			"composers": "Composers",
+			"archive": "Events archive",
+			"photos": "Photos",
+			"videos": "Videos"
+		}
+	},
+	"layout.navbar.media": "Media",
+	"layout.navbar.events": "Events",
+	"layout.navbar.about": "About us",
+	"layout.navbar.history": "Our history",
+	"layout.navbar.conductor": "Chef conductor",
+	"layout.navbar.musicians": "Musicians",
+	"layout.navbar.artists": "Guest artists",
+	"layout.navbar.composers": "Composers",
+	"layout.navbar.archive": "Events archive",
+	"layout.navbar.photos": "Photos",
+	"layout.navbar.videos": "Videos",
+	"layout.navbar.contacts": "Contacts",
+	"layout.navbar.partners": "Partners"
+}
