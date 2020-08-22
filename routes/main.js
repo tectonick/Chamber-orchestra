@@ -1,26 +1,9 @@
 const express = require("express");
 const mysql = require("mysql2");
 const viewhelpers = require("../viewhelpers");
+const db = require("../db");
 
 
-
-//db connection
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "devpassword123",
-    database: "chamber"
-});
-db.connect((err) => {
-    if (err) {
-        return console.error("Error connecting to MySQL: " + err.message);
-    }
-    else {
-        console.log("Connected to MySQL");
-    }
-})
-
-//router
 const router = express.Router();
 router.get("/", (req, res) => {
     db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
