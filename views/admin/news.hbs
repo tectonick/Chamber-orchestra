@@ -27,7 +27,8 @@
                         <input type="hidden" name="id" value="{{this.id}}">
                         <textarea name="title" class="form-control w-100" rows="1">{{this.title}}</textarea>
                         <textarea name="text" class="form-control w-100" rows="10">{{this.text}}</textarea>
-                        <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea>
+                        {{!-- <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea> --}}
+                        <input type="datetime-local" class="form-control" name="date"  value="{{this.date}}">
                     </form>
 
                 </div>
