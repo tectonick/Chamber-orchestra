@@ -18,11 +18,15 @@
       window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
-  if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
-    document.getElementById("logo").style.width = "100px";
-  } else {
-    document.getElementById("logo").style.width = "180px";
+
+  if (document.body.clientWidth>992) {
+    if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
+      document.getElementById("logo").style.width = "100px";
+    } else {
+      document.getElementById("logo").style.width = "180px";
+    }    
   }
+
 }
 
 document.getElementById('en').onclick=()=>{
