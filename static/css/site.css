@@ -521,3 +521,7 @@ a{
       width: 100px;
     }
   }
+
+  .locale-change:hover, .social-img:hover{
+    opacity: 0.8;
+  }
