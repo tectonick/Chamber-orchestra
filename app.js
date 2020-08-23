@@ -75,18 +75,6 @@ app.listen(PORT, ()=>{
 })
 
 
-const viewhelpers = require("./viewhelpers");
-const db = require("./db");
+// const viewhelpers = require("./viewhelpers");
+// const db = require("./db");
 
-app.get("/", (req, res) => {
-  //res.send(res.__('layout.navbar.media'));
-  console.log(req.locale);
-  console.log(i18n.__('layout.navbar.media'));
-
-    db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
-        function (err, results) {
-            if (err) console.log(err);
-            var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
-            res.render("index.hbs", { triplets });
-        });
-});
