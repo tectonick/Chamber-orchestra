@@ -29,7 +29,8 @@
                         <textarea name="title" class="form-control w-100" rows="1">{{this.title}}</textarea>
                         <textarea name="description" class="form-control w-100"
                             rows="10">{{this.description}}</textarea>
-                        <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea>
+                        {{!-- <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea> --}}
+                        <input type="datetime-local" class="form-control" name="date"  value="{{this.date}}">
                         <textarea name="place" class="form-control w-100" rows="1">{{this.place}}</textarea>
                     </form>
 

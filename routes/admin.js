@@ -33,7 +33,7 @@ router.get("/concerts", (req, res) => {
       events.forEach(element => {
         // JS interprets db date as local and converts to UTC 
         var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString();
+        element.date = new Date(date).toISOString().slice(0,19);
       });
       res.render("admin/concerts.hbs", { events, layout: false });
     });
@@ -104,7 +104,7 @@ router.get("/news", (req, res) => {
       events.forEach(element => {
         // JS interprets db date as local and converts to UTC 
         var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString();
+        element.date = new Date(date).toISOString().slice(0,19);
       });
       res.render('admin/news.hbs', { events, layout: false });
     });
@@ -246,7 +246,7 @@ router.post("/login", urlencodedParser, (req, res) => {
 
   if ((req.body.username === admin.user) && (req.body.password === admin.password)) {
     sessionId = uuidV4();
-    res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 10000 });
     res.redirect("/admin");
   } else {
     res.redirect("/admin/login");
