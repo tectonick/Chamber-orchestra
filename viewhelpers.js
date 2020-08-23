@@ -36,6 +36,8 @@ function OrganizeConcertsInMonths(concerts, lang) {
 function OrganizeConcertsInTriplets(concerts) {
     var triplets = [];
     var triplet = [];
+    
+    if (typeof concerts =='undefined') {return triplets;}
     for (let i = 0; i < concerts.length; i++) {
         triplet.push(concerts[i]);
         if ((i + 1) % 3 == 0) {
