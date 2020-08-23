@@ -70,6 +70,9 @@ app.use('/about',aboutRouter);
 app.use('/media',mediaRouter);
 app.use('/admin',adminRouter);
 
+
+
+
 app.listen(PORT, ()=>{
   console.log("Server started");
 })
@@ -78,3 +81,12 @@ app.listen(PORT, ()=>{
 // const viewhelpers = require("./viewhelpers");
 // const db = require("./db");
 
+
+const https = require('https');
+const fs = require('fs');
+// start https server
+let sslOptions = {
+   key: fs.readFileSync('key.pem'),
+   cert: fs.readFileSync('cert.pem')
+};
+let serverHttps = https.createServer(sslOptions, app).listen(8000);
