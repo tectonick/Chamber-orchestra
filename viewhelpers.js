@@ -1,10 +1,18 @@
 
 const fs = require('fs');
 const path=require('path');
+const e = require('express');
 
-const MonthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
-function OrganizeConcertsInMonths(concerts) {
+//because handlebars cant handle nested helpers :(
+const MonthNamesEN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MonthNamesRU = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+
+function OrganizeConcertsInMonths(concerts, lang) {
     var months = [];
+    var MonthNames;
+    if (lang==="en") {MonthNames= MonthNamesEN;} else
+    {MonthNames= MonthNamesRU;}
+
     if (typeof concerts =='undefined') {return months;}
     concerts.forEach(element => {
         var nameMonth = MonthNames[element.date.getMonth()] + " " + element.date.getFullYear();

@@ -1,21 +1,4 @@
 {
-	"layout": {
-		"navbar": {
-			"events": "Events",
-			"about": "About us",
-			"media": "Media",
-			"contacts": "Contacts",
-			"partners": "Partners",
-			"history": "Our history",
-			"conductor": "Chef conductor",
-			"musicians": "Musicians",
-			"artists": "Guest artists",
-			"composers": "Composers",
-			"archive": "Events archive",
-			"photos": "Photos",
-			"videos": "Videos"
-		}
-	},
 	"layout.navbar.media": "Media",
 	"layout.navbar.events": "Events",
 	"layout.navbar.about": "About us",
@@ -28,5 +11,30 @@
 	"layout.navbar.photos": "Photos",
 	"layout.navbar.videos": "Videos",
 	"layout.navbar.contacts": "Contacts",
-	"layout.navbar.partners": "Partners"
+	"layout.navbar.partners": "Partners",
+	"layout.footer.administration": "Administration",
+	"layout.footer.social": "Social networks",
+	"layout.index.nextevents": "Next events",
+	"layout.index.news": "News",
+	"photo.title": "Photos",
+	"video.title": "Videos",
+	"video.more": "More videos on our youtube channel",
+	"contacts.find": "Where to find us",
+	"contacts.call": "How to contact us",
+	"contacts.address": "pr. Nezavisimosti, 50, Minsk, Belarus 220005",
+	"contacts.admin": "Administration: +375 (17) 284-79-00 (тел/факс)",
+	"contacts.director": "Director ГКО РБ &#8212; Kuntsevich Ekaterian Nikolayevna: +375 (29) 693-26-58",
+	"contacts.editor": "Editor &#8212; Inna Karpuk: +375 (29) 771-31-47",
+	"contacts.tickets": "",
+	"history.title": "History of our orchestra",
+	"conductor.title": "Evgeny Bushkov - chef conductor",
+	"musicians.title": "Musicians",
+	"musicians.violins1": "First violins",
+	"musicians.violins2": "Second violins",
+	"musicians.violas": "Violas",
+	"musicians.cellos": "Cellos",
+	"musicians.bass": "Double bass",
+	"musicians.keyboards": "Keyboards",
+	"composers.title": "Composers",
+	"artists.title": "Guest artists"
 }
