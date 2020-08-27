@@ -6,6 +6,7 @@ const viewhelpers = require("../viewhelpers");
 const db = require("../db");
 const fs = require('fs');
 const path = require('path');
+const imageProcessor = require("../image-processing");
 
 
 const admin = {
@@ -33,7 +34,7 @@ router.get("/concerts", (req, res) => {
       events.forEach(element => {
         // JS interprets db date as local and converts to UTC 
         var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString().slice(0,19);
+        element.date = new Date(date).toISOString().slice(0, 19);
       });
       res.render("admin/concerts.hbs", { events, layout: false });
     });
@@ -89,10 +90,21 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
     return res.status(400);
   }
   let fileToUpload = req.files.fileToUpload;
-  fileToUpload.mv(path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg"), function (err) {
-    if (err) return res.status(500).send(err);
-    req.session.menuId = 1;
-    res.redirect('/admin/');
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.posterImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg"));
+      fs.unlinkSync(tmpfile);
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 1;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
   });
 
 });
@@ -104,7 +116,7 @@ router.get("/news", (req, res) => {
       events.forEach(element => {
         // JS interprets db date as local and converts to UTC 
         var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString().slice(0,19);
+        element.date = new Date(date).toISOString().slice(0, 19);
       });
       res.render('admin/news.hbs', { events, layout: false });
     });
@@ -157,10 +169,21 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
     return res.status(400);
   }
   let fileToUpload = req.files.fileToUpload;
-  fileToUpload.mv(path.join(__dirname, '..', '/static/img/news/', req.body.id + ".jpg"), function (err) {
-    if (err) return res.status(500).send(err);
-    req.session.menuId = 2;
-    res.redirect('/admin/');
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/news/', req.body.id + ".jpg"));
+      fs.unlinkSync(tmpfile);
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 2;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
   });
 
 });
@@ -175,16 +198,29 @@ router.post("/artists/delete", urlencodedParser, (req, res) => {
   fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
 });
 
+//'/static/img/about/artists/'
 router.post("/artists/upload", urlencodedParser, (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400);
   }
   let fileToUpload = req.files.fileToUpload;
-  fileToUpload.mv(path.join(__dirname, '..', '/static/img/about/artists/', fileToUpload.name), function (err) {
-    if (err) return res.status(500).send(err);
-    req.session.menuId = 4;
-    res.redirect('/admin/');
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/about/artists/', name + '.jpg'));
+      fs.unlinkSync(tmpfile);
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 4;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
   });
+
 });
 
 
@@ -202,10 +238,21 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
     return res.status(400);
   }
   let fileToUpload = req.files.fileToUpload;
-  fileToUpload.mv(path.join(__dirname, '..', '/static/img/about/composers/', fileToUpload.name), function (err) {
-    if (err) return res.status(500).send(err);
-    req.session.menuId = 5;
-    res.redirect('/admin/');
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/about/composers/', name + '.jpg'));
+      fs.unlinkSync(tmpfile);
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 5;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
   });
 });
 
@@ -224,10 +271,21 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
     return res.status(400);
   }
   let fileToUpload = req.files.fileToUpload;
-  fileToUpload.mv(path.join(__dirname, '..', '/static/img/gallery/', fileToUpload.name), function (err) {
-    if (err) return res.status(500).send(err);
-    req.session.menuId = 3;
-    res.redirect('/admin/');
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.galleryImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/gallery/', name + '.jpg'));
+      fs.unlinkSync(tmpfile);
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 3;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
   });
 });
 

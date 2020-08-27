@@ -17,7 +17,7 @@
                         enctype="multipart/form-data">
                         <input type="hidden" name="id" value="{{this.id}}">
                         <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                        <input disabled="true" class='form-control' type="submit" value="Загрузить изображение (jpg)"
+                        <input disabled="true" class='form-control' type="submit" value="Загрузить изображение"
                             name="submit">
                     </form>
                 </div>
@@ -126,13 +126,10 @@
         });
 
         $(".fileToUpload").change(function () {
-            if ($(this).val().endsWith(".jpg")) {
-                $(this).css('background-color', '#bfff00');
-                $(this).siblings('.form-control').prop('disabled', false);
-            } else {
-                $(this).css('background-color', '#EE0000');
-                $(this).siblings('.form-control').prop('disabled', true);
-            }
+      if ($(this).val().length>0){
+            $(this).siblings('.form-control').prop('disabled', false);
+
+      }
         });
     });
 
