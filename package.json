@@ -17,6 +17,7 @@
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
     "i18n": "^0.13.2",
+    "jimp": "^0.16.0",
     "mysql2": "^2.1.0",
     "uuid.v4": "^1.0.0"
   },
