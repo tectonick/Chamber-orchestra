@@ -95,8 +95,13 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
     imageProcessor.posterImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
-      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg"));
-      fs.unlinkSync(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg")
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
       if (err) return res.status(500).send(err);
       req.session.menuId = 1;
       res.redirect('/admin/'); 
@@ -174,8 +179,13 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
     imageProcessor.smallImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
-      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/news/', req.body.id + ".jpg"));
-      fs.unlinkSync(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/news/', req.body.id + ".jpg")
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
       if (err) return res.status(500).send(err);
       req.session.menuId = 2;
       res.redirect('/admin/'); 
@@ -209,8 +219,13 @@ router.post("/artists/upload", urlencodedParser, (req, res) => {
     imageProcessor.smallImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
-      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/about/artists/', name + '.jpg'));
-      fs.unlinkSync(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/about/artists/', name + '.jpg');
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
       if (err) return res.status(500).send(err);
       req.session.menuId = 4;
       res.redirect('/admin/'); 
@@ -243,8 +258,13 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
     imageProcessor.smallImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
-      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/about/composers/', name + '.jpg'));
-      fs.unlinkSync(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/about/composers/', name + '.jpg');
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
       if (err) return res.status(500).send(err);
       req.session.menuId = 5;
       res.redirect('/admin/'); 
@@ -276,8 +296,13 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
     imageProcessor.galleryImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
-      fs.copyFileSync(path.join(dir,  name+ '.jpg'), path.join(__dirname,'../','/static/img/gallery/', name + '.jpg'));
-      fs.unlinkSync(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/gallery/', name + '.jpg');
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
       if (err) return res.status(500).send(err);
       req.session.menuId = 3;
       res.redirect('/admin/'); 
