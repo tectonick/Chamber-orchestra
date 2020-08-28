@@ -53,8 +53,7 @@
         <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item ml-auto">
-                    <p class="page-link">
-                        <</p>
+                    <p class="page-link">🢔</p>
                 </li>
             </ul>
         </nav>
@@ -73,11 +72,12 @@
             $(".page-link").click(function () {
                 var pageButtonText = $(this).text();
                 var pageNum;
+                console.log(pageButtonText);
                 if (Number.isInteger(Number(pageButtonText))) {
                     activePage = Number(pageButtonText);
                     pageNum = activePage;
                 } else {
-                    if (pageButtonText === "<") {
+                    if (pageButtonText === "🢔") {
                         activePage = (activePage - 1 >= 1) ? (activePage - 1) : (1);
                     } else {
                         activePage = (activePage + 1 > MAXPAGE) ? (MAXPAGE) : (activePage + 1);
@@ -116,7 +116,9 @@
 
         $(document).ready(function () {
             $.getJSON("/api/news/count", function (result) {
-                MAXPAGE = Math.ceil(result[0].count / 5);
+                if (result[0].count>5){  $(".pagination").css("display","flex"); }  
+
+                MAXPAGE = Math.ceil(result[0].count / 5);    
                 for (var i = 1; i <= MAXPAGE; i++) {
                     var active = "";
                     if (i == 1) {
@@ -124,8 +126,10 @@
                     }
                     pagination.append(`<li class="page-item ${active}" id="${i}"><p class="page-link">${i}</p></li>`);
                 }
-                pagination.append(`<li class="page-item mr-auto"><p class="page-link" >></p></li>`);
+                pagination.append(`<li class="page-item mr-auto"><p class="page-link" >🢖</p></li>`);
+                                
                 activePageLI = $(".active", pagination);
+                
                 addPaginationClickEvents();
                 activePageLI.children().first().trigger("click");
             });
