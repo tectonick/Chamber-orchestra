@@ -12,6 +12,9 @@ body{
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+
+    display:flex; 
+    flex-direction:column; 
 }
 
 /*footer */
@@ -19,34 +22,25 @@ body{
     position: relative;
     min-height: 100vh;
   }
-#content-wrap {
-    padding-bottom: 2.5rem;    /* Footer height */
-}  
-footer {
-    position: absolute;
-    bottom: 0;
-    height: 2.5rem;            /* Footer height */
-}
 
+  #content-wrap {
+    padding-bottom: 12rem;    /* Footer height */
+}  
+
+  @media (min-width: 768px) {
+    #content-wrap {
+      padding-bottom: 5rem;    /* Footer height */
+  }  
+    }
 footer{
     background-color: #F9F9F9;
-
     background-color: rgba(230, 230, 230, 0.3);
     border-top:1px solid rgba(0,0,0,0.05);
-
-
     width: 100%;
-
     font-size:1.2em;
+    position: absolute;
+    bottom: 0;
 }
-
-body{ 
-    display:flex; 
-    flex-direction:column; 
-  }
-
-
-
 
 footer .container-fluid{
     padding:0px;
