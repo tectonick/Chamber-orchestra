@@ -544,3 +544,69 @@ a{
 
   
 
+.block-img{
+  float: right;
+  margin: 10px;
+  max-width: 100%;
+  opacity: 0.8;
+}
+
+@media (min-width: 992px){
+  .block-img{
+    max-width: 40%;
+  }
+}
+
+blockquote{
+  padding-left: 2rem;
+  padding-right: 2rem;
+  position: relative;
+  clear: both;
+}
+
+blockquote cite {
+  color:black;
+}
+
+blockquote {
+  color: #b1b1b1;
+  padding: 10px 0px;
+  z-index: 1;
+  margin: 30px 4rem;
+  align-self: center;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+}
+
+/* Blockquote header */
+blockquote p {
+  position: relative;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Blockquote right double quotes */
+blockquote:after {
+  position: absolute;
+  content: "”";
+  color: rgba(200, 200, 200, 1);
+  font-size: 10rem;
+  line-height: 0;
+  bottom: -43px;
+  right: 30px;
+}
+
+
+/* Blockquote subheader */
+blockquote p {
+  position: relative;
+  color: #292a2b;
+  line-height: 1;
+  margin: 0;
+  padding-top: 20px;
+  z-index: 1;
+}
+
+.text p{
+  text-indent: 30px;
+}
