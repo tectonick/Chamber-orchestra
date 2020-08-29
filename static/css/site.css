@@ -24,7 +24,7 @@ body{
   }
 
   #content-wrap {
-    padding-bottom: 14rem;    /* Footer height */
+    padding-bottom: 15rem;    /* Footer height */
 }  
 
   @media (min-width: 768px) {
