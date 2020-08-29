@@ -55,7 +55,7 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
 
 
 router.post("/concerts/add", urlencodedParser, (req, res) => {
-  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','2999-01-01 00:00','Описание', 'Зал')`,
+  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','2999-01-01 00:00','Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
       let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
@@ -71,8 +71,10 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
+  let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
   db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
+    hidden = '${hidden}', ticket = '${req.body.ticket}',\
     description = '${req.body.description}' WHERE ${req.body.id}=id;`,
     function (err, results) {
       if (err) {

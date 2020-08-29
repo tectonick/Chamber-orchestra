@@ -610,3 +610,24 @@ blockquote p {
 .text p{
   text-indent: 30px;
 }
+
+
+
+label{
+  font-size: 1rem;
+}
+
+
+.buy{
+  position: absolute;
+  bottom: 8px;
+  left: 170px;
+  opacity: 0.6;
+  margin-left: 1.5rem!important;
+  margin-bottom: 0 !important;
+  height: 24px;
+  padding: 0rem .75rem;
+  font-size: 1rem;
+  border:none;
+  opacity: 0.8;
+}

@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   
-      db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date LIMIT 6",
+      db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date LIMIT 6",
           function (err, results) {
               if (err) console.log(err);
               var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
   });
 
 router.get("/events", (req, res) => {
-    db.query("SELECT * FROM concerts WHERE date>=NOW() ORDER BY date",
+    db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date",
         function (err, results) {
             if (err) console.log(err);
             var months = viewhelpers.OrganizeConcertsInMonths(results, req.getLocale());
@@ -27,7 +27,7 @@ router.get("/events", (req, res) => {
 });
 
 router.get("/archive", (req, res) => {
-    db.query("SELECT * FROM concerts WHERE date<NOW() ORDER BY date DESC",
+    db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date<NOW() ORDER BY date DESC",
         function (err, results) {
             if (err) console.log(err);
             var months = viewhelpers.OrganizeConcertsInMonths(results);

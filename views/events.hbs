@@ -19,8 +19,12 @@
                 <div class="col-12 col-md-8 p-4">
                     <p>{{this.title}}</p>
                     <pre>{{this.description}}</pre>
-                    <div class="ya-share2 ml-4" data-image="http://new.belsco.net/img/posters/{{this.id}}.jpg"
-                        data-title="{{this.title}}" data-url="http://new.belsco.net/events#{{this.id}}"
+
+                    {{#if this.ticket}}
+                    <a class="btn buy btn-sm btn-success mb-3" href="{{this.ticket}}">{{../../__ 'events.buy'}}</a>
+                    {{/if}}
+                    <div class="ya-share2 ml-4" data-image="http://belsco.net/img/posters/{{this.id}}.jpg"
+                        data-title="{{this.title}}" data-url="http://belsco.net/events#{{this.id}}"
                         data-services="vkontakte,twitter,facebook,odnoklassniki,viber,telegram"></div>
                     <div class="concert-day d-none d-md-block">{{this.day}}</div>
                     <div class="concert-time">{{this.time}}</div>
