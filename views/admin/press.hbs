@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
     <div class="ml-auto my-3" >
-        <form action="/admin/artists/upload" method="post" enctype="multipart/form-data">
+        <form action="/admin/press/upload" method="post" enctype="multipart/form-data">
             <input class='form-control' type="file" name="fileToUpload" id="fileToUpload">
             <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
         </form>
@@ -13,10 +13,10 @@
     <div>
         <div class="card-columns">
             {{#each names}}
-            <div class="card "> <img class="card-img-top" loading=lazy src="/img/about/artists/{{this}}.jpg" alt="Card image cap">
+            <div class="card "> <img class="card-img-top" loading=lazy src="/img/press/{{this}}.jpg" alt="Card image cap">
                 <div class="card-footer">
                     <p>{{this}}</p>                 
-                        <input id="/img/about/artists/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
+                        <input id="/img/press/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
                     
                 </div>
             </div>
@@ -31,16 +31,20 @@
 $(document).ready(function(){
   $(".delete-button").click(function(){
       $(this).parent().parent().css('display','none');
-    $.post("/admin/artists/delete", {filename:$(this).attr('id')});
+    $.post("/admin/press/delete", {filename:$(this).attr('id')});
   });
 
-    $("#fileToUpload").change(function(){
+  $("#fileToUpload").change(function(){
       if ($(this).val().length>0){
             $(this).siblings('.form-control').prop('disabled', false);
 
       }
   });
 });
+
+
+
+
 </script>
 
 

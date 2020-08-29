@@ -316,6 +316,58 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
   });
 });
 
+
+
+
+
+
+
+
+
+
+router.get("/press", (req, res) => {
+  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
+  res.render('admin/press.hbs', { names, layout: false });
+});
+
+router.post("/press/delete", urlencodedParser, (req, res) => {
+  fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
+});
+
+router.post("/press/upload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
+  }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.galleryImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/press/', name + '.jpg');
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 6;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+
+  });
+});
+
+
+
+
+
+
+
 router.get("/login", (req, res) => {
   req.session.menuId = 1;
   res.render("admin/login");

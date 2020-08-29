@@ -23,7 +23,9 @@ router.get("/composers",  (req,res)=>{
     res.render("about/composers.hbs",{names});
 });
 router.get("/press", (req,res)=>{
-    res.render('about/press.hbs');
+    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
+    res.render('about/press.hbs', {names});
 });
+
 
 module.exports = router;
