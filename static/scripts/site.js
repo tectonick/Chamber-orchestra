@@ -1,7 +1,7 @@
 
       window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
-        event.preventDefault();
+        //event.preventDefault();
         document.getElementById('page-container').style.opacity=0;
       
       
