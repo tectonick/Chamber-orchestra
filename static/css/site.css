@@ -224,12 +224,12 @@ footer img {
 
 
 
-.concert-day{
-    position: absolute;
-    top:-3.9vw;
-    right: -1.3vw;
-    font-size:5.5vw;
-    color:#AAAAAA;
+ .concert-day{
+  position: absolute;
+  top:-4.5vw;
+  right: -1.3vw;
+  font-size:5.5vw;
+  color:#AAAAAA;
 }
 
 .concert-place{
