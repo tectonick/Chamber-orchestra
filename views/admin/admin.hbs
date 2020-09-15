@@ -5,6 +5,13 @@
                 <div class="bg-light border-right sidebar-wrapper">
                     <div class="sidebar-heading">Кабинет администратора</div>
                     <div class="list-group list-group-flush">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">&#8981;</span>
+                            </div>
+                            <input type="text" id="search-input" class="form-control" placeholder="Поиск" aria-label="search"
+                                aria-describedby="basic-addon1">
+                        </div>
                         <a href="#" id="1" onclick="$('.edit-container').load('/admin/concerts');" class="list-group-item list-group-item-action bg-light">Афиши</a>
                         <a href="#" id="2" onclick="$('.edit-container').load('/admin/news');" class="list-group-item list-group-item-action bg-light">Новости</a>
                         <a href="#" id="3" onclick="$('.edit-container').load('/admin/gallery');" class="list-group-item list-group-item-action bg-light">Галерея</a>
@@ -28,5 +35,21 @@ $(document).ready(function(){
     var id={{id}}+'';
     $(`#${id}`).trigger("click");
 });
+document.getElementById("search-input").addEventListener("input",function(){
+    var searchables=document.querySelectorAll('.searchable');
+    if (this.value===""){
+        searchables.forEach((element)=>{element.style.display=(element.classList.contains("card"))?"inline-block":"block";})
+    } else{
+         searchables.forEach((element)=>{
+             
+             if (element.innerHTML.includes(this.value)){
+                 element.style.display=(element.classList.contains("card"))?"inline-block":"block";
+             } else{
+                 element.style.display="none";
+             }             
+        });
+    }
+})
+
 
 </script>
