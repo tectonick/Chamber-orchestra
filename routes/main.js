@@ -27,7 +27,7 @@ router.get("/events", (req, res) => {
 });
 
 router.get("/archive", (req, res) => {
-    db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date<NOW() ORDER BY date DESC",
+    db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
         function (err, results) {
             if (err) console.log(err);
             var months = viewhelpers.OrganizeConcertsInMonths(results);

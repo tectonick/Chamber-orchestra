@@ -27,7 +27,7 @@ router.use(function (req, res, next) {
 });
 
 router.get("/concerts", (req, res) => {
-  db.query("SELECT * FROM concerts ORDER BY date DESC",
+  db.query("SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC",
     function (err, results) {
       if (err) console.log(err);
       var events = results;
@@ -41,7 +41,6 @@ router.get("/concerts", (req, res) => {
 
 });
 
-
 router.post("/concerts/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
     function (err, results) {
@@ -53,9 +52,8 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
     });
 });
 
-
 router.post("/concerts/add", urlencodedParser, (req, res) => {
-  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','2999-01-01 00:00','Описание', 'Зал','',0)`,
+  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','1970-01-01 00:00:00','Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
       let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
@@ -64,10 +62,8 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
         req.session.menuId = 1;
         res.redirect("/admin/");
       });
-
     });
 });
-
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
@@ -115,6 +111,102 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
   });
 
 });
+
+
+
+
+router.get("/archive", (req, res) => {
+  db.query("SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
+    function (err, results) {
+      if (err) console.log(err);
+      var events = results;
+      events.forEach(element => {
+        // JS interprets db date as local and converts to UTC 
+        var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
+        element.date = new Date(date).toISOString().slice(0, 19);
+      });
+      res.render("admin/archive.hbs", { events, layout: false });
+    });
+
+});
+
+router.post("/archive/delete", urlencodedParser, (req, res) => {
+  db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
+    function (err, results) {
+      if (err) console.log(err);
+
+      let imgToDel = path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg");
+      fs.unlinkSync(imgToDel);
+      res.render('admin/admin', { id: 7 });
+    });
+});
+
+router.post("/archive/add", urlencodedParser, (req, res) => {
+  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
+    function (err, results) {
+      if (err) console.log(err);
+      let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
+      let dest = path.join(__dirname, '..', '/static/img/posters/', results.insertId + ".jpg");
+      fs.copyFile(src, dest, () => {
+        req.session.menuId = 7;
+        res.redirect("/admin/");
+      });
+    });
+});
+
+router.post("/archive/edit", urlencodedParser, (req, res) => {
+  var date = req.body.date.slice(0, 19).replace('T', ' ');
+  let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
+  db.query(`UPDATE concerts SET title = '${req.body.title}', \
+    date = '${date}', place = '${req.body.place}',\
+    hidden = '${hidden}', ticket = '${req.body.ticket}',\
+    description = '${req.body.description}' WHERE ${req.body.id}=id;`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      } else {
+        res.sendStatus(200);
+      }
+
+    });
+});
+
+router.post("/archive/posterupload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
+  }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.posterImage(tmpfile).then(() => {
+      let name = path.basename(tmpfile, path.extname(tmpfile));
+      let dir = path.dirname(tmpfile);
+      let src = path.join(dir,  name+ '.jpg');
+      let dst=path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg")
+      fs.copyFileSync(src, dst);
+      fs.unlinkSync(src);
+      if (tmpfile!=src){
+        fs.unlinkSync(tmpfile);
+      }
+      if (err) return res.status(500).send(err);
+      req.session.menuId = 7;
+      res.redirect('/admin/'); 
+
+    })  .catch(err => {
+      console.error(err);
+    });;
+  });
+
+});
+
+
+
+
+
+
+
+
 router.get("/news", (req, res) => {
   db.query("SELECT * FROM news ORDER BY date DESC",
     function (err, results) {
