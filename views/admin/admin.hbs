@@ -41,8 +41,8 @@ document.getElementById("search-input").addEventListener("input",function(){
         searchables.forEach((element)=>{element.style.display=(element.classList.contains("card"))?"inline-block":"block";})
     } else{
          searchables.forEach((element)=>{
-             
-             if (element.innerHTML.includes(this.value)){
+            var regex = new RegExp( this.value, 'i' );
+             if (element.innerHTML.match(regex)){
                  element.style.display=(element.classList.contains("card"))?"inline-block":"block";
              } else{
                  element.style.display="none";
