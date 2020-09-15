@@ -8,38 +8,42 @@ const router = express.Router();
 
 
 router.get("/", (req, res) => {
-  
+    var title =res.__('title');
       db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date LIMIT 6",
           function (err, results) {
               if (err) console.log(err);
               var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
-              res.render("index.hbs", { triplets });
+              res.render("index.hbs", { triplets, title });
           });
   });
 
 router.get("/events", (req, res) => {
+    var title =res.__('layout.navbar.events')+' | '+res.__('title');
     db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date",
         function (err, results) {
             if (err) console.log(err);
             var months = viewhelpers.OrganizeConcertsInMonths(results, req.getLocale());
-            res.render("events.hbs", { months });
+            res.render("events.hbs", { months, title });
         });
 });
 
 router.get("/archive", (req, res) => {
+    var title =res.__('layout.navbar.archive')+' | '+res.__('title');
     db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
         function (err, results) {
             if (err) console.log(err);
             var months = viewhelpers.OrganizeConcertsInMonths(results);
-            res.render("archive.hbs", { months });
+            res.render("archive.hbs", { months, title });
         });
 });
 
 router.get("/contacts", (req, res) => {
-    res.render('contacts.hbs');
+    var title =res.__('layout.navbar.contacts')+' | '+res.__('title');
+    res.render('contacts.hbs', {title});
 });
 router.get("/partners", (req, res) => {
-    res.render('partners.hbs');
+    var title =res.__('layout.navbar.partners')+' | '+res.__('title');
+    res.render('partners.hbs', {title});
 });
 
 

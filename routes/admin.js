@@ -461,13 +461,15 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
 
 
 router.get("/login", (req, res) => {
+  var title ='Login'+' | '+res.__('title');
   req.session.menuId = 1;
-  res.render("admin/login");
+  res.render("admin/login", {title});
 });
 
 router.get('/', function (req, res) {
+  var title ='Admin'+' | '+res.__('title');
   let id = req.session.menuId;
-  res.render("admin/admin", { id });
+  res.render("admin/admin", { id, title });
 
 });
 
