@@ -48,8 +48,8 @@ function galleryImage(filepath){
       let ext=path.extname(filepath);
       let name=path.basename(filepath,ext);
       let dir=path.dirname(filepath);
-      return file.resize(450, Jimp.AUTO) // resize
-        .quality(70) // set JPEG quality
+      return file.resize(500, Jimp.AUTO) // resize
+        .quality(80) // set JPEG quality
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
     .catch(err => {

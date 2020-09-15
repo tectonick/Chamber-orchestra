@@ -270,7 +270,7 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(() => {
+    imageProcessor.posterImage(tmpfile).then(() => {
       let name = path.basename(tmpfile, path.extname(tmpfile));
       let dir = path.dirname(tmpfile);
       let src = path.join(dir,  name+ '.jpg');
