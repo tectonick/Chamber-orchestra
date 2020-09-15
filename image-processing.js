@@ -11,7 +11,7 @@ function smallImage(filepath){
     let ext=path.extname(filepath);
     let name=path.basename(filepath,ext);
     let dir=path.dirname(filepath);
-    return file.resize(800, Jimp.AUTO) // resize
+    return file.resize(400, Jimp.AUTO) // resize
       .quality(70) // set JPEG quality
       .writeAsync(path.join(dir,name+'.jpg')); //
   })
@@ -29,7 +29,7 @@ function galleryImage(filepath){
       let name=path.basename(filepath,ext);
       let dir=path.dirname(filepath);
       return file.resize(1600, Jimp.AUTO) // resize
-        .quality(90) // set JPEG quality
+        .quality(70) // set JPEG quality
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
     .catch(err => {
@@ -38,6 +38,9 @@ function galleryImage(filepath){
   
   }
 
+  
+
+
   function posterImage(filepath){
 
     return Jimp.read(filepath)
@@ -45,7 +48,7 @@ function galleryImage(filepath){
       let ext=path.extname(filepath);
       let name=path.basename(filepath,ext);
       let dir=path.dirname(filepath);
-      return file.resize(1000, Jimp.AUTO) // resize
+      return file.resize(450, Jimp.AUTO) // resize
         .quality(70) // set JPEG quality
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
