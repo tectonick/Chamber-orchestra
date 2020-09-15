@@ -23,6 +23,8 @@ function scrollFunction() {
     if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
       document.getElementById("logo").style.width = "100px";
     } else {
+      $(document.body).trigger("sticky_kit:recalc");
+  
       document.getElementById("logo").style.width = "180px";
     }    
   }
