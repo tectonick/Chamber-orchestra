@@ -347,8 +347,9 @@ pre {
   background-color: #fff;
   border-radius: 4px;
   border: none;
-  -webkit-transition: 0.15s ease-in-out;
+ 
   transition: 0.15s ease-in-out;
+  -webkit-transition: 0s;
 
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.06);
 }
