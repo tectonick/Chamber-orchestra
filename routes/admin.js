@@ -7,12 +7,16 @@ const db = require("../db");
 const fs = require('fs').promises;
 const path = require('path');
 const imageProcessor = require("../image-processing");
+const bcrypt = require('bcrypt');
 
 const admin = {
   user: "root",
-  password: "devpassword123"
+  passhash: "$2b$12$8/U31eNNYwPxhTMdcC4ogeIttkJNHUUreKGUEuZHFoPD.TT.e//9u"
 }
 var sessionId = 'none';
+
+//look new password hash with this command
+//console.log(bcrypt.hashSync("your_new_password", 12));
 
 const PageIDs = {
   concerts:1,
@@ -101,14 +105,14 @@ router.get('/', function (req, res) {
   res.render("admin/admin", { id, title, PageIDs });
 });
 
-router.get("/login", (req, res) => {
+router.get("/login", (req, res) => {  
   var title ='Login'+' | '+res.__('title');
   req.session.menuId = PageIDs.concerts;
   res.render("admin/login", {title});
 });
 
 router.post("/login", urlencodedParser, (req, res) => {
-  if ((req.body.username === admin.user) && (req.body.password === admin.password)) {
+  if ((req.body.username === admin.user) && (bcrypt.compareSync(req.body.password, admin.passhash))) {
     sessionId = uuidV4();
     res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 10000 });
     res.redirect("/admin");
