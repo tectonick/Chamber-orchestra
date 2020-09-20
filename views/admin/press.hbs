@@ -2,7 +2,7 @@
 
     <div class="ml-auto my-3" >
         <form action="/admin/press/upload" method="post" enctype="multipart/form-data">
-            <input class='form-control' type="file" name="fileToUpload" id="fileToUpload">
+            <input class='form-control' type="file" name="files" id="files" multiple>
             <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
         </form>
 
@@ -34,7 +34,7 @@ $(document).ready(function(){
     $.post("/admin/press/delete", {filename:$(this).attr('id')});
   });
 
-  $("#fileToUpload").change(function(){
+  $("#files").change(function(){
       if ($(this).val().length>0){
             $(this).siblings('.form-control').prop('disabled', false);
 

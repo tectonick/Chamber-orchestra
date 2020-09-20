@@ -57,12 +57,21 @@ async function SaveTmpPoster(tmpfile, dstFolder, newId, thumbnailFolder){
   })
   .then(()=>{ return fs.unlink(src);})
   .then(()=>{
-    console.log(src);
-    console.log(tmpfile);
     if (tmpfile!=src){
       return fs.unlink(tmpfile);
     }
   });
+}
+
+
+function FilesToArray(files){
+  var filesArray=[];
+  if (!Array.isArray(files.files)) {
+    filesArray.push(files.files);
+  } else {
+    filesArray = files.files;
+  } 
+  return filesArray;
 }
 
 //Middleware
@@ -287,22 +296,25 @@ router.post("/artists/delete", urlencodedParser, (req, res) => {
   fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
 });
 
+
+
+
 //'/static/img/about/artists/'
 router.post("/artists/upload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(()=>{
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      return SaveTmpPoster(tmpfile, '/static/img/about/artists/', name);
-    }).then(()=>{      
-      req.session.menuId = 4;
-      res.redirect('/admin/'); 
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.smallImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/about/artists/', name);
+      });
     });
-  });
+  });    
+  req.session.menuId = 4;
+  res.redirect('/admin/');
 });
 
 router.get("/composers", (req, res) => {
@@ -315,20 +327,21 @@ router.post("/composers/delete", urlencodedParser, (req, res) => {
 });
 
 router.post("/composers/upload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(()=>{
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      return SaveTmpPoster(tmpfile, '/static/img/about/composers/', name);
-    }).then(()=>{      
-      req.session.menuId = 5;
-      res.redirect('/admin/'); 
+
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.smallImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/about/composers/', name);
+      });
     });
-  });
+  });    
+  req.session.menuId = 5;
+  res.redirect('/admin/');
 });
 
 
@@ -343,21 +356,23 @@ router.post("/gallery/delete", urlencodedParser, (req, res) => {
 });
 
 router.post("/gallery/upload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
 
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.galleryImage(tmpfile).then(()=>{
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
-    }).then(()=>{      
-      req.session.menuId = 3;
-      res.redirect('/admin/'); 
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.galleryImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
+      }).then(()=>{      
+        req.session.menuId = 3;
+        res.redirect('/admin/'); 
+      });
     });
-  });
+  });    
+  req.session.menuId = 3;
+  res.redirect('/admin/');
 });
 
 
@@ -374,20 +389,23 @@ router.post("/press/delete", urlencodedParser, (req, res) => {
 
 
 router.post("/press/upload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.galleryImage(tmpfile).then(()=>{
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      return SaveTmpPoster(tmpfile, '/static/img/press/', name, '/static/thumbnails/img/press/');
-    }).then(()=>{      
-      req.session.menuId = 6;
-      res.redirect('/admin/'); 
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.galleryImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/press/', name, '/static/thumbnails/img/press/');
+      }).then(()=>{      
+        req.session.menuId = 3;
+        res.redirect('/admin/'); 
+      });
     });
-  });
+  });    
+  req.session.menuId = 6;
+  res.redirect('/admin/');
 });
 
 
