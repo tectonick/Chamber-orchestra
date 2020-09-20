@@ -41,5 +41,7 @@
 	"musicians.bass": "Double bass",
 	"musicians.keyboards": "Keyboards",
 	"composers.title": "Composers",
-	"artists.title": "Guest artists"
+	"artists.title": "Guest artists",
+	"layout.navbar.disks": "Discography",
+	"disks.title": "Discography"
 }

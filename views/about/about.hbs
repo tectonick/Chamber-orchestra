@@ -34,11 +34,7 @@ function getCookie(name) {
 
     $(document).ready(function () {
         let lang=getCookie('locale');
-        if (lang==='en'){
-            $("#text-container").load("/html/history_en.html");
-        } else {
-            $("#text-container").load("/html/history_ru.html");
-        }        
+        $("#text-container").load(`/html/history_${lang}.html`);         
     });
 
 </script>

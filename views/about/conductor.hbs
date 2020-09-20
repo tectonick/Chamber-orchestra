@@ -29,11 +29,7 @@ function getCookie(name) {
 
     $(document).ready(function () {
         let lang=getCookie('locale');
-        if (lang==='en'){
-            $("#text-container").load("/html/conductor_en.html");
-        } else {
-            $("#text-container").load("/html/conductor_ru.html");
-        }        
+        $("#text-container").load(`/html/conductor_${lang}.html`); 
     });
 
 </script>

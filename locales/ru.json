@@ -41,5 +41,7 @@
 	"musicians.bass": "Контрабас",
 	"musicians.keyboards": "Клавишные",
 	"composers.title": "Композиторы",
-	"artists.title": "Приглашенные артисты"
+	"artists.title": "Приглашенные артисты",
+	"layout.navbar.disks": "Дискография",
+	"disks.title": "Дискография"
 }

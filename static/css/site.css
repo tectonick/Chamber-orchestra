@@ -286,10 +286,17 @@ pre {
     .card-columns {
       column-count: 2;
     }
+    .disks .card-columns {
+      column-count: 1;
+    }
+
   }
   @media (min-width: 768px) {
     .card-columns {
       column-count: 3;
+    }
+    .disks .card-columns {
+      column-count: 2;
     }
   }
   
@@ -297,15 +304,21 @@ pre {
     .card-columns {
       column-count: 4;
     }
+    .disks .card-columns {
+      column-count: 3;
+    }
   }
   
   @media (min-width: 1200px) {
     .card-columns {
       column-count: 5;
     }
+    .disks .card-columns {
+      column-count: 4;
+    }
 }
 
-.artists{
+.artists, .disks{
     margin:5px 40px;
 }
 

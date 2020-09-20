@@ -4,6 +4,8 @@ const viewhelpers = require("../viewhelpers");
 
 
 
+
+
 router.get("/photos",  (req,res)=>{
     var title =res.__('layout.navbar.photos')+' | '+res.__('title');
     var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
@@ -13,6 +15,13 @@ router.get("/videos", (req,res)=>{
     var title =res.__('layout.navbar.videos')+' | '+res.__('title');
     res.render('media/videos.hbs', {title});
 });
+router.get("/disks", (req,res)=>{
+    var title =res.__('layout.navbar.disks')+' | '+res.__('title');
+    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/disks");
+    res.render('media/disks.hbs', {names, title});
+});
+
+
 
 
 

@@ -25,7 +25,8 @@ const PageIDs = {
   artists:4,
   composers:5,
   press:6,
-  archive:7
+  archive:7,
+  disks:8
 }
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -438,6 +439,35 @@ router.post("/archive/posterupload", urlencodedParser, (req, res) => {
       res.redirect('/admin/');
     });
   });
+});
+
+
+
+router.get("/disks", (req, res) => {
+  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/disks");
+  res.render('admin/disks.hbs', { names, layout: false });
+});
+
+router.post("/disks/delete", urlencodedParser, (req, res) => {
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
+});
+
+
+router.post("/disks/upload", urlencodedParser, (req, res) => {
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.smallImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/disks/', name);
+      });
+    });
+  });    
+  req.session.menuId = PageIDs.disks;
+  res.redirect('/admin/');
 });
 
 
