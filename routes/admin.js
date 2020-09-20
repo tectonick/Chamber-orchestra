@@ -4,10 +4,9 @@ const bodyParser = require("body-parser");
 const uuidV4 = require("uuid.v4");
 const viewhelpers = require("../viewhelpers");
 const db = require("../db");
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const imageProcessor = require("../image-processing");
-
 
 const admin = {
   user: "root",
@@ -15,8 +14,58 @@ const admin = {
 }
 var sessionId = 'none';
 
-
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+//Helpers
+
+async function DeletePoster(nameId){
+  let imgToDel = path.join(__dirname, '..', '/static/img/posters/', nameId + ".jpg");
+  return fs.unlink(imgToDel);  
+}
+async function DeleteNewsPoster(nameId){
+  let imgToDel = path.join(__dirname, '..', '/static/img/news/', nameId + ".jpg");
+  return fs.unlink(imgToDel); 
+}
+function DateToISOLocal(date){
+  // JS interprets db date as local and converts to UTC
+  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
+  return new Date(localDate).toISOString().slice(0, 19);  
+}
+
+async function MakeDefaultPoster(newId){  
+  let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
+  let dest = path.join(__dirname, '..', '/static/img/posters/', newId  + ".jpg");
+  return fs.copyFile(src, dest);  
+}
+
+async function SaveTmpPoster(tmpfile, dstFolder, newId, thumbnailFolder){
+  let name = path.basename(tmpfile, path.extname(tmpfile));
+  let dir = path.dirname(tmpfile);
+  let src = path.join(dir,  name+ '.jpg');
+  let dst=path.join(__dirname,'../',dstFolder, newId + ".jpg");
+  var dstThumbnail;
+  if (thumbnailFolder){
+    var dstThumbnail=path.join(__dirname,'../',thumbnailFolder, name + '.jpg');
+  }
+
+  return fs.copyFile(src, dst)
+  .then(()=>{
+    if (thumbnailFolder){return fs.copyFile(src, dstThumbnail)}
+  })
+  .then(()=>{
+    if (thumbnailFolder){return imageProcessor.smallImage(dstThumbnail)}    
+  })
+  .then(()=>{ return fs.unlink(src);})
+  .then(()=>{
+    console.log(src);
+    console.log(tmpfile);
+    if (tmpfile!=src){
+      return fs.unlink(tmpfile);
+    }
+  });
+}
+
+//Middleware
 
 router.use(function (req, res, next) {
   if ((req.cookies.id === sessionId) || (req.path == "/login") || (req.path == "/logout")) {
@@ -26,15 +75,14 @@ router.use(function (req, res, next) {
   }
 });
 
+//Routes
+
 router.get("/concerts", (req, res) => {
   db.query("SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC",
-    function (err, results) {
+    function (err, events) {
       if (err) console.log(err);
-      var events = results;
-      events.forEach(element => {
-        // JS interprets db date as local and converts to UTC 
-        var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString().slice(0, 19);
+      events.forEach(element => {         
+        element.date=DateToISOLocal(element.date);
       });
       res.render("admin/concerts.hbs", { events, layout: false });
     });
@@ -45,20 +93,18 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-
-      let imgToDel = path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg");
-      fs.unlinkSync(imgToDel);
-      res.render('admin/admin', { id: 1 });
+      DeletePoster(req.body.id).then(()=>{
+        res.render('admin/admin', { id: 1 });
+      });      
     });
 });
+
 
 router.post("/concerts/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','1970-01-01 00:00:00','Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/posters/', results.insertId + ".jpg");
-      fs.copyFile(src, dest, () => {
+      MakeDefaultPoster(results.insertId).then(function(){
         req.session.menuId = 1;
         res.redirect("/admin/");
       });
@@ -79,7 +125,6 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
       } else {
         res.sendStatus(200);
       }
-
     });
 });
 
@@ -90,40 +135,22 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(() => {
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg")
-      fs.copyFileSync(src, dst);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      if (err) return res.status(500).send(err);
+    imageProcessor.posterImage(tmpfile).then(()=>{
+      return SaveTmpPoster(tmpfile,'/static/img/posters/', req.body.id);
+    }).then(()=>{      
       req.session.menuId = 1;
       res.redirect('/admin/'); 
-
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+    });
   });
-
 });
-
-
 
 
 router.get("/archive", (req, res) => {
   db.query("SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
-    function (err, results) {
+    function (err, events) {
       if (err) console.log(err);
-      var events = results;
       events.forEach(element => {
-        // JS interprets db date as local and converts to UTC 
-        var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString().slice(0, 19);
+        element.date=DateToISOLocal(element.date);
       });
       res.render("admin/archive.hbs", { events, layout: false });
     });
@@ -134,10 +161,9 @@ router.post("/archive/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-
-      let imgToDel = path.join(__dirname, '..', '/static/img/posters/', req.body.id + ".jpg");
-      fs.unlinkSync(imgToDel);
-      res.render('admin/admin', { id: 7 });
+      DeletePoster(req.body.id).then(()=>{
+        res.render('admin/admin', { id: 7 });
+      });
     });
 });
 
@@ -145,12 +171,10 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/posters/', results.insertId + ".jpg");
-      fs.copyFile(src, dest, () => {
+      MakeDefaultPoster(results.insertId).then(()=>{
         req.session.menuId = 7;
         res.redirect("/admin/");
-      });
+      })
     });
 });
 
@@ -168,7 +192,6 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
       } else {
         res.sendStatus(200);
       }
-
     });
 });
 
@@ -180,42 +203,20 @@ router.post("/archive/posterupload", urlencodedParser, (req, res) => {
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
     imageProcessor.posterImage(tmpfile).then(() => {
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/posters/', req.body.id + ".jpg")
-      fs.copyFileSync(src, dst);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      if (err) return res.status(500).send(err);
+      return SaveTmpPoster(tmpfile, '/static/img/posters/',  req.body.id);
+    }).then(() => {
       req.session.menuId = 7;
-      res.redirect('/admin/'); 
-
-    })  .catch(err => {
-      console.error(err);
-    });;
+      res.redirect('/admin/');
+    });
   });
-
 });
-
-
-
-
-
-
-
 
 router.get("/news", (req, res) => {
   db.query("SELECT * FROM news ORDER BY date DESC",
-    function (err, results) {
+    function (err, events) {
       if (err) console.log(err);
-      var events = results;
       events.forEach(element => {
-        // JS interprets db date as local and converts to UTC 
-        var date = element.date - element.date.getTimezoneOffset() * 60 * 1000;
-        element.date = new Date(date).toISOString().slice(0, 19);
+        element.date=DateToISOLocal(element.date);
       });
       res.render('admin/news.hbs', { events, layout: false });
     });
@@ -226,10 +227,10 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM news WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-
-      let imgToDel = path.join(__dirname, '..', '/static/img/news/', req.body.id + ".jpg");
-      fs.unlinkSync(imgToDel);
-      res.render('admin/admin', { id: 2 });
+      DeleteNewsPoster(req.body.id).then(()=>{
+        res.render('admin/admin', { id: 2 });
+      });
+      
     });
 });
 
@@ -239,11 +240,10 @@ router.post("/news/add", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       let src = path.join(__dirname, '..', '/static/img/news/', "placeholder.jpg");
       let dest = path.join(__dirname, '..', '/static/img/news/', results.insertId + ".jpg");
-      fs.copyFile(src, dest, () => {
+      fs.copyFile(src, dest).then( () => {
         req.session.menuId = 2;
         res.redirect("/admin/");
       });
-
     });
 });
 
@@ -259,7 +259,6 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
       } else {
         res.sendStatus(200);
       }
-
     });
 });
 
@@ -270,28 +269,14 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(() => {
-      let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/news/', req.body.id + ".jpg")
-      fs.copyFileSync(src, dst);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      if (err) return res.status(500).send(err);
+    imageProcessor.posterImage(tmpfile).then(()=>{
+      return SaveTmpPoster(tmpfile, '/static/img/news/', req.body.id);
+    }).then(()=>{      
       req.session.menuId = 2;
       res.redirect('/admin/'); 
-
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+    });
   });
-
 });
-
 
 router.get("/artists", (req, res) => {
   var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
@@ -299,7 +284,7 @@ router.get("/artists", (req, res) => {
 });
 
 router.post("/artists/delete", urlencodedParser, (req, res) => {
-  fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
 });
 
 //'/static/img/about/artists/'
@@ -310,28 +295,15 @@ router.post("/artists/upload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(() => {
+    imageProcessor.smallImage(tmpfile).then(()=>{
       let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/about/artists/', name + '.jpg');
-      fs.copyFileSync(src, dst);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      if (err) return res.status(500).send(err);
+      return SaveTmpPoster(tmpfile, '/static/img/about/artists/', name);
+    }).then(()=>{      
       req.session.menuId = 4;
       res.redirect('/admin/'); 
-
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+    });
   });
-
 });
-
 
 router.get("/composers", (req, res) => {
   var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
@@ -339,7 +311,7 @@ router.get("/composers", (req, res) => {
 });
 
 router.post("/composers/delete", urlencodedParser, (req, res) => {
-  fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
 });
 
 router.post("/composers/upload", urlencodedParser, (req, res) => {
@@ -349,24 +321,13 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(() => {
+    imageProcessor.smallImage(tmpfile).then(()=>{
       let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/about/composers/', name + '.jpg');
-      fs.copyFileSync(src, dst);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      if (err) return res.status(500).send(err);
+      return SaveTmpPoster(tmpfile, '/static/img/about/composers/', name);
+    }).then(()=>{      
       req.session.menuId = 5;
       res.redirect('/admin/'); 
-
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+    });
   });
 });
 
@@ -377,8 +338,8 @@ router.get("/gallery", (req, res) => {
 });
 
 router.post("/gallery/delete", urlencodedParser, (req, res) => {
-  fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
-  fs.unlinkSync(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
 });
 
 router.post("/gallery/upload", urlencodedParser, (req, res) => {
@@ -389,36 +350,15 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
 
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.galleryImage(tmpfile).then(() => {
+    imageProcessor.galleryImage(tmpfile).then(()=>{
       let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/gallery/', name + '.jpg');
-      let dstThumbnail=path.join(__dirname,'../','/static/thumbnails/img/gallery/', name + '.jpg');
-      fs.copyFileSync(src, dst);
-      fs.copyFileSync(src, dstThumbnail);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      imageProcessor.smallImage(dstThumbnail).then(()=>{
-        if (err) return res.status(500).send(err);
-        req.session.menuId = 3;
-        res.redirect('/admin/'); 
-      });
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+      return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
+    }).then(()=>{      
+      req.session.menuId = 3;
+      res.redirect('/admin/'); 
+    });
   });
 });
-
-
-
-
-
-
-
 
 
 
@@ -428,9 +368,10 @@ router.get("/press", (req, res) => {
 });
 
 router.post("/press/delete", urlencodedParser, (req, res) => {
-  fs.unlinkSync(path.join(__dirname, '../', '/static/', req.body.filename));
-  fs.unlinkSync(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
 });
+
 
 router.post("/press/upload", urlencodedParser, (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -439,36 +380,15 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
   let fileToUpload = req.files.fileToUpload;
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.galleryImage(tmpfile).then(() => {
+    imageProcessor.galleryImage(tmpfile).then(()=>{
       let name = path.basename(tmpfile, path.extname(tmpfile));
-      let dir = path.dirname(tmpfile);
-      let src = path.join(dir,  name+ '.jpg');
-      let dst=path.join(__dirname,'../','/static/img/press/', name + '.jpg');
-      let dstThumbnail=path.join(__dirname,'../','/static/thumbnails/img/press/', name + '.jpg');
-      
-      fs.copyFileSync(src, dst);
-      fs.copyFileSync(src, dstThumbnail);
-      fs.unlinkSync(src);
-      if (tmpfile!=src){
-        fs.unlinkSync(tmpfile);
-      }
-      imageProcessor.smallImage(dstThumbnail).then(()=>{
-        if (err) return res.status(500).send(err);
-        req.session.menuId = 6;
-        res.redirect('/admin/'); 
-      });
-
-
-    })  .catch(err => {
-      console.error(err);
-    });;
-
+      return SaveTmpPoster(tmpfile, '/static/img/press/', name, '/static/thumbnails/img/press/');
+    }).then(()=>{      
+      req.session.menuId = 6;
+      res.redirect('/admin/'); 
+    });
   });
 });
-
-
-
-
 
 
 
