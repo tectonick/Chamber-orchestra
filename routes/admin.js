@@ -95,6 +95,32 @@ router.use(function (req, res, next) {
 });
 
 //Routes
+router.get('/', function (req, res) {
+  var title ='Admin'+' | '+res.__('title');
+  let id = req.session.menuId;
+  res.render("admin/admin", { id, title, PageIDs });
+});
+
+router.get("/login", (req, res) => {
+  var title ='Login'+' | '+res.__('title');
+  req.session.menuId = PageIDs.concerts;
+  res.render("admin/login", {title});
+});
+
+router.post("/login", urlencodedParser, (req, res) => {
+  if ((req.body.username === admin.user) && (req.body.password === admin.password)) {
+    sessionId = uuidV4();
+    res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 10000 });
+    res.redirect("/admin");
+  } else {
+    res.redirect("/admin/login");
+  }
+});
+
+router.get('/logout', function (req, res) {
+  res.clearCookie('id');
+  res.redirect("/");
+});
 
 router.get("/concerts", (req, res) => {
   db.query("SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC",
@@ -159,73 +185,6 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
     }).then(()=>{      
       req.session.menuId = PageIDs.concerts;
       res.redirect('/admin/'); 
-    });
-  });
-});
-
-
-router.get("/archive", (req, res) => {
-  db.query("SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
-    function (err, events) {
-      if (err) console.log(err);
-      events.forEach(element => {
-        element.date=DateToISOLocal(element.date);
-      });
-      res.render("admin/archive.hbs", { events, layout: false });
-    });
-
-});
-
-router.post("/archive/delete", urlencodedParser, (req, res) => {
-  db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
-    function (err, results) {
-      if (err) console.log(err);
-      DeletePoster(req.body.id).then(()=>{
-        res.render('admin/admin', { id: PageIDs.archive });
-      });
-    });
-});
-
-router.post("/archive/add", urlencodedParser, (req, res) => {
-  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
-    function (err, results) {
-      if (err) console.log(err);
-      MakeDefaultPoster(results.insertId).then(()=>{
-        req.session.menuId = PageIDs.archive;
-        res.redirect("/admin/");
-      })
-    });
-});
-
-router.post("/archive/edit", urlencodedParser, (req, res) => {
-  var date = req.body.date.slice(0, 19).replace('T', ' ');
-  let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
-  db.query(`UPDATE concerts SET title = '${req.body.title}', \
-    date = '${date}', place = '${req.body.place}',\
-    hidden = '${hidden}', ticket = '${req.body.ticket}',\
-    description = '${req.body.description}' WHERE ${req.body.id}=id;`,
-    function (err, results) {
-      if (err) {
-        console.log(err);
-        res.sendStatus(400);
-      } else {
-        res.sendStatus(200);
-      }
-    });
-});
-
-router.post("/archive/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(() => {
-      return SaveTmpPoster(tmpfile, '/static/img/posters/',  req.body.id);
-    }).then(() => {
-      req.session.menuId = PageIDs.archive;
-      res.redirect('/admin/');
     });
   });
 });
@@ -297,6 +256,35 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
   });
 });
 
+
+router.get("/gallery", (req, res) => {
+  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
+  res.render('admin/gallery.hbs', { names, layout: false });
+});
+
+router.post("/gallery/delete", urlencodedParser, (req, res) => {
+  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
+  fs.unlink(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
+});
+
+router.post("/gallery/upload", urlencodedParser, (req, res) => {
+  if (!req.files) {return res.status(400);}
+  var files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+    fileToUpload.mv(tmpfile, function (err) {
+      imageProcessor.galleryImage(tmpfile).then(()=>{
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
+      });
+    });
+  });    
+  req.session.menuId = PageIDs.gallery;
+  res.redirect('/admin/');
+});
+
+
 router.get("/artists", (req, res) => {
   var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
   res.render('admin/artists.hbs', { names, layout: false });
@@ -305,8 +293,6 @@ router.get("/artists", (req, res) => {
 router.post("/artists/delete", urlencodedParser, (req, res) => {
   fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
 });
-
-
 
 
 //'/static/img/about/artists/'
@@ -355,35 +341,6 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
 });
 
 
-router.get("/gallery", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
-  res.render('admin/gallery.hbs', { names, layout: false });
-});
-
-router.post("/gallery/delete", urlencodedParser, (req, res) => {
-  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
-  fs.unlink(path.join(__dirname, '../', '/static/thumbnails/', req.body.filename));
-});
-
-router.post("/gallery/upload", urlencodedParser, (req, res) => {
-  if (!req.files) {return res.status(400);}
-  var files = FilesToArray(req.files);
-
-  files.forEach((fileToUpload) => {
-    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-    fileToUpload.mv(tmpfile, function (err) {
-      imageProcessor.galleryImage(tmpfile).then(()=>{
-        let name = path.basename(tmpfile, path.extname(tmpfile));
-        return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
-      });
-    });
-  });    
-  req.session.menuId = PageIDs.gallery;
-  res.redirect('/admin/');
-});
-
-
-
 router.get("/press", (req, res) => {
   var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
   res.render('admin/press.hbs', { names, layout: false });
@@ -413,35 +370,72 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
 });
 
 
-
-router.get("/login", (req, res) => {
-  var title ='Login'+' | '+res.__('title');
-  req.session.menuId = PageIDs.concerts;
-  res.render("admin/login", {title});
-});
-
-router.get('/', function (req, res) {
-  var title ='Admin'+' | '+res.__('title');
-  let id = req.session.menuId;
-  res.render("admin/admin", { id, title });
+router.get("/archive", (req, res) => {
+  db.query("SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
+    function (err, events) {
+      if (err) console.log(err);
+      events.forEach(element => {
+        element.date=DateToISOLocal(element.date);
+      });
+      res.render("admin/archive.hbs", { events, layout: false });
+    });
 
 });
 
-router.post("/login", urlencodedParser, (req, res) => {
+router.post("/archive/delete", urlencodedParser, (req, res) => {
+  db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
+    function (err, results) {
+      if (err) console.log(err);
+      DeletePoster(req.body.id).then(()=>{
+        res.render('admin/admin', { id: PageIDs.archive });
+      });
+    });
+});
 
-  if ((req.body.username === admin.user) && (req.body.password === admin.password)) {
-    sessionId = uuidV4();
-    res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 10000 });
-    res.redirect("/admin");
-  } else {
-    res.redirect("/admin/login");
+router.post("/archive/add", urlencodedParser, (req, res) => {
+  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
+    function (err, results) {
+      if (err) console.log(err);
+      MakeDefaultPoster(results.insertId).then(()=>{
+        req.session.menuId = PageIDs.archive;
+        res.redirect("/admin/");
+      })
+    });
+});
+
+router.post("/archive/edit", urlencodedParser, (req, res) => {
+  var date = req.body.date.slice(0, 19).replace('T', ' ');
+  let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
+  db.query(`UPDATE concerts SET title = '${req.body.title}', \
+    date = '${date}', place = '${req.body.place}',\
+    hidden = '${hidden}', ticket = '${req.body.ticket}',\
+    description = '${req.body.description}' WHERE ${req.body.id}=id;`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      } else {
+        res.sendStatus(200);
+      }
+    });
+});
+
+router.post("/archive/posterupload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
   }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.posterImage(tmpfile).then(() => {
+      return SaveTmpPoster(tmpfile, '/static/img/posters/',  req.body.id);
+    }).then(() => {
+      req.session.menuId = PageIDs.archive;
+      res.redirect('/admin/');
+    });
+  });
 });
 
-router.get('/logout', function (req, res) {
-  res.clearCookie('id');
-  res.redirect("/");
-});
 
 
 module.exports = router;
