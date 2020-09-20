@@ -14,6 +14,16 @@ const admin = {
 }
 var sessionId = 'none';
 
+const PageIDs = {
+  concerts:1,
+  news:2,
+  gallery:3,
+  artists:4,
+  composers:5,
+  press:6,
+  archive:7
+}
+
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Helpers
@@ -103,7 +113,7 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeletePoster(req.body.id).then(()=>{
-        res.render('admin/admin', { id: 1 });
+        res.render('admin/admin', { id: PageIDs.concerts });
       });      
     });
 });
@@ -114,7 +124,7 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultPoster(results.insertId).then(function(){
-        req.session.menuId = 1;
+        req.session.menuId = PageIDs.concerts;
         res.redirect("/admin/");
       });
     });
@@ -147,7 +157,7 @@ router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
     imageProcessor.posterImage(tmpfile).then(()=>{
       return SaveTmpPoster(tmpfile,'/static/img/posters/', req.body.id);
     }).then(()=>{      
-      req.session.menuId = 1;
+      req.session.menuId = PageIDs.concerts;
       res.redirect('/admin/'); 
     });
   });
@@ -171,7 +181,7 @@ router.post("/archive/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeletePoster(req.body.id).then(()=>{
-        res.render('admin/admin', { id: 7 });
+        res.render('admin/admin', { id: PageIDs.archive });
       });
     });
 });
@@ -181,7 +191,7 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultPoster(results.insertId).then(()=>{
-        req.session.menuId = 7;
+        req.session.menuId = PageIDs.archive;
         res.redirect("/admin/");
       })
     });
@@ -214,7 +224,7 @@ router.post("/archive/posterupload", urlencodedParser, (req, res) => {
     imageProcessor.posterImage(tmpfile).then(() => {
       return SaveTmpPoster(tmpfile, '/static/img/posters/',  req.body.id);
     }).then(() => {
-      req.session.menuId = 7;
+      req.session.menuId = PageIDs.archive;
       res.redirect('/admin/');
     });
   });
@@ -237,7 +247,7 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeleteNewsPoster(req.body.id).then(()=>{
-        res.render('admin/admin', { id: 2 });
+        res.render('admin/admin', { id: PageIDs.news });
       });
       
     });
@@ -250,7 +260,7 @@ router.post("/news/add", urlencodedParser, (req, res) => {
       let src = path.join(__dirname, '..', '/static/img/news/', "placeholder.jpg");
       let dest = path.join(__dirname, '..', '/static/img/news/', results.insertId + ".jpg");
       fs.copyFile(src, dest).then( () => {
-        req.session.menuId = 2;
+        req.session.menuId = PageIDs.news;
         res.redirect("/admin/");
       });
     });
@@ -281,7 +291,7 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
     imageProcessor.posterImage(tmpfile).then(()=>{
       return SaveTmpPoster(tmpfile, '/static/img/news/', req.body.id);
     }).then(()=>{      
-      req.session.menuId = 2;
+      req.session.menuId = PageIDs.news;
       res.redirect('/admin/'); 
     });
   });
@@ -313,7 +323,7 @@ router.post("/artists/upload", urlencodedParser, (req, res) => {
       });
     });
   });    
-  req.session.menuId = 4;
+  req.session.menuId = PageIDs.artists;
   res.redirect('/admin/');
 });
 
@@ -340,7 +350,7 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
       });
     });
   });    
-  req.session.menuId = 5;
+  req.session.menuId = PageIDs.composers;
   res.redirect('/admin/');
 });
 
@@ -365,13 +375,10 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
       imageProcessor.galleryImage(tmpfile).then(()=>{
         let name = path.basename(tmpfile, path.extname(tmpfile));
         return SaveTmpPoster(tmpfile, '/static/img/gallery/', name, '/static/thumbnails/img/gallery/');
-      }).then(()=>{      
-        req.session.menuId = 3;
-        res.redirect('/admin/'); 
       });
     });
   });    
-  req.session.menuId = 3;
+  req.session.menuId = PageIDs.gallery;
   res.redirect('/admin/');
 });
 
@@ -398,13 +405,10 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
       imageProcessor.galleryImage(tmpfile).then(()=>{
         let name = path.basename(tmpfile, path.extname(tmpfile));
         return SaveTmpPoster(tmpfile, '/static/img/press/', name, '/static/thumbnails/img/press/');
-      }).then(()=>{      
-        req.session.menuId = 3;
-        res.redirect('/admin/'); 
       });
     });
   });    
-  req.session.menuId = 6;
+  req.session.menuId = PageIDs.press;
   res.redirect('/admin/');
 });
 
@@ -412,7 +416,7 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
 
 router.get("/login", (req, res) => {
   var title ='Login'+' | '+res.__('title');
-  req.session.menuId = 1;
+  req.session.menuId = PageIDs.concerts;
   res.render("admin/login", {title});
 });
 
