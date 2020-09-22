@@ -1,5 +1,5 @@
 
-const fs = require('fs');
+const fs = require('fs').promises;
 const path=require('path');
 const e = require('express');
 
@@ -58,14 +58,13 @@ function OrganizeConcertsInTriplets(concerts) {
     return triplets;
 }
 
-function NamesOfDirFilesWOExtension(basepath){
+async function NamesOfDirFilesWOExtension(basepath){
     var names=[];
     var realpath=path.join(__dirname, basepath);
     
-    var files = fs.readdirSync(realpath);
+    var files = await fs.readdir(realpath);
       files.forEach(file => {
-        names.push(path.basename(file, ".jpg"));
-                 
+        names.push(path.basename(file, ".jpg"));                 
       });
    
       

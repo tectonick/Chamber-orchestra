@@ -262,8 +262,8 @@ router.post("/news/posterupload", urlencodedParser, (req, res) => {
 });
 
 
-router.get("/gallery", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
+router.get("/gallery", async (req, res) => {
+  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/gallery");
   res.render('admin/gallery.hbs', { names, layout: false });
 });
 
@@ -290,8 +290,8 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 });
 
 
-router.get("/artists", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
+router.get("/artists", async (req, res) => {
+  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
   res.render('admin/artists.hbs', { names, layout: false });
 });
 
@@ -318,8 +318,8 @@ router.post("/artists/upload", urlencodedParser, (req, res) => {
   res.redirect('/admin/');
 });
 
-router.get("/composers", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
+router.get("/composers", async (req, res) => {
+  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
   res.render('admin/composers.hbs', { names, layout: false });
 });
 
@@ -346,8 +346,8 @@ router.post("/composers/upload", urlencodedParser, (req, res) => {
 });
 
 
-router.get("/press", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
+router.get("/press", async (req, res) => {
+  var names =await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
   res.render('admin/press.hbs', { names, layout: false });
 });
 
@@ -443,8 +443,8 @@ router.post("/archive/posterupload", urlencodedParser, (req, res) => {
 
 
 
-router.get("/disks", (req, res) => {
-  var names = viewhelpers.NamesOfDirFilesWOExtension("/static/img/disks");
+router.get("/disks", async (req, res) => {
+  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/disks");
   res.render('admin/disks.hbs', { names, layout: false });
 });
 

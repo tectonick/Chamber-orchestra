@@ -16,20 +16,20 @@ router.get("/musicians", (req,res)=>{
     res.render('about/musicians.hbs', {title});
 });
  
-router.get("/artists",  (req,res)=>{
+router.get("/artists", async (req,res)=>{
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
-    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
+    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
     res.render('about/artists.hbs',{names, title});
 });
 
-router.get("/composers",  (req,res)=>{
+router.get("/composers", async (req,res)=>{
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
-    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
+    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
     res.render("about/composers.hbs",{names, title});
 });
-router.get("/press", (req,res)=>{
+router.get("/press", async (req,res)=>{
     var title =res.__('layout.navbar.press')+' | '+res.__('title');
-    var names=  viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
+    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
     res.render('about/press.hbs', {names, title});
 });
 

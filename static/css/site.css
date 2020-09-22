@@ -416,6 +416,7 @@ pre {
 
 .tz-gallery {
   padding: 10px;
+  -webkit-backface-visibility: hidden;
 }
 
 
@@ -507,9 +508,9 @@ pre {
 }
 
 .disks .card{
-    -webkit-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transition: 0.15s ease-in-out;
-  -webkit-transform: translateZ(0);
+
 }
 
 /*Disks*/
