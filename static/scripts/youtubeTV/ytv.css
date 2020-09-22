@@ -1,6 +1,23 @@
 /* YouTube TV */
 
 /* Base Canvas */
+
+#loading-videos svg{
+	width:100%;
+	position: absolute;
+	text-align: center;
+	top: 30%;
+	z-index: 0;
+	transition: opacity 0.5s;
+}
+
+
+#YourPlayerID{
+	transition: opacity 0.5s;
+	opacity:0;  
+	z-index: 1;
+  }
+
 .ytv-canvas{
 	display: block;
 	background: none;
@@ -26,6 +43,7 @@
 	bottom: 0;
 	left: 0;
 	height: 100%;
+	transition: opacity 0.3s;
 }
 .ytv-video iframe{
 	width: 100%;

@@ -482,6 +482,12 @@ pre {
 
 /*Videos*/
 
+#YourPlayerID{
+  transition: opacity 0.5s 0.5s;
+  opacity:0;
+  
+}
+
 .carousel-thumbnails .carousel-indicators {
   position: relative;
 }
