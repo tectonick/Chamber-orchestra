@@ -44,6 +44,11 @@ a {
   background-color: rgba(253, 253, 253, 1);
   transition: 0.2s;
 }
+
+.navbar a:hover{
+  color: #AE5C39 !important;
+}
+
 .navbar-brand {
   width: 180px;
 }
