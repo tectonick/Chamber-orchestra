@@ -302,7 +302,7 @@
                   id +
                   " .ytv-list{" +
                   "position: relative; display: block;" +
-                  "width: 0; padding-bottom: 40%;" +
+                  "width: 0; padding-bottom: 70%;" +
                   "left: auto; right: auto;" +
                   "top: auto; width: 100%;" +
                   "} #" +
