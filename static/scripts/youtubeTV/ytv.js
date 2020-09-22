@@ -225,8 +225,8 @@
 					}
 					// Temp Scroll Bar fix
 					if (settings.listTheme == 'dark'){
-						utils.addCSS( ' #'+id+'.ytv-canvas ::-webkit-scrollbar{border-left: 1px solid #000;}'
-							+ ' #'+id+'.ytv-canvas ::-webkit-scrollbar-thumb{background: rgba(255,255,255,0.2);}');
+						utils.addCSS( ' #'+id+'.ytv-canvas ::-webkit-scrollbar{}'
+							+ ' #'+id+'.ytv-canvas ::-webkit-scrollbar-thumb{}');
 					}
 					// Optional Light List Theme
 					if(settings.listTheme == 'light'){
