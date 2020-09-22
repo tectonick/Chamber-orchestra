@@ -425,8 +425,11 @@ pre {
   padding: 0;
   margin-bottom: 30px;
   background-color: #fff;
-  border-radius: 4px;
-  border: none;
+
+  border-color: rgba(0,0,0,0.18);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
   
   -webkit-backface-visibility: hidden;
   transition: 0.15s ease-in-out;

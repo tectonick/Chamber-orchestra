@@ -4,9 +4,12 @@
 .ytv-canvas{
 	display: block;
 	background: none;
-	background-color: rgba(253, 253, 253, 0.5);
+	background-color:rgba(230, 230, 230, 0.3);
 	overflow: hidden;
 	font-family: arial, sans-serif;
+	border-color: rgba(0,0,0,0.08);
+    border-style: solid;
+    border-width: 1px;
 }
 .ytv-canvas ::-webkit-scrollbar{
 	width: 7px;
