@@ -50,3 +50,7 @@ document.getElementById('ru').onclick=()=>{
     document.cookie = "locale=ru; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
 };
 
+document.getElementById('by').onclick=()=>{
+  document.cookie = "locale=by; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
+};
+

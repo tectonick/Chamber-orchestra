@@ -13,7 +13,7 @@ const i18n = require('i18n');
 
 i18n.configure({
   // setup some locales - other locales default to en silently
-  locales: ['en', 'ru'],
+  locales: ['en', 'ru', 'by'],
   defaultLocale: 'en',
  
   // sets a custom cookie name to parse locale settings from

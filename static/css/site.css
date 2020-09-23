@@ -76,6 +76,10 @@ a {
   opacity: 0.8;
 }
 
+.locale-change img{
+  height: 40px;
+}
+
 @media (min-width: 992px) {
   .animate {
     animation-duration: 0.3s;
@@ -165,6 +169,12 @@ footer img {
   margin-right: 3px;
   height: 35px;
 }
+
+
+.social-img{
+  border-radius: 4px;
+}
+
 
 /*Index*/
 .page-link {
