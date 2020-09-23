@@ -1,3 +1,15 @@
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/scripts/sw_cached_site.js')
+      .then(reg => console.log('Service Worker: Registered (Pages)'))
+      .catch(err => console.log(`Service Worker: Error: ${err}`));
+  });
+}
+
+
+
+
 
       window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
