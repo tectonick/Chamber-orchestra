@@ -38,6 +38,8 @@
           reverseList: false,
           shuffleList: false,
           wmode: "opaque",
+          seeMore:''
+          ,
           events: {
             videoReady: () => {
               document.getElementById("YourPlayerID").style.opacity = 1; //HARDCODED YourPlayerID
@@ -504,7 +506,7 @@
                 list += '<img src="' + user.thumb + '">';
                 list +=
                   "<span>" +
-                  "Посмотреть ещё на нашем youtube канале" +
+                  (settings.seeMore)+
                   "</span>"; // was list += '<span>'+(user.title)+'</span>'
                 list += "</a>";
                 list += "</div>";
