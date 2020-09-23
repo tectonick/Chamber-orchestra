@@ -80,6 +80,13 @@ a {
   height: 40px;
 }
 
+.dropdown-item.active, .dropdown-item:active {
+  
+  background-color: #EEEEEE !important;
+
+
+}
+
 .dropdown-menu-lang{
   right: 0;
   left: auto;
