@@ -80,6 +80,23 @@ a {
   height: 40px;
 }
 
+.dropdown-menu-lang{
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu-lang{
+  right: 0;
+  left: auto;
+}
+
+@media (max-width: 992px) {
+  .dropdown-menu-lang{
+    left: 0;
+    right: auto;
+  }
+}
+
 @media (min-width: 992px) {
   .animate {
     animation-duration: 0.3s;
