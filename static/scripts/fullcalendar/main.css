@@ -182,6 +182,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
     border-radius: 0.25em;
   }
 .fc .fc-button:hover {
+    opacity: 0.65;
     text-decoration: none;
   }
 .fc .fc-button:focus {
@@ -199,26 +200,25 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
 .fc .fc-button-primary {
     color: #fff;
     color: var(--fc-button-text-color, #fff);
-    background-color: #AE5C39 ;
-    background-color: var(--fc-button-bg-color, #AE5C39 );
-    border-color: #AE5C39 ;
-    border-color: var(--fc-button-border-color, #AE5C39 );
+    background-color: #CCCCCC ;
+    background-color: var(--fc-button-bg-color, #CCCCCC );
+    border-color: #CCCCCC ;
+    border-color: var(--fc-button-border-color, #CCCCCC );
   }
 .fc .fc-button-primary:hover {
     color: #fff;
     color: var(--fc-button-text-color, #fff);
-    background-color: #AE5C39;
-    background-color: var(--fc-button-hover-bg-color, #AE5C39);
-    border-color: #AE5C39;
-    border-color: var(--fc-button-hover-border-color, #AE5C39);
+    opacity: 0.65;
+    border-color: #CCCCCC;
+    border-color: var(--fc-button-hover-border-color, #CCCCCC);
   }
 .fc .fc-button-primary:disabled { /* not DRY */
     color: #fff;
     color: var(--fc-button-text-color, #fff);
-    background-color: #AE5C39;
-    background-color: var(--fc-button-bg-color, #AE5C39 );
-    border-color: #AE5C39;
-    border-color: var(--fc-button-border-color, #AE5C39 ); /* overrides :hover */
+    background-color: #CCCCCC;
+    background-color: var(--fc-button-bg-color, #CCCCCC );
+    border-color: #CCCCCC;
+    border-color: var(--fc-button-border-color, #CCCCCC ); /* overrides :hover */
   }
 .fc .fc-button-primary:focus {
     box-shadow: 0 0 0 0.2rem rgba(174, 92, 57, 0.5);
@@ -227,10 +227,10 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
   .fc .fc-button-primary:not(:disabled).fc-button-active {
     color: #fff;
     color: var(--fc-button-text-color, #fff);
-    background-color: #C9947D;
-    background-color: var(--fc-button-active-bg-color, #C9947D);
-    border-color: #C9947D;
-    border-color: var(--fc-button-active-border-color, #C9947D);
+
+    opacity: 0.65;
+    border-color: #CCCCCC;
+    border-color: var(--fc-button-active-border-color, #CCCCCC);
   }
 .fc .fc-button-primary:not(:disabled):active:focus,
   .fc .fc-button-primary:not(:disabled).fc-button-active:focus {
@@ -576,10 +576,10 @@ A HORIZONTAL event
 */
 .fc-h-event { /* allowed to be top-level */
   display: block;
-  border: 1px solid #3788d8;
-  border: 1px solid var(--fc-event-border-color, #3788d8);
-  background-color: #3788d8;
-  background-color: var(--fc-event-bg-color, #3788d8)
+  border: 1px solid #CCCCCC;
+  border: 1px solid var(--fc-event-border-color, #CCCCCC);
+  background-color: #CCCCCC;
+  background-color: var(--fc-event-bg-color, #CCCCCC)
 
 }
 .fc-h-event .fc-event-main {
@@ -587,8 +587,15 @@ A HORIZONTAL event
     color: var(--fc-event-text-color, #fff);
   }
 .fc-h-event .fc-event-main-frame {
-    display: flex; /* for make fc-event-title-container expand */
+    display: block; /* for make fc-event-title-container expand */
+    text-align: center;
   }
+
+
+  .fc-h-event:hover{
+    background-color: #dfaa8c !important;
+  }
+
 .fc-h-event .fc-event-time {
     max-width: 100%; /* clip overflow on this element */
     overflow: hidden;
@@ -724,6 +731,21 @@ A HORIZONTAL event
   /* cell top */
 
 }
+
+
+.fc-daygrid-event-dot{
+  display:none !important;
+}
+
+
+
+.fc-event-time, .fc-event-title {
+  padding: 0 1px;
+  white-space: normal;
+  }
+
+
+
 .fc .fc-daygrid-day-top {
     display: flex;
     flex-direction: row-reverse;
@@ -886,10 +908,10 @@ A HORIZONTAL event
   }
 /* --- the dot style of event --- */
 .fc-daygrid-dot-event {
-  display: flex;
+  display: block;
   align-items: center;
-  padding: 2px 0
-
+  padding: 2px 0;
+  text-align: center;
 }
 .fc-daygrid-dot-event .fc-event-title {
     flex-grow: 1;

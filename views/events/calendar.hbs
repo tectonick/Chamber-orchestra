@@ -5,7 +5,7 @@
 <script src='/scripts/fullcalendar/locales/by.js'></script>
 
 
-    <h4 class="text-center my-3">{{__ 'calendar.title'}}</h4>
+<h4 class="text-center my-3">{{__ 'calendar.title'}}</h4>
 <div class="container calendar-container">
 
     <div id='calendar'></div>
@@ -19,7 +19,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         calendar = new FullCalendar.Calendar(calendarEl, {
-            
+
             locale: pageLocale,
             initialView: 'dayGridMonth',
             defaultView: 'dayGridMonth',
@@ -29,25 +29,29 @@
                 center: 'title',
                 right: 'dayGridMonth,listYear'
             },
-            
-            
+
             eventMouseEnter: function (info) {
                 var id = info.event.id;
                 var link = "/events#" + id;
             },
             eventMouseLeave: function (info) {
             },
+            eventTimeFormat: { // like '14:30:00'
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: true
+            }
 
         });
         initCalend();
 
     });
 
-    function DateToISOLocal(date){
-  // JS interprets db date as local and converts to UTC
-  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
-  return new Date(localDate).toISOString().slice(0, 19);  
-}
+    function DateToISOLocal(date) {
+        // JS interprets db date as local and converts to UTC
+        var localDate = date - date.getTimezoneOffset() * 60 * 1000;
+        return new Date(localDate).toISOString().slice(0, 19);
+    }
 
 
     async function initCalend() {
@@ -59,22 +63,26 @@
         }
         concerts.forEach((concert) => {
             console.log(concert);
-            concertDate=new Date(concert.date);
-            concertDate-=concertDate.getTimezoneOffset() * 60 * 1000;
+            concertDate = new Date(concert.date);
+            concertDate -= concertDate.getTimezoneOffset() * 60 * 1000;
 
-            let concertUrl=((concertDate>=Date.now())?("/events#"):("/events/archive#"))+ concert.id;
+            let concertUrl = ((concertDate >= Date.now()) ? ("/events#") : ("/events/archive#")) + concert.id;
             calendar.addEvent({
                 title: concert.title,
                 id: concert.id,
                 start: concert.date,
-                url: concertUrl
+                url: concertUrl,
+                display:'block',
+                backgroundColor :'#AE5C39',
+                textColor: 'white',
+                borderColor:'#C9947D'
             });
         })
         calendar.render();
     }
 
 
-    
+
 
 
 
