@@ -2,7 +2,6 @@
 <script src='/scripts/fullcalendar/main.js'></script>
 
 <script src='/scripts/fullcalendar/locales/ru.js'></script>
-<script src='/scripts/fullcalendar/locales/en.js'></script>
 <script src='/scripts/fullcalendar/locales/by.js'></script>
 
 
@@ -43,6 +42,12 @@
 
     });
 
+    function DateToISOLocal(date){
+  // JS interprets db date as local and converts to UTC
+  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
+  return new Date(localDate).toISOString().slice(0, 19);  
+}
+
 
     async function initCalend() {
         response = await fetch('/api/concerts');
@@ -53,11 +58,15 @@
         }
         concerts.forEach((concert) => {
             console.log(concert);
+            concertDate=new Date(concert.date);
+            concertDate-=concertDate.getTimezoneOffset() * 60 * 1000;
+
+            let concertUrl=((concertDate>=Date.now())?("/events#"):("/events/archive#"))+ concert.id;
             calendar.addEvent({
                 title: concert.title,
                 id: concert.id,
                 start: concert.date,
-                url: "/events#" + concert.id
+                url: concertUrl
             });
         })
         calendar.render();
