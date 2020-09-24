@@ -12,8 +12,15 @@
 
   <div class="collapse navbar-collapse nav-items" id="navbarSupportedContent">
     <ul class="navbar-nav m-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="/events">{{__ 'layout.navbar.events'}} <span class="sr-only">(current)</span></a>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{__ 'layout.navbar.events'}}
+        </a>
+        <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/events/">{{__ 'layout.navbar.nextEvents'}}</a>
+          <a class="dropdown-item" href="/events/calendar">{{__ 'layout.navbar.calendar'}}</a>
+          <a class="dropdown-item" href="/events/archive">{{__ 'layout.navbar.archive'}}</a>
+        </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -27,9 +34,7 @@
           <a class="dropdown-item" href="/about/artists">{{__ 'layout.navbar.artists'}}</a>
           <a class="dropdown-item" href="/about/composers">{{__ 'layout.navbar.composers'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/about/press">{{__ 'layout.navbar.press'}}</a>
-          <a class="dropdown-item" href="/archive">{{__ 'layout.navbar.archive'}}</a>
-          
+          <a class="dropdown-item" href="/about/press">{{__ 'layout.navbar.press'}}</a>          
         </div>
       </li>
         <li class="nav-item dropdown ">

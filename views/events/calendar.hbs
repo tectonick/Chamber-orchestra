@@ -1,0 +1,75 @@
+<link href='/scripts/fullcalendar/main.css' rel='stylesheet' />
+<script src='/scripts/fullcalendar/main.js'></script>
+
+<script src='/scripts/fullcalendar/locales/ru.js'></script>
+<script src='/scripts/fullcalendar/locales/en.js'></script>
+<script src='/scripts/fullcalendar/locales/by.js'></script>
+
+
+
+<div class="container">
+    <div id='calendar'></div>
+</div>
+
+
+<script>
+    let localePosInCookie = document.cookie.indexOf('locale=') + 7;
+    var pageLocale = document.cookie.slice(localePosInCookie, localePosInCookie + 2);
+    var calendar;
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            
+            locale: pageLocale,
+            initialView: 'dayGridMonth',
+            defaultView: 'dayGridMonth',
+            eventColor: 'orange',
+            headerToolbar: {
+                left: 'title',
+                center: 'prev,today,next',
+                right: 'dayGridMonth,listYear'
+            },
+            
+            
+            eventMouseEnter: function (info) {
+                var id = info.event.id;
+                var link = "/events#" + id;
+            },
+            eventMouseLeave: function (info) {
+            },
+
+        });
+        initCalend();
+
+    });
+
+
+    async function initCalend() {
+        response = await fetch('/api/concerts');
+        if (response.ok) {
+            var concerts = await response.json();
+        } else {
+            alert("Ошибка HTTP: " + response.status);
+        }
+        concerts.forEach((concert) => {
+            console.log(concert);
+            calendar.addEvent({
+                title: concert.title,
+                id: concert.id,
+                start: concert.date,
+                url: "/events#" + concert.id
+            });
+        })
+        calendar.render();
+    }
+
+
+    
+
+
+
+
+
+
+
+</script>

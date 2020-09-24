@@ -45,5 +45,7 @@
 	"layout.navbar.disks": "Дыскаграфія",
 	"disks.title": "Дыскаграфія",
 	"contacts.tech_editor": "Тэхнічны рэдактар: Мікалай Кісялёў korn9509@gmail.com",
-	"video.seeMore": "video.seeMore"
+	"video.seeMore": "video.seeMore",
+	"layout.navbar.nextEvents": "Наступныя канцэрты",
+	"layout.navbar.calendar": "Календар канцэртаў"
 }

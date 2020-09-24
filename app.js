@@ -4,6 +4,7 @@ const mainRouter=require("./routes/main");
 const aboutRouter=require("./routes/about");
 const mediaRouter=require("./routes/media");
 const adminRouter=require("./routes/admin");
+const eventsRouter=require("./routes/events");
 const path=require('path');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
@@ -69,7 +70,7 @@ app.use(mainRouter);
 app.use('/about',aboutRouter);
 app.use('/media',mediaRouter);
 app.use('/admin',adminRouter);
-
+app.use('/events',eventsRouter);
 
 
 
