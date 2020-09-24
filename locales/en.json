@@ -46,5 +46,6 @@
 	"disks.title": "Discography",
 	"contacts.tech_editor": "Technical editor: Mikalai Kisialiou korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Next events",
-	"layout.navbar.calendar": "Events calendar"
+	"layout.navbar.calendar": "Calendar",
+	"calendar.title":"Events calendar"
 }

@@ -275,6 +275,33 @@ label {
   margin-bottom: 3.5vw;
 }
 
+.calendar-container{
+  background-color: rgba(230, 230, 230, 0.3);
+}
+#calendar{
+  padding-top: 10px !important;
+}
+
+.fc-header-toolbar > div {
+  max-width: 33%;
+}
+.fc-header-toolbar h2 {
+  font-size: 1.25rem !important;
+  text-transform: capitalize;
+
+}
+
+@media(max-width:480px){
+  .fc-today-button{
+    display: none !important;
+   }
+
+  .fc-header-toolbar h2 {
+    font-size: 1rem !important;
+  }
+}
+
+
 .concert,
 .group,
 .block,

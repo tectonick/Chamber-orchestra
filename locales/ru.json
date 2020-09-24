@@ -46,5 +46,6 @@
 	"disks.title": "Дискография",
 	"contacts.tech_editor": "Технический редактор: Николай Киселев korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Ближайшие концерты",
-	"layout.navbar.calendar": "Календарь концертов"
+	"layout.navbar.calendar": "Календарь",
+	"calendar.title":"Календарь концертов"
 }

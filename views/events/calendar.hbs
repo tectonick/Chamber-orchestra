@@ -5,8 +5,9 @@
 <script src='/scripts/fullcalendar/locales/by.js'></script>
 
 
+    <h4 class="text-center my-3">{{__ 'calendar.title'}}</h4>
+<div class="container calendar-container">
 
-<div class="container">
     <div id='calendar'></div>
 </div>
 
@@ -24,8 +25,8 @@
             defaultView: 'dayGridMonth',
             eventColor: 'orange',
             headerToolbar: {
-                left: 'title',
-                center: 'prev,today,next',
+                left: 'prev,today,next',
+                center: 'title',
                 right: 'dayGridMonth,listYear'
             },
             
