@@ -35,18 +35,9 @@ router.get("/musicians", (req,res)=>{
 router.get("/artists", async (req,res)=>{
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
     let langId = languages[req.getLocale()];
-    db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists ON artists.id=artists.artistId WHERE languageId=${langId} `,
+    db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
     function (err, artistsAll) {
         if (err) console.log(err);
-        // let violins=[];//1
-        // let violas=[];//2
-        // let cellos=[];//3
-        // let basses=[];//4
-        // let winds=[];//5
-        // let pianists=[];//6
-        // let folks=[];//7
-        // let vocalists=[];//8
-        // let voices=[];//9
         var artists=[[],[],[],[],[],[],[],[],[],[]];
         artistsAll.forEach((artist)=>{
             artists[artist.groupId-1].push(artist);
@@ -62,12 +53,12 @@ router.get("/artists", async (req,res)=>{
 router.get("/composers", async (req,res)=>{
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
     let langId = languages[req.getLocale()];
-    db.query(`SELECT composers.id, isInResidence, name FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
+    db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
     function (err, composersAll) {
         if (err) console.log(err);
         var InResidence=[];
         var Partners=[];
-        composers.forEach((composer)=>{
+        composersAll.forEach((composer)=>{
             if(composer.isInResidence){
                 InResidence.push(composer);
             } else{

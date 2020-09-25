@@ -47,5 +47,17 @@
 	"contacts.tech_editor": "Technical editor: Mikalai Kisialiou korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Next events",
 	"layout.navbar.calendar": "Calendar",
-	"calendar.title":"Events calendar"
+	"calendar.title": "Events calendar",
+	"composers.inResidence": "Composers-inresidence",
+	"composers.Partners": "Composers",
+	"artists.conductors": "Conductors",
+	"artists.violins": "Violins",
+	"artists.violas": "Violas",
+	"artists.cellos": "Cellos",
+	"artists.basses": "Basses",
+	"artists.pianists": "Pianists",
+	"artists.winds": "Winds",
+	"artists.folks": "Folks",
+	"artists.vocalists": "Vocalists",
+	"artists.voices": "Readers"
 }

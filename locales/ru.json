@@ -47,5 +47,17 @@
 	"contacts.tech_editor": "Технический редактор: Николай Киселев korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Ближайшие концерты",
 	"layout.navbar.calendar": "Календарь",
-	"calendar.title":"Календарь концертов"
+	"calendar.title": "Календарь концертов",
+	"composers.inResidence": "Композиторы-inresidence",
+	"composers.Partners": "Композиторы",
+	"artists.conductors": "Дирижеры",
+	"artists.violins": "Скрипачи",
+	"artists.violas": "Альтисты",
+	"artists.cellos": "Виолончелисты",
+	"artists.basses": "Контрабасисты",
+	"artists.pianists": "Пианисты",
+	"artists.winds": "Духовые",
+	"artists.folks": "Народные",
+	"artists.vocalists": "Вокалисты",
+	"artists.voices": "Чтецы"
 }

@@ -47,5 +47,17 @@
 	"contacts.tech_editor": "Тэхнічны рэдактар: Мікалай Кісялёў korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Наступныя канцэрты",
 	"layout.navbar.calendar": "Каляндар",
-	"calendar.title":"Каляндар канцэртаў"
+	"calendar.title": "Каляндар канцэртаў",
+	"composers.inResidence": "Кампазітары-inresidence",
+	"composers.Partners": "Кампазітары",
+	"artists.conductors": "Дырыжоры",
+	"artists.violins": "Скрыпачы",
+	"artists.violas": "Альтысты",
+	"artists.cellos": "Віяланчэлісты",
+	"artists.basses": "Кантрабасісты",
+	"artists.pianists": "Піяністы",
+	"artists.winds": "Духавыя",
+	"artists.folks": "Народныя",
+	"artists.vocalists": "Вакалісты",
+	"artists.voices": "Чытачы"
 }
