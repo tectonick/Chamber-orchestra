@@ -11,12 +11,11 @@
                 </div>
                 <div class="col-12 col-md-6 px-4 py-1" >
                     
-                    <h3>{{__ 'musicians.violins1'}}</h3>                    
-                    <p>Олег Подов (концертмейстер,ассистент дирижера)</p>
-                    <p>Павел Батян </p>
-                    <p>Екатерина Мищанчук</p>
-                    <p>Роман Воробьев </p>
-                    <p>Александра Чеховская</p>         
+                    <h3>{{__ 'musicians.violins1'}}</h3>
+                    {{#each musicians.[0]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
+         
                 </div>
             </div>
 
@@ -27,11 +26,10 @@
                 <div class="col-12 col-md-6 px-4 py-1">
                     
                     <h3>{{__ 'musicians.violins2'}}</h3>
-                    <p>Наталия Мазепина</p>
-                    <p>Константин Сидорук (концертмейстер)  </p>
-                    <p>Ольга Гуз</p>
-                    <p>Сергей Терешков </p>
-                    <p>Мария Ракель</p>         
+                    {{#each musicians.[1]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
+   
                 </div>
             </div>
 
@@ -42,10 +40,9 @@
                 <div class="col-12 col-md-6 px-4 py-1">
                  
                     <h3>   {{__ 'musicians.violas'}}</h3>
-                    <p>Елена Сердюкова (концертмейстер)</p>
-                    <p>Игорь Цховребов (зав.библиотекой) </p>
-                    <p>Николай Анищенко (инспектор) </p>
-                    <p>Алексей Гурин </p>
+                    {{#each musicians.[2]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
                 </div>
             </div>
 
@@ -56,9 +53,9 @@
                 <div class="col-12 col-md-6 px-4 py-1">
                    
                     <h3> {{__ 'musicians.cellos'}}</h3>
-                    <p>Анна Круглик</p>
-                    <p>Александр Сердюков (концертмейстер) </p>
-                    <p>Николай Киселев </p>
+                    {{#each musicians.[3]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
                 </div>
             </div>
 
@@ -69,7 +66,9 @@
                 <div class="col-12 col-md-6 px-4 py-1">
                     
                     <h3>{{__ 'musicians.bass'}}</h3>
-                    <p>Михаил Николайчик</p>
+                    {{#each musicians.[4]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
                 </div>
             </div>
 
@@ -80,7 +79,9 @@
                 <div class="col-12 col-md-6 px-4 py-1">
                    
                     <h3> {{__ 'musicians.keyboards'}}</h3>
-                    <p>Марина Ромейко</p>
+                    {{#each musicians.[5]}}
+                        <p>{{this.name}}</p>    
+                    {{/each}}
                 </div>
             </div>
 

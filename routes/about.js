@@ -1,7 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const viewhelpers = require("../viewhelpers");
+const db = require("../db");
 
+const languages = {
+    ru:1,
+    en:2,
+    by:3,
+    de:4
+}
 
 router.get("/", (req,res)=>{
     var title =res.__('layout.navbar.history')+' | '+res.__('title');
@@ -13,20 +20,65 @@ router.get("/conductor", (req,res)=>{
 });
 router.get("/musicians", (req,res)=>{
     var title =res.__('layout.navbar.musicians')+' | '+res.__('title');
-    res.render('about/musicians.hbs', {title});
+    let langId = languages[req.getLocale()];
+    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} `,
+    function (err, musiciansAll) {
+        if (err) console.log(err);
+        var musicians=[[],[],[],[],[],[],[]] //groups;
+        musiciansAll.forEach((musician)=>{
+            musicians[musician.groupId-1].push(musician);
+        });
+        res.render('about/musicians.hbs', {title, musicians});
+    });    
 });
  
 router.get("/artists", async (req,res)=>{
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
-    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
-    res.render('about/artists.hbs',{names, title});
+    let langId = languages[req.getLocale()];
+    db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists ON artists.id=artists.artistId WHERE languageId=${langId} `,
+    function (err, artistsAll) {
+        if (err) console.log(err);
+        // let violins=[];//1
+        // let violas=[];//2
+        // let cellos=[];//3
+        // let basses=[];//4
+        // let winds=[];//5
+        // let pianists=[];//6
+        // let folks=[];//7
+        // let vocalists=[];//8
+        // let voices=[];//9
+        var artists=[[],[],[],[],[],[],[],[],[],[]];
+        artistsAll.forEach((artist)=>{
+            artists[artist.groupId-1].push(artist);
+        });
+        
+        res.render('about/artists.hbs',{title, artists});
+    });  
+
+    
+    
 });
 
 router.get("/composers", async (req,res)=>{
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
-    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
-    res.render("about/composers.hbs",{names, title});
+    let langId = languages[req.getLocale()];
+    db.query(`SELECT composers.id, isInResidence, name FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
+    function (err, composersAll) {
+        if (err) console.log(err);
+        var InResidence=[];
+        var Partners=[];
+        composers.forEach((composer)=>{
+            if(composer.isInResidence){
+                InResidence.push(composer);
+            } else{
+                Partners.push(composer);
+            }
+        });
+        composers = {InResidence, Partners};
+        res.render("about/composers.hbs",{title,composers});
+    });  
 });
+
 router.get("/press", async (req,res)=>{
     var title =res.__('layout.navbar.press')+' | '+res.__('title');
     var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
