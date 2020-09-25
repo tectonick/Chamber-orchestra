@@ -2,13 +2,8 @@ const express = require("express");
 const router = express.Router();
 const viewhelpers = require("../viewhelpers");
 const db = require("../db");
+const globals = require("../globals.js");
 
-const languages = {
-    ru:1,
-    en:2,
-    by:3,
-    de:4
-}
 
 router.get("/", (req,res)=>{
     var title =res.__('layout.navbar.history')+' | '+res.__('title');
@@ -20,7 +15,7 @@ router.get("/conductor", (req,res)=>{
 });
 router.get("/musicians", (req,res)=>{
     var title =res.__('layout.navbar.musicians')+' | '+res.__('title');
-    let langId = languages[req.getLocale()];
+    let langId = globals.languages[req.getLocale()];
     db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} `,
     function (err, musiciansAll) {
         if (err) console.log(err);
@@ -34,7 +29,7 @@ router.get("/musicians", (req,res)=>{
  
 router.get("/artists", async (req,res)=>{
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
-    let langId = languages[req.getLocale()];
+    let langId = globals.languages[req.getLocale()];
     db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
     function (err, artistsAll) {
         if (err) console.log(err);
@@ -52,7 +47,7 @@ router.get("/artists", async (req,res)=>{
 
 router.get("/composers", async (req,res)=>{
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
-    let langId = languages[req.getLocale()];
+    let langId = globals.languages[req.getLocale()];
     db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
     function (err, composersAll) {
         if (err) console.log(err);

@@ -8,6 +8,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const imageProcessor = require("../image-processing");
 const bcrypt = require('bcrypt');
+const globals = require("../globals.js");
+
+
 
 const admin = {
   user: "root",
@@ -24,9 +27,10 @@ const PageIDs = {
   gallery:3,
   artists:4,
   composers:5,
-  press:6,
-  archive:7,
-  disks:8
+  musicians:6,
+  press:7,
+  archive:8,
+  disks:9
 }
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -41,6 +45,11 @@ async function DeleteNewsPoster(nameId){
   let imgToDel = path.join(__dirname, '..', '/static/img/news/', nameId + ".jpg");
   return fs.unlink(imgToDel); 
 }
+async function DeleteImageById(nameId, folder){
+  let imgToDel = path.join(__dirname, '..', folder, nameId + ".jpg");
+  return fs.unlink(imgToDel); 
+}
+
 function DateToISOLocal(date){
   // JS interprets db date as local and converts to UTC
   var localDate = date - date.getTimezoneOffset() * 60 * 1000;
@@ -290,33 +299,109 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 router.get("/artists", async (req, res) => {
-  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/artists");
-  res.render('admin/artists.hbs', { names, layout: false });
+  let langId = globals.languages[req.getLocale()];
+  db.query(
+    `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
+    function (err, artists) {
+      if (err) console.log(err);
+      res.render("admin/artists.hbs", { layout: false, artists });
+    }
+  );
 });
 
 router.post("/artists/delete", urlencodedParser, (req, res) => {
-  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
-});
-
-
-//'/static/img/about/artists/'
-router.post("/artists/upload", urlencodedParser, (req, res) => {
-  if (!req.files) {return res.status(400);}
-  var files = FilesToArray(req.files);
-
-  files.forEach((fileToUpload) => {
-    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-    fileToUpload.mv(tmpfile, function (err) {
-      imageProcessor.smallImage(tmpfile).then(()=>{
-        let name = path.basename(tmpfile, path.extname(tmpfile));
-        return SaveTmpPoster(tmpfile, '/static/img/about/artists/', name);
-      });
+  db.query(`DELETE FROM artists_translate WHERE artistId=${req.body.id}`,
+    function (err, results) {
+      if (err) console.log(err);
+      db.query(`DELETE FROM artists WHERE id=${req.body.id}`,()=>{});
+      DeleteImageById(req.body.id, '/static/img/about/artists/').then(()=>{
+        res.render('admin/admin', { id: PageIDs.artists });
+      });      
     });
-  });    
-  req.session.menuId = PageIDs.artists;
-  res.redirect('/admin/');
 });
+
+
+router.post("/artists/add", urlencodedParser, (req, res) => {
+  db.query(`INSERT INTO artists VALUES (0,0)`,
+    function (err, results) {
+      if (err) console.log(err);
+      let src = path.join(__dirname, '..', '/static/img/about/artists', "placeholder.jpg");
+      let dest = path.join(__dirname, '..', '/static/img/about/artists', results.insertId + ".jpg");
+      for (let langId = 1; langId <= Object.keys(globals.languages).length; langId++) {
+        db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'Имя','Страна','Инструмент')`,(err, results)=>{
+          if (err) console.log(err);
+        })        
+      }
+      fs.copyFile(src, dest).then( () => {
+        req.session.menuId = PageIDs.artists;
+        res.redirect("/admin/");
+      });
+
+
+    });
+});
+
+router.post("/artists/edit", urlencodedParser, (req, res) => {
+  let langId = globals.languages[req.getLocale()];
+  db.query(`UPDATE artists_translate SET name = '${req.body.name}', \
+    country = '${req.body.country}',\
+    instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      } else {
+        db.query(`UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;`,
+         function (err, results) {});
+        res.sendStatus(200);
+      }
+    });
+});
+
+router.post("/artists/posterupload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
+  }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(()=>{
+      return SaveTmpPoster(tmpfile, '/static/img/about/artists/', req.body.id);
+    }).then(()=>{      
+      req.session.menuId = PageIDs.artists;
+      res.redirect('/admin/'); 
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get("/composers", async (req, res) => {
   var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");

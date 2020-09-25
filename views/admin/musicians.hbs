@@ -1,0 +1,47 @@
+<div class="container-fluid">
+
+    <div class="ml-auto my-3" >
+        <form action="/admin/composers/upload" method="post" enctype="multipart/form-data">
+            <input class='form-control' type="file" name="files" id="files" multiple>
+            <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
+        </form>
+
+    </div>
+    
+
+
+    <div>
+        <div class="card-columns">
+            {{#each names}}
+            <div class="card searchable"> <img class="card-img-top" loading=lazy src="/img/about/composers/{{this}}.jpg" alt="Card image cap">
+                <div class="card-footer">
+                    <p>{{this}}</p>                 
+                        <input id="/img/about/composers/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
+                    
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+
+
+<script>
+
+$(document).ready(function(){
+  $(".delete-button").click(function(){
+      $(this).parent().parent().css('display','none');
+    $.post("/admin/composers/delete", {filename:$(this).attr('id')});
+  });
+
+    $("#files").change(function(){
+      if ($(this).val().length>0){
+            $(this).siblings('.form-control').prop('disabled', false);
+
+      }
+  });
+});
+</script>
+
+
+</div>

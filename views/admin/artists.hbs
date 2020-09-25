@@ -1,47 +1,149 @@
-<div class="container-fluid">
-
-    <div class="ml-auto my-3" >
-        <form action="/admin/artists/upload" method="post" enctype="multipart/form-data">
-            <input class='form-control' type="file" name="files" id="files" multiple/>
-            <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
+    <div class="ml-auto my-3">
+        <form action="/admin/artists/add" method="post">
+            <input class='form-control' type="submit" value="Добавить артиста" name="submit">
         </form>
 
     </div>
-    
+<div class="row">
+
+    {{#each artists}}
+    <div concertId="{{this.id}}" class="row col-lg-6 col-12 searchable event-row">
 
 
-    <div>
-        <div class="card-columns">
-            {{#each names}}
-            <div class="card searchable "> <img class="card-img-top" loading=lazy src="/img/about/artists/{{this}}.jpg" alt="Card image cap">
-                <div class="card-footer">
-                    <p>{{this}}</p>                 
-                        <input id="/img/about/artists/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
-                    
+        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+            <div class="row">
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="">
+                    <form class="form-group" action="/admin/artists/posterupload" method="post"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
+                        <input disabled="true" class='form-control' type="submit" value="Загрузить фото" name="submit">
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 p-4">
+
+                    <form class='form-group' action="/admin/artists/edit" id="edit-form-{{this.id}}" method="POST">
+                        <input type="hidden" name="id" value="{{this.id}}">
+                        <textarea name="name" class="form-control w-100" rows="1">{{this.name}}</textarea>
+                        <textarea name="instrument" class="form-control w-100" rows="1">{{this.instrument}}</textarea>
+                        <textarea name="country" class="form-control w-100" rows="1">{{this.country}}</textarea>
+                        <select class="form-control w-100" name="group" id="cars">
+                            <option value="" selected disabled hidden>Группа</option>
+                            <option value="1">Дирижеры</option>
+                            <option value="2">Скрипачи</option>
+                            <option value="3">Альтисты</option>
+                            <option value="4">Виолончелисты</option>
+                            <option value="5">Контрабасисты</option>
+                            <option value="6">Пианисты</option>
+                            <option value="7">Духовые и ударные</option>
+                            <option value="8">Народные</option>
+                            <option value="9">Вокалисты</option>
+                            <option value="10">Чтецы</option>
+                        </select>
+                    </form>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <input name='{{this.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                            type="submit" value="Удалить артиста"></input>
+                        <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
+                            value="Сохранить артиста"></input>
+
+                    </div>
+
                 </div>
             </div>
-            {{/each}}
         </div>
 
+
+    </div>
+    {{/each}}
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Подтверждение удаления</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы действительно хотите удалить артиста? Это действие невозможно отменить!</p>
+
+                </div>
+                <div class="modal-footer">
+                    <button id="modal-cancel" type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Отмена</button>
+                    <button id="modal-delete" type="button" class="btn btn-danger">Удалить</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 <script>
 
-$(document).ready(function(){
-  $(".delete-button").click(function(){
-      $(this).parent().parent().css('display','none');
-    $.post("/admin/artists/delete", {filename:$(this).attr('id')});
-  });
 
-    $("#files").change(function(){
+
+    $(document).ready(function () {
+        $(".delete-button").click(function () {
+            var modal = $('#deleteModal');
+            modal.attr('name', $(this).attr('name'));
+            modal.modal();
+        });
+
+        $("#modal-delete").click(function () {
+            let modal = $('#deleteModal');
+            let idToDelete = modal.attr('name');
+            console.log(idToDelete);
+            $(`[concertId=${idToDelete}]`).css('display', 'none');
+            $.post("/admin/artists/delete", { id: idToDelete });
+            modal.modal('hide');
+
+        });
+
+        $(".fileToUpload").change(function () {
       if ($(this).val().length>0){
             $(this).siblings('.form-control').prop('disabled', false);
 
       }
-  });
-});
+        });
+
+        $(".save-button").click(function () {
+
+            var formName = $(this).attr('name');
+            var formData = $('#' + formName).serialize();
+            $.post("/admin/artists/edit", formData, (data, status) => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            }).fail(() => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            });
+
+        });
+    });
+    
 </script>
-
-
-</div>
