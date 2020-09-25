@@ -304,14 +304,6 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
 router.get("/artists", async (req, res) => {
   let langId = globals.languages[req.getLocale()];
   db.query(
@@ -391,44 +383,81 @@ router.post("/artists/posterupload", urlencodedParser, (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 router.get("/composers", async (req, res) => {
-  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/about/composers");
-  res.render('admin/composers.hbs', { names, layout: false });
+  let langId = globals.languages[req.getLocale()];
+  db.query(
+    `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
+    function (err, composers) {
+      if (err) console.log(err);
+      res.render("admin/composers.hbs", { layout: false, composers });
+    }
+  );
 });
 
 router.post("/composers/delete", urlencodedParser, (req, res) => {
-  fs.unlink(path.join(__dirname, '../', '/static/', req.body.filename));
-});
-
-router.post("/composers/upload", urlencodedParser, (req, res) => {
-
-  if (!req.files) {return res.status(400);}
-  var files = FilesToArray(req.files);
-
-  files.forEach((fileToUpload) => {
-    let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-    fileToUpload.mv(tmpfile, function (err) {
-      imageProcessor.smallImage(tmpfile).then(()=>{
-        let name = path.basename(tmpfile, path.extname(tmpfile));
-        return SaveTmpPoster(tmpfile, '/static/img/about/composers/', name);
-      });
+  db.query(`DELETE FROM composers_translate WHERE composerId=${req.body.id}`,
+    function (err, results) {
+      if (err) console.log(err);
+      db.query(`DELETE FROM composers WHERE id=${req.body.id}`,()=>{});
+      DeleteImageById(req.body.id, '/static/img/about/composers/').then(()=>{
+        res.render('admin/admin', { id: PageIDs.composers });
+      });      
     });
-  });    
-  req.session.menuId = PageIDs.composers;
-  res.redirect('/admin/');
 });
+
+
+router.post("/composers/add", urlencodedParser, (req, res) => {
+  db.query(`INSERT INTO composers VALUES (0,0)`,
+    function (err, results) {
+      if (err) console.log(err);
+      let src = path.join(__dirname, '..', '/static/img/about/composers', "placeholder.jpg");
+      let dest = path.join(__dirname, '..', '/static/img/about/composers', results.insertId + ".jpg");
+      for (let langId = 1; langId <= Object.keys(globals.languages).length; langId++) {
+        db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'Имя','Страна')`,(err, results)=>{
+          if (err) console.log(err);
+        })        
+      }
+      fs.copyFile(src, dest).then( () => {
+        req.session.menuId = PageIDs.composers;
+        res.redirect("/admin/");
+      });
+
+
+    });
+});
+
+router.post("/composers/edit", urlencodedParser, (req, res) => {
+  let langId = globals.languages[req.getLocale()];
+  db.query(`UPDATE composers_translate SET name = '${req.body.name}', \
+    country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      } else {
+        db.query(`UPDATE composers SET isInResidence = '${req.body.isInResidence}' WHERE ${req.body.id}=id;`,
+         function (err, results) {});
+        res.sendStatus(200);
+      }
+    });
+});
+
+router.post("/composers/posterupload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
+  }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(()=>{
+      return SaveTmpPoster(tmpfile, '/static/img/about/composers/', req.body.id);
+    }).then(()=>{      
+      req.session.menuId = PageIDs.composers;
+      res.redirect('/admin/'); 
+    });
+  });
+});
+
 
 
 router.get("/press", async (req, res) => {
