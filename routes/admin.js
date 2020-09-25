@@ -9,7 +9,45 @@ const path = require('path');
 const imageProcessor = require("../image-processing");
 const bcrypt = require('bcrypt');
 const globals = require("../globals.js");
+var unirest = require("unirest");
 
+
+
+
+
+
+
+
+function translate(text, source, dest) {
+  return new Promise((resolve, reject) => {
+    if (source == "by") source = "be";
+    if (dest == "by") dest = "be";
+    var req = unirest(
+      "POST",
+      "https://google-translate1.p.rapidapi.com/language/translate/v2"
+    );
+
+    req.headers({
+      "x-rapidapi-host": "google-translate1.p.rapidapi.com",
+      "x-rapidapi-key": "d51ebc844amshcee4bf4760c0496p115964jsnca08b651c0c4",
+      "accept-encoding": "application/gzip",
+      "content-type": "application/x-www-form-urlencoded",
+      useQueryString: true,
+    });
+
+    req.form({
+      source: source,
+      q: text,
+      target: dest,
+    });
+
+    req.end(function (res) {
+      if (res.error) reject(res.error);
+
+      resolve(res.body.data.translations[0].translatedText);
+    });
+  });
+}
 
 
 const admin = {
@@ -326,6 +364,29 @@ router.post("/artists/delete", urlencodedParser, (req, res) => {
     });
 });
 
+router.post("/artists/translate", urlencodedParser,async (req, res) => {
+  let currentLang = globals.languages[req.getLocale()];
+  var id=req.body.id;
+  var sourceLang=req.getLocale();
+  db.query(
+    `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`,
+    async function (err, artist) {
+      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+        if (currentLang==langId){continue;}    
+        var destLang=globals.languages.getNameById(langId);
+        var name = await translate(artist[0].name,sourceLang,destLang);
+        var country = await translate(artist[0].country,sourceLang,destLang);
+        var instrument = await translate(artist[0].instrument,sourceLang,destLang);
+        db.query(`UPDATE artists_translate SET name = '${name}', \
+        country = '${country}',\
+        instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`,
+        function (err, results) {}) 
+      }
+      req.session.menuId = PageIDs.artists;
+      res.redirect("/admin/");
+    });
+});
+
 
 router.post("/artists/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO artists VALUES (0,0)`,
@@ -333,7 +394,7 @@ router.post("/artists/add", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       let src = path.join(__dirname, '..', '/static/img/about/artists', "placeholder.jpg");
       let dest = path.join(__dirname, '..', '/static/img/about/artists', results.insertId + ".jpg");
-      for (let langId = 1; langId <= Object.keys(globals.languages).length; langId++) {
+      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
         db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'Имя','Страна','Инструмент')`,(err, results)=>{
           if (err) console.log(err);
         })        
@@ -405,6 +466,26 @@ router.post("/composers/delete", urlencodedParser, (req, res) => {
     });
 });
 
+router.post("/composers/translate", urlencodedParser,async (req, res) => {
+  let currentLang = globals.languages[req.getLocale()];
+  var id=req.body.id;
+  var sourceLang=req.getLocale();
+  db.query(
+    `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`,
+    async function (err, composer) {
+      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+        if (currentLang==langId){continue;}    
+        var destLang=globals.languages.getNameById(langId);
+        var name = await translate(artist[0].name,sourceLang,destLang);
+        var country = await translate(artist[0].country,sourceLang,destLang);
+        db.query(`UPDATE composers_translate SET name = '${name}', \
+        country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`,
+        function (err, results) {}) 
+      }
+      req.session.menuId = PageIDs.composers;
+      res.redirect("/admin/");
+    });
+});
 
 router.post("/composers/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO composers VALUES (0,0)`,
@@ -412,7 +493,7 @@ router.post("/composers/add", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       let src = path.join(__dirname, '..', '/static/img/about/composers', "placeholder.jpg");
       let dest = path.join(__dirname, '..', '/static/img/about/composers', results.insertId + ".jpg");
-      for (let langId = 1; langId <= Object.keys(globals.languages).length; langId++) {
+      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
         db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'Имя','Страна')`,(err, results)=>{
           if (err) console.log(err);
         })        

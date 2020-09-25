@@ -35,7 +35,8 @@ router.get("/artists", async (req,res)=>{
         if (err) console.log(err);
         var artists=[[],[],[],[],[],[],[],[],[],[]];
         artistsAll.forEach((artist)=>{
-            artists[artist.groupId-1].push(artist);
+            if (artist.groupId>0)
+                artists[artist.groupId-1].push(artist);
         });
         
         res.render('about/artists.hbs',{title, artists});

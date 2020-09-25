@@ -32,6 +32,12 @@
                             <label class="form-check-label" for="isInResidence">Композитор-inresidence</label>
                         </div>
                     </form>
+                    <form action="/admin/composers/translate" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="{{this.id}}">
+                            <input type="submit" class="form-control" value="Перевести на остальные языки">                            
+                        </div>
+                    </form>
 
                 </div>
 
