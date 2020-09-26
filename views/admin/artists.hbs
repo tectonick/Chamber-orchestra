@@ -21,15 +21,15 @@
                         <input disabled="true" class='form-control' type="submit" value="Загрузить фото" name="submit">
                     </form>
                 </div>
-                <div class="col-12 col-md-8 p-4">
+                <div class="col-12 col-md-8 p-4 form-container">
 
                     <form class='form-group' action="/admin/artists/edit" id="edit-form-{{this.id}}" method="POST">
                         <input type="hidden" name="id" value="{{this.id}}">
                         <textarea name="name" class="form-control w-100" rows="1">{{this.name}}</textarea>
                         <textarea name="instrument" class="form-control w-100" rows="1">{{this.instrument}}</textarea>
                         <textarea name="country" class="form-control w-100" rows="1">{{this.country}}</textarea>
-                        <select class="form-control w-100" name="group" id="cars">
-                            <option value="" selected disabled hidden>Группа</option>
+                        <select class="form-control w-100" name="group">
+                            <option value="" selected disabled hidden>Изменить группу</option>
                             <option value="1">Дирижеры</option>
                             <option value="2">Скрипачи</option>
                             <option value="3">Альтисты</option>
@@ -42,12 +42,14 @@
                             <option value="10">Чтецы</option>
                         </select>
                     </form>
-                    <form action="/admin/artists/translate" method="post">
+                    <input name='translate-form-{{this.id}}'  class='translate-button form-control' type="submit"
+                            value="Перевести на остальные языки"></input>
+                    <form action="/admin/artists/translate" method="post" id="translate-form-{{this.id}}" >
                         <div class="form-group">
-                            <input type="hidden" name="id" value="{{this.id}}">
-                            <input type="submit" class="form-control" value="Перевести на остальные языки">                            
+                            <input type="hidden" name="id" value="{{this.id}}">                       
                         </div>
                     </form>
+                    
 
                 </div>
 
@@ -57,7 +59,6 @@
                             type="submit" value="Удалить артиста"></input>
                         <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
                             value="Сохранить артиста"></input>
-
                     </div>
 
                 </div>
@@ -110,6 +111,10 @@
 
 
     $(document).ready(function () {
+        
+
+
+
         $(".delete-button").click(function () {
             var modal = $('#deleteModal');
             modal.attr('name', $(this).attr('name'));
@@ -134,7 +139,6 @@
         });
 
         $(".save-button").click(function () {
-
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
             $.post("/admin/artists/edit", formData, (data, status) => {
@@ -142,14 +146,50 @@
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
                 });
+
+                let translateBtn=document.getElementById(formName).parentElement.querySelector('.translate-button');
+                translateBtn.removeAttribute('disabled');
+                
+
+
             }).fail(() => {
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
                 });
             });
-
         });
+
+        $(".translate-button").click(function () {
+            var formName = $(this).attr('name');
+            var formData = $('#' + formName).serialize();
+            $.post("/admin/artists/translate", formData, (data, status) => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+
+            }).fail(() => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            });
+        });
+
+
+        document.querySelectorAll('.form-container').forEach((element)=>{
+            let translateButton= element.querySelector('.translate-button');
+            element.querySelectorAll('textarea').forEach((inputEl)=>{
+                inputEl.addEventListener('input', ()=>{
+                    translateButton.setAttribute('disabled','disabled');
+                })
+            });
+
+        })
+
+
+
     });
     
 </script>

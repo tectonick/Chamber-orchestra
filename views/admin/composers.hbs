@@ -21,7 +21,7 @@
                         <input disabled="true" class='form-control' type="submit" value="Загрузить фото" name="submit">
                     </form>
                 </div>
-                <div class="col-12 col-md-8 p-4">
+                <div class="col-12 col-md-8 p-4 form-container">
 
                     <form class='form-group' action="/admin/composers/edit" id="edit-form-{{this.id}}" method="POST">
                         <input type="hidden" name="id" value="{{this.id}}">
@@ -32,12 +32,14 @@
                             <label class="form-check-label" for="isInResidence">Композитор-inresidence</label>
                         </div>
                     </form>
-                    <form action="/admin/composers/translate" method="post">
+
+                                        <form action="/admin/composers/translate" method="post" id="translate-form-{{this.id}}" >
                         <div class="form-group">
-                            <input type="hidden" name="id" value="{{this.id}}">
-                            <input type="submit" class="form-control" value="Перевести на остальные языки">                            
+                            <input type="hidden" name="id" value="{{this.id}}">                       
                         </div>
                     </form>
+                    <input name='translate-form-{{this.id}}'  class='translate-button form-control' type="submit"
+                            value="Перевести на остальные языки"></input>
 
                 </div>
 
@@ -132,6 +134,10 @@
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
                 });
+
+                
+                let translateBtn=document.getElementById(formName).parentElement.querySelector('.translate-button');
+                translateBtn.removeAttribute('disabled');     
             }).fail(() => {
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
@@ -140,6 +146,34 @@
             });
 
         });
+
+        $(".translate-button").click(function () {
+            var formName = $(this).attr('name');
+            var formData = $('#' + formName).serialize();
+            $.post("/admin/artists/translate", formData, (data, status) => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            }).fail(() => {
+                var oldColor = $(this).css('backgroundColor');
+                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
+                    $(this).animate({ backgroundColor: oldColor });
+                });
+            });
+        });
+
+        document.querySelectorAll('.form-container').forEach((element)=>{
+            let translateButton= element.querySelector('.translate-button');
+            element.querySelectorAll('textarea').forEach((inputEl)=>{
+                inputEl.addEventListener('input', ()=>{
+                    translateButton.setAttribute('disabled','disabled');
+                })
+            });
+
+        })
+
+
     });
     
 </script>

@@ -12,13 +12,8 @@ const globals = require("../globals.js");
 var unirest = require("unirest");
 
 
-
-
-
-
-
-
 function translate(text, source, dest) {
+  //500 requests a day !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return new Promise((resolve, reject) => {
     if (source == "by") source = "be";
     if (dest == "by") dest = "be";
@@ -35,17 +30,18 @@ function translate(text, source, dest) {
       useQueryString: true,
     });
 
-    req.form({
-      source: source,
-      q: text,
-      target: dest,
-    });
+    // req.form({
+    //   source: source,
+    //   q: text,
+    //   target: dest,
+    // });
 
-    req.end(function (res) {
-      if (res.error) reject(res.error);
+    // req.end(function (res) {
+    //   if (res.error) reject(res.error);
 
-      resolve(res.body.data.translations[0].translatedText);
-    });
+    //   resolve(res.body.data.translations[0].translatedText);
+    // });
+    resolve(text);
   });
 }
 
@@ -348,6 +344,7 @@ router.get("/artists", async (req, res) => {
     `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
     function (err, artists) {
       if (err) console.log(err);
+      artists.reverse();
       res.render("admin/artists.hbs", { layout: false, artists });
     }
   );
@@ -371,19 +368,27 @@ router.post("/artists/translate", urlencodedParser,async (req, res) => {
   db.query(
     `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`,
     async function (err, artist) {
-      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
-        if (currentLang==langId){continue;}    
-        var destLang=globals.languages.getNameById(langId);
-        var name = await translate(artist[0].name,sourceLang,destLang);
-        var country = await translate(artist[0].country,sourceLang,destLang);
-        var instrument = await translate(artist[0].instrument,sourceLang,destLang);
-        db.query(`UPDATE artists_translate SET name = '${name}', \
-        country = '${country}',\
-        instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`,
-        function (err, results) {}) 
+      if  (err) {
+        console.log(err);
+        res.sendStatus(500);
       }
-      req.session.menuId = PageIDs.artists;
-      res.redirect("/admin/");
+      try {
+        for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+          if (currentLang==langId){continue;}    
+          var destLang=globals.languages.getNameById(langId);
+          var name = await translate(artist[0].name,sourceLang,destLang);
+          var country = await translate(artist[0].country,sourceLang,destLang);
+          var instrument = await translate(artist[0].instrument,sourceLang,destLang);
+          db.query(`UPDATE artists_translate SET name = '${name}', \
+          country = '${country}',\
+          instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`,
+          function (err, results) {}) 
+        }        
+      } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+      }
+      res.sendStatus(200);
     });
 });
 
@@ -450,6 +455,7 @@ router.get("/composers", async (req, res) => {
     `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
     function (err, composers) {
       if (err) console.log(err);
+      composers.reverse();
       res.render("admin/composers.hbs", { layout: false, composers });
     }
   );
@@ -473,17 +479,27 @@ router.post("/composers/translate", urlencodedParser,async (req, res) => {
   db.query(
     `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`,
     async function (err, composer) {
-      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
-        if (currentLang==langId){continue;}    
-        var destLang=globals.languages.getNameById(langId);
-        var name = await translate(artist[0].name,sourceLang,destLang);
-        var country = await translate(artist[0].country,sourceLang,destLang);
-        db.query(`UPDATE composers_translate SET name = '${name}', \
-        country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`,
-        function (err, results) {}) 
+      if  (err) {
+        console.log(err);
+        res.sendStatus(500);
       }
-      req.session.menuId = PageIDs.composers;
-      res.redirect("/admin/");
+      try {
+        for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+          if (currentLang==langId){continue;}    
+          var destLang=globals.languages.getNameById(langId);
+          var name = await translate(composer[0].name,sourceLang,destLang);
+          var country = await translate(composer[0].country,sourceLang,destLang);
+          
+          db.query(`UPDATE composers_translate SET name = '${name}', \
+          country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`,
+          function (err, results) {}) 
+        }        
+      } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+      }
+
+      res.sendStatus(200);
     });
 });
 
@@ -502,8 +518,6 @@ router.post("/composers/add", urlencodedParser, (req, res) => {
         req.session.menuId = PageIDs.composers;
         res.redirect("/admin/");
       });
-
-
     });
 });
 
@@ -538,6 +552,122 @@ router.post("/composers/posterupload", urlencodedParser, (req, res) => {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+router.get("/musicians", async (req, res) => {
+  let langId = globals.languages[req.getLocale()];
+  db.query(
+    `SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`,
+    function (err, musicians) {
+      if (err) console.log(err);
+      res.render("admin/musicians.hbs", { layout: false, musicians });
+    }
+  );
+});
+
+router.post("/musicians/delete", urlencodedParser, (req, res) => {
+  db.query(`DELETE FROM musicians_translate WHERE musicianId=${req.body.id}`,
+    function (err, results) {
+      if (err) console.log(err);
+      db.query(`DELETE FROM musicians WHERE id=${req.body.id}`,()=>{});
+      DeleteImageById(req.body.id, '/static/img/about/musicians/').then(()=>{
+        res.render('admin/musicians', { id: PageIDs.musicians });
+      });      
+    });
+});
+
+router.post("/musicians/translate", urlencodedParser,async (req, res) => {
+  let currentLang = globals.languages[req.getLocale()];
+  var id=req.body.id;
+  var sourceLang=req.getLocale();
+  db.query(
+    `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`,
+    async function (err, musician) {
+      if  (err) {
+        console.log(err);
+        res.sendStatus(500);
+      }
+      try {
+        for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+          if (currentLang==langId){continue;}    
+          var destLang=globals.languages.getNameById(langId);
+          var name = await translate(musician[0].name,sourceLang,destLang);
+          var bio = await translate(musician[0].bio,sourceLang,destLang);
+          db.query(`UPDATE musicians_translate SET name = '${name}', \
+          bio = '${bio}' WHERE ${id}=musicianId AND ${langId}=languageId;`,
+          function (err, results) {}) 
+        }        
+      } catch (error) {
+        console.log(err);
+        res.sendStatus(500);
+      }
+      res.sendStatus(200);
+    });
+});
+
+router.post("/musicians/add", urlencodedParser, (req, res) => {
+  db.query(`INSERT INTO musicians VALUES (0,0)`,
+    function (err, results) {
+      if (err) console.log(err);
+      let src = path.join(__dirname, '..', '/static/img/about/musicians', "placeholder.jpg");
+      let dest = path.join(__dirname, '..', '/static/img/about/musicians', results.insertId + ".jpg");
+      for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
+        db.query(`INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'Имя','Биография')`,(err, results)=>{
+          if (err) console.log(err);
+        })        
+      }
+      fs.copyFile(src, dest).then( () => {
+        req.session.menuId = PageIDs.musicians;
+        res.redirect("/admin/");
+      });
+    });
+});
+
+router.post("/musicians/edit", urlencodedParser, (req, res) => {
+  let langId = globals.languages[req.getLocale()];
+  db.query(`UPDATE musicians_translate SET name = '${req.body.name}', \
+    bio = '${req.body.bio}' WHERE ${req.body.id}=musicianId AND ${langId}=languageId;`,
+    function (err, results) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(400);
+      } else {
+        db.query(`UPDATE musicians SET groupId = '${req.body.groupId}' WHERE ${req.body.id}=id;`,
+         function (err, results) {});
+        res.sendStatus(200);
+      }
+    });
+});
+
+router.post("/musicians/posterupload", urlencodedParser, (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400);
+  }
+  let fileToUpload = req.files.fileToUpload;
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  fileToUpload.mv(tmpfile, function (err) {
+    imageProcessor.smallImage(tmpfile).then(()=>{
+      return SaveTmpPoster(tmpfile, '/static/img/about/musicians/', req.body.id);
+    }).then(()=>{      
+      req.session.menuId = PageIDs.musicians;
+      res.redirect('/admin/'); 
+    });
+  });
+});
+
+
+
+
+
+
 
 
 
