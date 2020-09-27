@@ -13,7 +13,7 @@ var unirest = require("unirest");
 
 
 function translate(text, source, dest) {
-  //500 requests a day !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return new Promise((resolve, reject) => {
     if (source == "by") source = "ru";
     if (dest == "by") dest = "ru";
@@ -118,6 +118,14 @@ async function SaveTmpPoster(tmpfile, dstFolder, newId, thumbnailFolder){
 }
 
 
+
+async function PosterUpload(fileToUpload, folder, id, imageProcessorFunction){
+  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
+  await fileToUpload.mv(tmpfile);
+  await imageProcessorFunction(tmpfile);
+  return SaveTmpPoster(tmpfile,folder, id);
+}
+
 function FilesToArray(files){
   var filesArray=[];
   if (!Array.isArray(files.files)) {
@@ -217,21 +225,14 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/concerts/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(()=>{
-      return SaveTmpPoster(tmpfile,'/static/img/posters/', req.body.id);
-    }).then(()=>{      
-      req.session.menuId = PageIDs.concerts;
-      res.redirect('/admin/'); 
-    });
-  });
+
+router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
+  await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
+  req.session.menuId = PageIDs.concerts;
+  res.redirect('/admin/'); 
 });
+
+
 
 router.get("/news", (req, res) => {
   db.query("SELECT * FROM news ORDER BY date DESC",
@@ -281,20 +282,10 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/news/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(()=>{
-      return SaveTmpPoster(tmpfile, '/static/img/news/', req.body.id);
-    }).then(()=>{      
-      req.session.menuId = PageIDs.news;
-      res.redirect('/admin/'); 
-    });
-  });
+router.post("/news/posterupload", urlencodedParser, async (req, res) => {
+  await PosterUpload(req.files.fileToUpload, '/static/img/news/', req.body.id, imageProcessor.posterImage);
+  req.session.menuId = PageIDs.news;
+  res.redirect('/admin/'); 
 });
 
 
@@ -418,20 +409,10 @@ router.post("/artists/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/artists/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(()=>{
-      return SaveTmpPoster(tmpfile, '/static/img/about/artists/', req.body.id);
-    }).then(()=>{      
-      req.session.menuId = PageIDs.artists;
-      res.redirect('/admin/'); 
-    });
-  });
+router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
+  await PosterUpload(req.files.fileToUpload, '/static/img/about/artists/', req.body.id, imageProcessor.smallImage);
+  req.session.menuId = PageIDs.artists;
+  res.redirect('/admin/'); 
 });
 
 
@@ -522,20 +503,10 @@ router.post("/composers/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/composers/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(()=>{
-      return SaveTmpPoster(tmpfile, '/static/img/about/composers/', req.body.id);
-    }).then(()=>{      
-      req.session.menuId = PageIDs.composers;
-      res.redirect('/admin/'); 
-    });
-  });
+router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
+  await PosterUpload(req.files.fileToUpload, '/static/img/about/composers/', req.body.id, imageProcessor.smallImage);
+  req.session.menuId = PageIDs.composers;
+  res.redirect('/admin/');
 });
 
 
@@ -629,20 +600,10 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/musicians/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.smallImage(tmpfile).then(()=>{
-      return SaveTmpPoster(tmpfile, '/static/img/about/musicians/', req.body.id);
-    }).then(()=>{      
-      req.session.menuId = PageIDs.musicians;
-      res.redirect('/admin/'); 
-    });
-  });
+router.post("/musicians/posterupload", urlencodedParser, async (req, res) => {
+  await PosterUpload(req.files.fileToUpload, '/static/img/about/musicians/', req.body.id, imageProcessor.smallImage);
+  req.session.menuId = PageIDs.musicians;
+  res.redirect('/admin/');
 });
 
 
@@ -732,20 +693,11 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
     });
 });
 
-router.post("/archive/posterupload", urlencodedParser, (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400);
-  }
-  let fileToUpload = req.files.fileToUpload;
-  let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
-  fileToUpload.mv(tmpfile, function (err) {
-    imageProcessor.posterImage(tmpfile).then(() => {
-      return SaveTmpPoster(tmpfile, '/static/img/posters/',  req.body.id);
-    }).then(() => {
-      req.session.menuId = PageIDs.archive;
-      res.redirect('/admin/');
-    });
-  });
+router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
+
+  await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
+  req.session.menuId = PageIDs.archive;
+  res.redirect('/admin/');
 });
 
 
