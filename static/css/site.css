@@ -635,6 +635,29 @@ pre {
   opacity: 0.8;
 }
 
+#allMusiciansList{
+  column-gap: 20px;
+}
+
+@media (min-width: 576px) { 
+  #allMusiciansList{column-count: 1;}
+}
+
+@media (min-width: 768px) { 
+  #allMusiciansList{column-count: 2;}
+ }
+
+@media (min-width: 992px) { 
+  #allMusiciansList{column-count: 3;}
+}
+
+@media (min-width: 1200px) { 
+  #allMusiciansList{column-count: 4;}
+ }
+
+
+
+
 @media (min-width: 992px) {
   .block-img {
     max-width: 40%;

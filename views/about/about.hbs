@@ -16,8 +16,18 @@
             </div>
         </div>
 
-        <div class="block mt-3" id="art directors">
+        <h4 class="text-center my-3 mx-auto">{{__ 'history.artdirectors.title'}}</h4>
+        <div class="block" id="artDirectors">
             {{> artdirectors}}
+        </div>
+
+
+        <h4 class="text-center my-3 mx-auto">{{__ 'history.musicians'}}</h4>
+        <div class="block col-12" id="allMusicians">
+            
+            <ol id='allMusiciansList'>
+
+            </ol>
         </div>
     </div>
 </div>
@@ -33,6 +43,8 @@
     $(document).ready(function () {
         let lang = getCookie('locale');
         $("#text-container").load(`/html/history_${lang}.html`);
+        $("#allMusiciansList").load(`/html/musicians_${lang}.html`);
+
     });
 
 </script>
