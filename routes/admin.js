@@ -15,33 +15,40 @@ var unirest = require("unirest");
 function translate(text, source, dest) {
   //500 requests a day !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return new Promise((resolve, reject) => {
-    if (source == "by") source = "be";
-    if (dest == "by") dest = "be";
-    var req = unirest(
-      "POST",
-      "https://google-translate1.p.rapidapi.com/language/translate/v2"
-    );
+    if (source == "by") source = "ru";
+    if (dest == "by") dest = "ru";
+    var req = unirest("POST", "https://microsoft-translator-text.p.rapidapi.com/translate");
 
-    req.headers({
-      "x-rapidapi-host": "google-translate1.p.rapidapi.com",
-      "x-rapidapi-key": "d51ebc844amshcee4bf4760c0496p115964jsnca08b651c0c4",
-      "accept-encoding": "application/gzip",
-      "content-type": "application/x-www-form-urlencoded",
-      useQueryString: true,
+req.query({
+	"from": source,
+	"profanityAction": "NoAction",
+	"textType": "plain",
+	"to": dest,
+	"api-version": "3.0"
+});
+
+req.headers({
+	"x-rapidapi-host": "microsoft-translator-text.p.rapidapi.com",
+	"x-rapidapi-key": "d0e77b726emshfc7f66b4a30ff26p1a2da2jsn335b9afc1c7a",
+	"content-type": "application/json",
+	"accept": "application/json",
+	"useQueryString": true
+});
+
+req.type("json");
+req.send([
+	{
+		"Text": text
+	}
+]);
+
+    req.end(function (res) {
+      if (res.error) {reject(res.error)} else{
+        resolve(res.body[0].translations[0].text);
+      }
+
     });
-
-    // req.form({
-    //   source: source,
-    //   q: text,
-    //   target: dest,
-    // });
-
-    // req.end(function (res) {
-    //   if (res.error) reject(res.error);
-
-    //   resolve(res.body.data.translations[0].translatedText);
-    // });
-    resolve(text);
+    // resolve(text);
   });
 }
 

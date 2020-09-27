@@ -150,7 +150,7 @@
         $(".translate-button").click(function () {
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
-            $.post("/admin/artists/translate", formData, (data, status) => {
+            $.post("/admin/composers/translate", formData, (data, status) => {
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
