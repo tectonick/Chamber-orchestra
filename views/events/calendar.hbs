@@ -6,7 +6,7 @@
 
 
 <h4 class="text-center my-3">{{__ 'calendar.title'}}</h4>
-<div class="container calendar-container">
+<div class="container calendar-container mb-5">
 
     <div id='calendar'></div>
 </div>
@@ -21,8 +21,15 @@
         calendar = new FullCalendar.Calendar(calendarEl, {
 
             locale: pageLocale,
+            views: {
+                dayGridMonth: { 
+                    fixedWeekCount:false                
+                }
+            },
+            height: 'auto',
             initialView: 'dayGridMonth',
             defaultView: 'dayGridMonth',
+         
             eventColor: 'orange',
             headerToolbar: {
                 left: 'prev,today,next',
