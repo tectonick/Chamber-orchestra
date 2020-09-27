@@ -317,17 +317,20 @@ label {
 }
 @media (min-width: 1200px) {
   .fc-daygrid-event-harness{
-    width: 17%;
+    width: 12%;
   }
 }
 
 
 
-
+.fc .fc-button-primary:focus, .fc .fc-button:focus {
+  box-shadow:none !important;
+}
 
 .fc-daygrid-day{
   background-size: 100% auto; 
   background-repeat: no-repeat;
+  background-position-y: bottom;
 }
 
 .fc-header-toolbar > div {
