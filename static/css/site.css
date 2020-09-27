@@ -343,9 +343,6 @@ label {
 }
 
 @media(max-width:480px){
-  .fc-today-button{
-    display: none !important;
-   }
 
   .fc-header-toolbar h2 {
     font-size: 1rem !important;

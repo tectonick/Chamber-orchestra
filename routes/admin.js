@@ -77,29 +77,18 @@ const PageIDs = {
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Helpers
-
-async function DeletePoster(nameId){
-  let imgToDel = path.join(__dirname, '..', '/static/img/posters/', nameId + ".jpg");
-  return fs.unlink(imgToDel);  
-}
-async function DeleteNewsPoster(nameId){
-  let imgToDel = path.join(__dirname, '..', '/static/img/news/', nameId + ".jpg");
-  return fs.unlink(imgToDel); 
-}
 async function DeleteImageById(nameId, folder){
   let imgToDel = path.join(__dirname, '..', folder, nameId + ".jpg");
   return fs.unlink(imgToDel); 
 }
-
 function DateToISOLocal(date){
   // JS interprets db date as local and converts to UTC
   var localDate = date - date.getTimezoneOffset() * 60 * 1000;
   return new Date(localDate).toISOString().slice(0, 19);  
 }
-
-async function MakeDefaultPoster(newId){  
-  let src = path.join(__dirname, '..', '/static/img/posters/', "placeholder.jpg");
-  let dest = path.join(__dirname, '..', '/static/img/posters/', newId  + ".jpg");
+async function MakeDefaultImage(newId, folder){  
+  let src = path.join(__dirname, '..', folder, "placeholder.jpg");
+  let dest = path.join(__dirname, '..', folder, newId  + ".jpg");
   return fs.copyFile(src, dest);  
 }
 
@@ -193,7 +182,7 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-      DeletePoster(req.body.id).then(()=>{
+      DeleteImageById(req.body.id, '/static/img/posters/').then(()=>{
         res.render('admin/admin', { id: PageIDs.concerts });
       });      
     });
@@ -204,7 +193,7 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','1970-01-01 00:00:00','Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
-      MakeDefaultPoster(results.insertId).then(function(){
+      MakeDefaultImage(results.insertId, '/static/img/posters/').then(function(){
         req.session.menuId = PageIDs.concerts;
         res.redirect("/admin/");
       });
@@ -260,23 +249,20 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM news WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-      DeleteNewsPoster(req.body.id).then(()=>{
+      DeleteImageById(req.body.id,'/static/img/news/').then(()=>{
         res.render('admin/admin', { id: PageIDs.news });
       });
       
     });
 });
 
-router.post("/news/add", urlencodedParser, (req, res) => {
+router.post("/news/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO news VALUES (0,'Новая новость','2999-01-01 00:00','Текст')`,
-    function (err, results) {
+    async function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/news/', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/news/', results.insertId + ".jpg");
-      fs.copyFile(src, dest).then( () => {
-        req.session.menuId = PageIDs.news;
-        res.redirect("/admin/");
-      });
+      await MakeDefaultImage(results.insertId,  '/static/img/news/');
+      req.session.menuId = PageIDs.news;
+      res.redirect("/admin/");
     });
 });
 
@@ -400,23 +386,18 @@ router.post("/artists/translate", urlencodedParser,async (req, res) => {
 });
 
 
-router.post("/artists/add", urlencodedParser, (req, res) => {
+router.post("/artists/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO artists VALUES (0,0)`,
-    function (err, results) {
+    async function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/about/artists', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/about/artists', results.insertId + ".jpg");
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
         db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'Имя','Страна','Инструмент')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
-      fs.copyFile(src, dest).then( () => {
-        req.session.menuId = PageIDs.artists;
-        res.redirect("/admin/");
-      });
-
-
+      await MakeDefaultImage(results.insertId,  '/static/img/about/artists');
+      req.session.menuId = PageIDs.artists;
+      res.redirect("/admin/");
     });
 });
 
@@ -510,21 +491,18 @@ router.post("/composers/translate", urlencodedParser,async (req, res) => {
     });
 });
 
-router.post("/composers/add", urlencodedParser, (req, res) => {
+router.post("/composers/add", urlencodedParser, async(req, res) => {
   db.query(`INSERT INTO composers VALUES (0,0)`,
-    function (err, results) {
+    async function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/about/composers', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/about/composers', results.insertId + ".jpg");
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
         db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'Имя','Страна')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
-      fs.copyFile(src, dest).then( () => {
-        req.session.menuId = PageIDs.composers;
-        res.redirect("/admin/");
-      });
+      await MakeDefaultImage(results.insertId, '/static/img/about/composers');
+      req.session.menuId = PageIDs.composers;
+      res.redirect("/admin/");
     });
 });
 
@@ -620,21 +598,18 @@ router.post("/musicians/translate", urlencodedParser,async (req, res) => {
     });
 });
 
-router.post("/musicians/add", urlencodedParser, (req, res) => {
+router.post("/musicians/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO musicians VALUES (0,0)`,
-    function (err, results) {
+    async function (err, results) {
       if (err) console.log(err);
-      let src = path.join(__dirname, '..', '/static/img/about/musicians', "placeholder.jpg");
-      let dest = path.join(__dirname, '..', '/static/img/about/musicians', results.insertId + ".jpg");
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
         db.query(`INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'Имя','Биография')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
-      fs.copyFile(src, dest).then( () => {
-        req.session.menuId = PageIDs.musicians;
-        res.redirect("/admin/");
-      });
+      await MakeDefaultImage(results.insertId, '/static/img/about/musicians');
+      req.session.menuId = PageIDs.musicians;
+      res.redirect("/admin/");
     });
 });
 
@@ -723,7 +698,7 @@ router.post("/archive/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`,
     function (err, results) {
       if (err) console.log(err);
-      DeletePoster(req.body.id).then(()=>{
+      DeleteImageById(req.body.id,'/static/img/posters/').then(()=>{
         res.render('admin/admin', { id: PageIDs.archive });
       });
     });
@@ -733,7 +708,7 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
   db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
     function (err, results) {
       if (err) console.log(err);
-      MakeDefaultPoster(results.insertId).then(()=>{
+      MakeDefaultImage(results.insertId, '/static/img/posters/').then(()=>{
         req.session.menuId = PageIDs.archive;
         res.redirect("/admin/");
       })
