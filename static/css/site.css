@@ -282,6 +282,48 @@ label {
   padding-top: 10px !important;
 }
 
+.fc-daygrid-event-harness{
+  visibility: hidden;
+  width: 1200%;
+}
+
+.fc-daygrid-day-frame{
+  transition: opacity 0.5s;
+}
+.fc-daygrid-day-frame:hover{
+  opacity: 0.2 !important;
+}
+
+/* .fc .fc-day-other .fc-daygrid-day-top {
+  opacity: 1 !important;
+} */
+
+
+@media (min-width: 480px) {
+  .fc-daygrid-event-harness{
+    width: 120%;
+  }
+}
+
+@media (min-width: 768px) {
+  .fc-daygrid-event-harness{
+    width: 40%;
+  }
+}
+@media (min-width: 992px) {
+  .fc-daygrid-event-harness{
+    width: 20%;
+  }
+}
+
+
+
+
+.fc-daygrid-day{
+  background-size: 100% auto; 
+  background-repeat: no-repeat;
+}
+
 .fc-header-toolbar > div {
   max-width: 33%;
 }

@@ -16,7 +16,7 @@
     let localePosInCookie = document.cookie.indexOf('locale=') + 7;
     var pageLocale = document.cookie.slice(localePosInCookie, localePosInCookie + 2);
     var calendar;
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', async function () {
         var calendarEl = document.getElementById('calendar');
         calendar = new FullCalendar.Calendar(calendarEl, {
 
@@ -27,7 +27,7 @@
             headerToolbar: {
                 left: 'prev,today,next',
                 center: 'title',
-                right: 'dayGridMonth,listYear'
+                right: 'dayGridMonth'
             },
 
             eventMouseEnter: function (info) {
@@ -43,7 +43,14 @@
             }
 
         });
-        initCalend();
+        await initCalend();
+        document.querySelectorAll('.fc-button').forEach((element)=>{
+            element.addEventListener('click', ()=>{
+                setPosters();
+            })
+        });
+        setPosters();
+
 
     });
 
@@ -53,7 +60,23 @@
         return new Date(localDate).toISOString().slice(0, 19);
     }
 
+    function setPosters(){
+        document.querySelectorAll(".fc-event-title").forEach((idEl)=>{
+            var id = idEl.innerHTML;
+            var cell=idEl.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+            var frame = cell.querySelector(".fc-daygrid-day-frame");
+            //var number=frame.querySelector('.fc-daygrid-day-top');
+            cell.style.backgroundImage=`url("/img/posters/${id}.jpg")`;
+            //number.style.backgroundColor="rgba(255,255,255,0.5)"
+            cell.style.cursor="pointer";
+            frame.style.backgroundColor="rgb(255,255,255)"
+            frame.style.opacity="0.5";
+            cell.addEventListener('click',()=>{
+                window.location = "/events#"+id;
 
+            })
+        });
+    }
     async function initCalend() {
         response = await fetch('/api/concerts');
         if (response.ok) {
@@ -68,7 +91,7 @@
 
             let concertUrl = ((concertDate >= Date.now()) ? ("/events#") : ("/events/archive#")) + concert.id;
             calendar.addEvent({
-                title: concert.title,
+                title: concert.id,
                 id: concert.id,
                 start: concert.date,
                 url: concertUrl,
@@ -80,6 +103,7 @@
         })
         calendar.render();
     }
+
 
 
 
