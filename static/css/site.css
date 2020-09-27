@@ -660,6 +660,16 @@ pre {
   margin-left: 0;
 }
 
+.save-block{
+  position: absolute;
+    bottom: 0px;
+}
+
+.form-control{
+  white-space: normal !important;
+  height: auto !important;
+}
+
 @media (min-width: 768px) {
   .sidebar-wrapper {
     margin-left: 0;

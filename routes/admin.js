@@ -198,7 +198,7 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
 
 
 router.post("/concerts/add", urlencodedParser, (req, res) => {
-  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт','1970-01-01 00:00:00','Описание', 'Зал','',0)`,
+  db.query(`INSERT INTO concerts VALUES (0,'','1970-01-01 00:00:00','', '','',0)`,
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultImage(results.insertId, '/static/img/posters/').then(function(){
@@ -258,7 +258,7 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
 });
 
 router.post("/news/add", urlencodedParser, async (req, res) => {
-  db.query(`INSERT INTO news VALUES (0,'Новая новость','2999-01-01 00:00','Текст')`,
+  db.query(`INSERT INTO news VALUES (0,'','2999-01-01 00:00','')`,
     async function (err, results) {
       if (err) console.log(err);
       await MakeDefaultImage(results.insertId,  '/static/img/news/');
@@ -375,7 +375,7 @@ router.post("/artists/add", urlencodedParser, async (req, res) => {
     async function (err, results) {
       if (err) console.log(err);
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
-        db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'Имя','Страна','Инструмент')`,(err, results)=>{
+        db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'','','')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
@@ -467,7 +467,7 @@ router.post("/composers/add", urlencodedParser, async(req, res) => {
     async function (err, results) {
       if (err) console.log(err);
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
-        db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'Имя','Страна')`,(err, results)=>{
+        db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'','')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
@@ -564,7 +564,7 @@ router.post("/musicians/add", urlencodedParser, async (req, res) => {
     async function (err, results) {
       if (err) console.log(err);
       for (let langId = 1; langId < Object.keys(globals.languages).length; langId++) {
-        db.query(`INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'Имя','Биография')`,(err, results)=>{
+        db.query(`INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'','')`,(err, results)=>{
           if (err) console.log(err);
         })        
       }
@@ -656,7 +656,7 @@ router.post("/archive/delete", urlencodedParser, (req, res) => {
 });
 
 router.post("/archive/add", urlencodedParser, (req, res) => {
-  db.query(`INSERT INTO concerts VALUES (0,'Новый концерт', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'Описание', 'Зал','',0)`,
+  db.query(`INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',0)`,
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultImage(results.insertId, '/static/img/posters/').then(()=>{

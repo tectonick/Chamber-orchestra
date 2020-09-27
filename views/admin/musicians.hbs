@@ -1,16 +1,16 @@
-    <div class="ml-auto my-3">
-        <form action="/admin/musicians/add" method="post">
-            <input class='form-control' type="submit" value="Добавить музыканта" name="submit">
-        </form>
+<div class="ml-auto my-3">
+    <form action="/admin/musicians/add" method="post">
+        <input class='form-control' type="submit" value="Добавить музыканта" name="submit">
+    </form>
 
-    </div>
+</div>
 <div class="row">
 
     {{#each musicians}}
     <div concertId="{{this.id}}" class="row col-lg-6 col-12 searchable event-row">
 
 
-        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+        <div class="concert col-11 offset-1">
             <div class="row">
                 <div class="col-12 col-md-4 p-0">
                     <img class="poster" loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="">
@@ -25,8 +25,8 @@
 
                     <form class='form-group' action="/admin/musicians/edit" id="edit-form-{{this.id}}" method="POST">
                         <input type="hidden" name="id" value="{{this.id}}">
-                        <textarea name="name" class="form-control w-100" rows="1">{{this.name}}</textarea>
-                        <textarea name="bio" class="form-control w-100" rows="10">{{this.bio}}</textarea>
+                        <textarea name="name" class="form-control w-100" placeholder="Имя" rows="1">{{this.name}}</textarea>
+                        <textarea name="bio" class="form-control w-100" placeholder="Биография" rows="10">{{this.bio}}</textarea>
                         <select class="form-control w-100" name="groupId">
                             <option value="{{this.groupId}}" selected disabled hidden>Изменить группу</option>
                             <option value="1">Первые скрипки</option>
@@ -37,16 +37,16 @@
                             <option value="6">Клавишные</option>
                         </select>
                     </form>
-                    <form action="/admin/musicians/translate" method="post" id="translate-form-{{this.id}}" >
+                    <form action="/admin/musicians/translate" method="post" id="translate-form-{{this.id}}">
                         <div class="form-group">
-                            <input type="hidden" name="id" value="{{this.id}}">                       
+                            <input type="hidden" name="id" value="{{this.id}}">
                         </div>
                     </form>
-                    <input name='translate-form-{{this.id}}'  class='translate-button form-control' type="submit"
-                            value="Перевести на остальные языки"></input>
+                    <input name='translate-form-{{this.id}}' class='translate-button form-control' type="submit"
+                        value="Перевести на остальные языки"></input>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 ">
                     <div class="form-group">
                         <input name='{{this.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
                             type="submit" value="Удалить музыканта"></input>
@@ -122,27 +122,27 @@
         });
 
         $(".fileToUpload").change(function () {
-      if ($(this).val().length>0){
-            $(this).siblings('.form-control').prop('disabled', false);
+            if ($(this).val().length > 0) {
+                $(this).siblings('.form-control').prop('disabled', false);
 
-      }
+            }
         });
 
         $(".save-button").click(function (ev) {
-            var target=ev.target;
-            target.setAttribute('disabled','disabled');
+            var target = ev.target;
+            target.setAttribute('disabled', 'disabled');
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
             $.post("/admin/musicians/edit", formData, (data, status) => {
-                                target.removeAttribute('disabled');
+                target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
                 });
 
-                
-                let translateBtn=document.getElementById(formName).parentElement.querySelector('.translate-button');
-                translateBtn.removeAttribute('disabled');     
+
+                let translateBtn = document.getElementById(formName).parentElement.querySelector('.translate-button');
+                translateBtn.removeAttribute('disabled');
             }).fail(() => {
                 target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
@@ -154,9 +154,9 @@
         });
 
 
-                $(".translate-button").click(function (ev) {
-            var target=ev.target;
-            target.setAttribute('disabled','disabled');
+        $(".translate-button").click(function (ev) {
+            var target = ev.target;
+            target.setAttribute('disabled', 'disabled');
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
             $.post("/admin/musicians/translate", formData, (data, status) => {
@@ -174,15 +174,18 @@
             });
         });
 
-                document.querySelectorAll('.form-container').forEach((element)=>{
-            let translateButton= element.querySelector('.translate-button');
-            element.querySelectorAll('textarea').forEach((inputEl)=>{
-                inputEl.addEventListener('input', ()=>{
-                    translateButton.setAttribute('disabled','disabled');
+        
+
+        document.querySelectorAll('.form-container').forEach((element) => {
+            let translateButton = element.querySelector('.translate-button');
+            
+            element.querySelectorAll('textarea').forEach((inputEl) => {
+                inputEl.addEventListener('input', () => {
+                    translateButton.setAttribute('disabled', 'disabled');
                 })
             });
 
         })
     });
-    
+
 </script>

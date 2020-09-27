@@ -7,10 +7,10 @@
 <div class="row">
 
     {{#each composers}}
-    <div concertId="{{this.id}}" class="row col-lg-6 col-12 searchable event-row">
+    <div concertId="{{this.id}}" class="row col-lg-6 col-xl-4 col-12 searchable event-row">
 
 
-        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+        <div class="concert col-11 offset-1">
             <div class="row">
                 <div class="col-12 col-md-4 p-0">
                     <img class="poster" loading=lazy src="/img/about/composers/{{this.id}}.jpg" alt="">
@@ -25,8 +25,8 @@
 
                     <form class='form-group' action="/admin/composers/edit" id="edit-form-{{this.id}}" method="POST">
                         <input type="hidden" name="id" value="{{this.id}}">
-                        <textarea name="name" class="form-control w-100" rows="1">{{this.name}}</textarea>
-                        <textarea name="country" class="form-control w-100" rows="1">{{this.country}}</textarea>
+                        <textarea name="name" class="form-control w-100" placeholder="Имя" rows="1">{{this.name}}</textarea>
+                        <textarea name="country" class="form-control w-100" placeholder="Страна"  rows="1">{{this.country}}</textarea>
                         <div class="form-check">
                             <input type="checkbox" name="isInResidence" value='1'  id="hidden" {{#if this.isInResidence}} checked{{else}}{{/if}}>
                             <label class="form-check-label" for="isInResidence">Композитор-inresidence</label>
