@@ -302,7 +302,6 @@ router.post("/gallery/delete", urlencodedParser, (req, res) => {
 router.post("/gallery/upload", urlencodedParser, (req, res) => {
   if (!req.files) {return res.status(400);}
   var files = FilesToArray(req.files);
-
   files.forEach((fileToUpload) => {
     let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
     fileToUpload.mv(tmpfile, function (err) {
@@ -315,12 +314,6 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
   req.session.menuId = PageIDs.gallery;
   res.redirect('/admin/');
 });
-
-
-
-
-
-
 
 router.get("/artists", async (req, res) => {
   let langId = globals.languages[req.getLocale()];
@@ -414,9 +407,6 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
   req.session.menuId = PageIDs.artists;
   res.redirect('/admin/'); 
 });
-
-
-
 
 router.get("/composers", async (req, res) => {
   let langId = globals.languages[req.getLocale()];

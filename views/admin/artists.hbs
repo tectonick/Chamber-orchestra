@@ -138,10 +138,13 @@
       }
         });
 
-        $(".save-button").click(function () {
+        $(".save-button").click(function (ev) {
+            var target=ev.target;
+            target.setAttribute('disabled','disabled');
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
             $.post("/admin/artists/edit", formData, (data, status) => {
+                                target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
@@ -152,6 +155,7 @@
 
 
             }).fail(() => {
+                target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
@@ -159,16 +163,20 @@
             });
         });
 
-        $(".translate-button").click(function () {
+        $(".translate-button").click(function (ev) {
+            var target=ev.target;
+            target.setAttribute('disabled','disabled');
             var formName = $(this).attr('name');
             var formData = $('#' + formName).serialize();
             $.post("/admin/artists/translate", formData, (data, status) => {
+                target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
                 });
 
             }).fail(() => {
+                target.removeAttribute('disabled');
                 var oldColor = $(this).css('backgroundColor');
                 $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
                     $(this).animate({ backgroundColor: oldColor });
