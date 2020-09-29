@@ -26,6 +26,20 @@ router.get("/musicians", (req,res)=>{
         res.render('about/musicians.hbs', {title, musicians});
     });    
 });
+
+router.get("/musicians/getById", (req,res)=>{
+    let langId = globals.languages[req.getLocale()];
+    var id=req.query.id;
+    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND musicians.id=${id}`,
+    function (err, musician) {
+        if (err) {
+            res.sendStatus(400);
+        } else{
+            res.json(musician);
+        }
+    });    
+});
+
  
 router.get("/artists", async (req,res)=>{
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');

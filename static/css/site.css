@@ -766,3 +766,54 @@ blockquote p {
 .text p {
   text-indent: 30px;
 }
+
+
+.bio-button{
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.bio-button:hover{
+  color: #AE5C39 !important;
+}
+.modal-xlg {
+  max-width: 70% !important; 
+}
+@media (min-width: 1200px) {
+  .modal-xlg {
+     width: 90%; 
+  }
+}
+
+.modal-xlg .modal-body{
+  padding: 0 !important;
+}
+.modal-xlg .img-col{
+  padding: 0 !important;
+}
+.modal-xlg .bio-col{
+  padding: 1rem !important;
+}
+.modal-xlg .close{
+  margin: 0.5rem;
+}
+
+.close {
+
+  color: white;
+  -webkit-text-stroke: 1px black;
+  -webkit-text-fill-color: white;
+  opacity: .5;
+  position: absolute;
+  z-index: 5;
+  right: 1px;
+}
+
+
+.modal-xlg .row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: 0px;
+  margin-left: 0px;
+}
