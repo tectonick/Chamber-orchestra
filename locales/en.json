@@ -60,7 +60,7 @@
 	"artists.folks": "Other",
 	"artists.vocalists": "Vocalists",
 	"artists.voices": "Narrators",
-	"history.artdirectors.title": "Artistic directors",
+	"history.artdirectors.title": "Сhief conductors",
 	"history.artdirectors.d1": "The founder of the orchestra - Oleg Yanchenko (Artistic director - 1968-1969)",
 	"history.artdirectors.d2": "Yuri Tsiryuk (Chief Conductor: 1969-1977, 1978-1985, 1992-1993)",
 	"history.artdirectors.d3": "Alexey Vinogradov (1977-1978)",
@@ -72,5 +72,5 @@
 	"history.artdirectors.d9": "Vladimir Baidov (2001-2003, Belarus)",
 	"history.artdirectors.d10": "Petr Vandilovsky (2003-2009, Belarus)",
 	"history.artdirectors.d11": "Eugeny Bushkov (2009-present, Russia)",
-	"history.musicians": "Former orchestra musicians"
+	"history.musicians": "Employees of all years"
 }
