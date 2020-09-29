@@ -776,14 +776,14 @@ blockquote p {
   color: #AE5C39 !important;
 }
 .modal-xlg {
+  margin-left: 15%;
   max-width: 70% !important; 
-}
-@media (min-width: 1200px) {
-  .modal-xlg {
-     width: 90%; 
-  }
+  margin-right: 15%;
 }
 
+.modal-content{  
+  border-radius: 0 !important;
+}
 .modal-xlg .modal-body{
   padding: 0 !important;
 }
