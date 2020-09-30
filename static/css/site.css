@@ -461,12 +461,54 @@ pre {
   }
 }
 
+.musicians-container .card-columns{
+  column-count: 1;
+  text-align: center;
+
+}
+
+.musicians-container .card-columns .card{
+margin: 0 auto;
+
+}
+
+
+
+
+@media (min-width: 576px) {
+  .musicians-container .card-columns{
+    column-count: 2;
+  }
+}
+@media (min-width: 992px) {
+  .musicians-container .card-columns{
+    column-count: 3;
+  }
+}
+@media (min-width: 1200px) {
+  .musicians-container .card-columns{
+    column-count: 3; }
+}
+.musicians-container .card{
+  -webkit-backface-visibility: hidden;
+  transition: 0.15s ease-in-out;
+}
+
+/*Disks*/
+.musicians-container .card:hover {    
+  transform: translateY(-5px) scale(1.01);
+  -webkit-transform: translateY(-5px) scale(1.01);
+  /*box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);*/
+  /*-webkit-transition: 0s;*/
+}
+
+
+
 /*artists*/
 @media (min-width: 576px) {
   .card-columns {
     column-count: 2;
   }
-  .
   .card-columns {
     column-count: 1;
   }
@@ -621,17 +663,13 @@ pre {
 .disks .card{
   -webkit-backface-visibility: hidden;
   transition: 0.15s ease-in-out;
-
 }
 
 /*Disks*/
-.disks .card:hover {
-    
+.disks .card:hover {    
   transform: translateY(-5px) scale(1.01);
   -webkit-transform: translateY(-5px) scale(1.01);
   /*box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);*/
-
-
   /*-webkit-transition: 0s;*/
 }
 
