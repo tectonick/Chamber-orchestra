@@ -462,7 +462,7 @@ pre {
 }
 
 .musicians-container .card-columns{
-  column-count: 1;
+  column-count: 2;
   text-align: center;
 
 }
@@ -471,9 +471,13 @@ pre {
 margin: 1rem auto;
 }
 
+.card-columns{
+  column-count: 2;
+}
 
-
-
+.card{
+  display: inline-block !important;
+}
 
 @media (min-width: 576px) {
   .musicians-container .card-columns{
