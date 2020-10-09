@@ -80,11 +80,6 @@ router.get("/composers", async (req,res)=>{
     });  
 });
 
-router.get("/press", async (req,res)=>{
-    var title =res.__('layout.navbar.press')+' | '+res.__('title');
-    var names= await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
-    res.render('about/press.hbs', {names, title});
-});
 
 
 module.exports = router;

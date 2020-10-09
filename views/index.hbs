@@ -4,9 +4,9 @@
      src="img/main_orchestra.jpg"
      alt="Main orchestra photo">
 
-<div class="container-fluid carousel-container mt-3">
+<div class="container  mt-3">
 
-    <div class="container-fluid text-center my-3">
+    <div class=" text-center my-3">
         <h4 class="font-weight-light mb-3"> {{__ 'layout.index.nextevents'}}</h4>
 
         <div class="row mx-auto my-auto">
@@ -15,14 +15,17 @@
 
                     {{#each triplets}}
                     <div class="carousel-item">
-                        <div class="card-deck">
+                        <div class="row">
                             {{#each this}}
-                            <div class="card card-body">
-                                <a href="/events#{{this.id}}">
-                                    <img class="img-fluid" src="/img/posters/{{this.id}}.jpg">
-                                </a>
+                            <div class="col-4 p-2 p-md-3">
+                                <div class="card card-body">
+                                    <a href="/events#{{this.id}}">
+                                        <img class="img-fluid" src="/img/posters/{{this.id}}.jpg">
+                                    </a>
 
+                                </div>
                             </div>
+
                             {{/each}}
                         </div>
                     </div>

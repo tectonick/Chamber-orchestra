@@ -37,6 +37,10 @@ a {
   color: black;
   word-wrap: break-word;
 }
+a:hover{
+  color: #AE5C39 !important;
+}
+
 
 /*header */
 .navbar {
@@ -234,13 +238,27 @@ footer img {
 #main_orchestra {
   width: 100%;
 }
-.carousel-container {
-  padding: 0px 12vw;
-}
+
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
-  width: 40px !important;
-  height: 40px !important;
+  width: 30px;
+  height: 30px;
+}
+
+@media (min-width: 600px){
+  .carousel-control-prev-icon, .carousel-control-prev-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+.card-deck {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  margin-right: -15px;
+  margin-left: -15px;
 }
 
 .img-fluid {
@@ -858,4 +876,24 @@ blockquote p {
   flex-wrap: wrap;
   margin-right: 0px;
   margin-left: 0px;
+}
+
+
+
+
+.contacts-block{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.contacts-block p{
+  font-size: 130%;
+}
+
+@media (min-width:600px){
+  .contacts-block p{
+    font-size: 130%;
+  }
 }
