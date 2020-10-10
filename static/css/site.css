@@ -37,9 +37,10 @@ a {
   color: black;
   word-wrap: break-word;
 }
-a:hover{
+.contacts-block a:hover{
   color: #AE5C39 !important;
 }
+
 
 
 /*header */
