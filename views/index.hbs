@@ -1,8 +1,7 @@
 <img id="main_orchestra" srcset="img/optimized/main_orchestra/main_orchestra.jpg 2328w,
              img/optimized/main_orchestra/main_orchestra@0,75x.jpg 1747w, img/optimized/main_orchestra/main_orchestra@0,5x.jpg 1164w,
-             img/optimized/main_orchestra/main_orchestra@0,25x.jpg 584w"
-     src="img/main_orchestra.jpg"
-     alt="Main orchestra photo">
+             img/optimized/main_orchestra/main_orchestra@0,25x.jpg 584w" src="img/main_orchestra.jpg"
+    alt="Main orchestra photo">
 
 <div class="container  mt-3">
 
@@ -50,12 +49,13 @@
     </div>
 
     <div class="container">
-
         <h4 class="text-center my-3"> {{__ 'layout.index.news'}}</h4>
         <div class="news-container">
 
 
         </div>
+
+
 
         <nav aria-label="...">
             <ul class="pagination">
@@ -99,7 +99,7 @@
                 $.getJSON("/api/news?block=" + pageNum, function (result) {
                     newsContainer.empty();
                     $.each(result, function (i, field) {
-                        let dateString=(new Date(field.date)).toDateString();
+                        let dateString = (new Date(field.date)).toDateString();
                         let html = `<div class="block row my-3">\
                             <div class="col-md-5 col-12 p-0">\
                                 <img class="musicians-pic full-width" src="/img/news/${field.id}.jpg" alt="">\
@@ -123,9 +123,9 @@
 
         $(document).ready(function () {
             $.getJSON("/api/news/count", function (result) {
-                if (result[0].count>5){  $(".pagination").css("display","flex"); }  
+                if (result[0].count > 5) { $(".pagination").css("display", "flex"); }
 
-                MAXPAGE = Math.ceil(result[0].count / 5);    
+                MAXPAGE = Math.ceil(result[0].count / 5);
                 for (var i = 1; i <= MAXPAGE; i++) {
                     var active = "";
                     if (i == 1) {
@@ -134,9 +134,9 @@
                     pagination.append(`<li class="page-item ${active}" id="${i}"><p class="page-link">${i}</p></li>`);
                 }
                 pagination.append(`<li class="page-item mr-auto"><p class="page-link" >🢖</p></li>`);
-                                
+
                 activePageLI = $(".active", pagination);
-                
+
                 addPaginationClickEvents();
                 activePageLI.children().first().trigger("click");
             });
