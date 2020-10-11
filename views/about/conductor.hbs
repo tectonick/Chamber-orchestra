@@ -31,7 +31,8 @@ function getCookie(name) {
 }
 
     $(document).ready(function () {
-        let lang=getCookie('locale');
+        var lang=getCookie('locale');
+        if (lang==undefined) {lang='en'};
         $("#text-container").load(`/html/conductor_${lang}.html`); 
     });
 

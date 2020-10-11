@@ -59,6 +59,10 @@ app.set("view engine", "hbs");
 app.use(cookieParser());
 
 app.use(i18n.init);
+app.use(function(req,res,next){
+  res.cookie('locale', i18n.getLocale(), { maxAge: 900000 });
+  next();
+});
 
 app.use(session({secret: 'ssshhhhh'}));
 
