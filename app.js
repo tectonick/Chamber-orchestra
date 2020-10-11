@@ -42,7 +42,7 @@ i18n.configure({
 
 
 
-const PORT = process.env.PORT || 5007;
+const PORT = process.env.PORT || 5008;
 const app=express();
 
 const hbs=handlebars.create({
@@ -60,7 +60,9 @@ app.use(cookieParser());
 
 app.use(i18n.init);
 app.use(function(req,res,next){
-  res.cookie('locale', i18n.getLocale(), { maxAge: 900000 });
+  if (req.cookies['locale']==undefined){
+    res.cookie('locale', req.getLocale(), { maxAge: 900000 });
+  }
   next();
 });
 
