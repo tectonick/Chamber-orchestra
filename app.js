@@ -42,7 +42,7 @@ i18n.configure({
 
 
 
-const PORT = process.env.PORT || 5008;
+const PORT = process.env.PORT || 80;
 const app=express();
 
 const hbs=handlebars.create({
