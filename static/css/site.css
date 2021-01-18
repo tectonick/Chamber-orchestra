@@ -276,6 +276,7 @@ footer img {
   display: flex;
   align-items: center;
   text-align: center;
+  margin-top: 5px;
   margin-bottom: 0px;
   color:rgba(0,0,0,.5);
   padding: 0 10px 0 10px;
@@ -283,6 +284,15 @@ footer img {
 
 .month-events{
   margin-top: 25px;
+}
+
+@media (max-width:768px){
+  .month-events{
+    margin-top: 5px;
+  }
+  .separator h3{
+    font-size: larger;    
+  }
 }
 
 .separator::before, .separator::after {
