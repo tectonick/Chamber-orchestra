@@ -276,11 +276,15 @@ footer img {
   display: flex;
   align-items: center;
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 0px;
   color:rgba(0,0,0,.5);
   padding: 0 10px 0 10px;
-  
 }
+
+.month-events{
+  margin-top: 25px;
+}
+
 .separator::before, .separator::after {
   content: '';
   flex: 1;
@@ -649,7 +653,7 @@ margin: 1rem auto;
 }
 
 .tz-gallery .caption {
-  padding: 26px 30px;
+  padding: 10px 30px;
   text-align: center;
 }
 
@@ -942,4 +946,5 @@ blockquote p {
 
 .card-footer p{
   color:black;
+  margin-bottom: 0;
 }

@@ -1,8 +1,6 @@
 <div class="artists">
-    <h4 class="text-center mb-3">{{__ 'composers.title'}}</h4>
-    <br>
 
-    <h5 class="text-center mb-3">{{__ 'composers.inResidence'}}</h5>
+    <div class="separator container"><h3>{{__ 'composers.inResidence'}}</h3></div>
     <div class="card-columns">
        
         {{#each composers.InResidence}}
@@ -15,7 +13,7 @@
     </div>
     <br>
 
-    <h5 class="text-center mb-3">{{__ 'composers.Partners'}}</h5>
+    <div class="separator container"><h3>{{__ 'composers.Partners'}}</h3></div>
     <div class="card-columns">        
         {{#each composers.Partners}}
         <div class="card"> <img class="card-img-top" loading=lazy src="/img/about/composers/{{this.id}}.jpg" alt="Card image cap">
