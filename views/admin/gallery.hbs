@@ -30,7 +30,8 @@
 
 $(document).ready(function(){
   $(".delete-button").click(function(){
-      $(this).parent().parent().css('display','none');
+      console.log(this.parentNode.parentNode);
+    this.parentNode.parentNode.style.display='none';
     $.post("/admin/gallery/delete", {filename:$(this).attr('id')});
   });
 

@@ -30,7 +30,7 @@
 
 $(document).ready(function(){
   $(".delete-button").click(function(){
-      $(this).parent().parent().css('display','none');
+    this.parentNode.parentNode.style.display='none';
     $.post("/admin/disks/delete", {filename:$(this).attr('id')});
   });
 

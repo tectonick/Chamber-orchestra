@@ -228,8 +228,7 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
 
 router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
   await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
-  req.session.menuId = PageIDs.concerts;
-  res.redirect('/admin/'); 
+  res.sendStatus(200); 
 });
 
 
@@ -284,8 +283,7 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
 
 router.post("/news/posterupload", urlencodedParser, async (req, res) => {
   await PosterUpload(req.files.fileToUpload, '/static/img/news/', req.body.id, imageProcessor.posterImage);
-  req.session.menuId = PageIDs.news;
-  res.redirect('/admin/'); 
+  res.sendStatus(200); 
 });
 
 
@@ -404,8 +402,7 @@ router.post("/artists/edit", urlencodedParser, (req, res) => {
 
 router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
   await PosterUpload(req.files.fileToUpload, '/static/img/about/artists/', req.body.id, imageProcessor.smallImage);
-  req.session.menuId = PageIDs.artists;
-  res.redirect('/admin/'); 
+  res.sendStatus(200); 
 });
 
 router.get("/composers", async (req, res) => {
@@ -495,8 +492,7 @@ router.post("/composers/edit", urlencodedParser, (req, res) => {
 
 router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
   await PosterUpload(req.files.fileToUpload, '/static/img/about/composers/', req.body.id, imageProcessor.smallImage);
-  req.session.menuId = PageIDs.composers;
-  res.redirect('/admin/');
+  res.sendStatus(200); 
 });
 
 
@@ -592,8 +588,7 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
 
 router.post("/musicians/posterupload", urlencodedParser, async (req, res) => {
   await PosterUpload(req.files.fileToUpload, '/static/img/about/musicians/', req.body.id, imageProcessor.smallImage);
-  req.session.menuId = PageIDs.musicians;
-  res.redirect('/admin/');
+  res.sendStatus(200); 
 });
 
 
@@ -686,8 +681,7 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
 router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
 
   await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
-  req.session.menuId = PageIDs.archive;
-  res.redirect('/admin/');
+  res.sendStatus(200); 
 });
 
 

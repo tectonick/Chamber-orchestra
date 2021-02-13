@@ -533,7 +533,7 @@ margin: 1rem auto;
 }
 
 .card{
-  display: inline-block !important;
+  display: inline-block;
 }
 
 @media (min-width: 576px) {

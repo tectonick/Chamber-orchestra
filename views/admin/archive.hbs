@@ -8,7 +8,7 @@
 
     </div>
     {{#each events}}
-    <div concertId="{{this.id}}" class="row searchable event-row">
+    <div rowId="{{this.id}}" class="row searchable event-row">
 
 
         <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
@@ -19,7 +19,6 @@
                         enctype="multipart/form-data">
                         <input type="hidden" name="id" value="{{this.id}}">
                         <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                        <input disabled="true" class='form-control' type="submit" value="Загрузить афишу" name="submit">
                     </form>
                 </div>
                 <div class="col-12 col-md-8 p-4">
@@ -61,29 +60,7 @@
 
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="deleteModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Подтверждение удаления</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Вы действительно хотите удалить концерт? Это действие невозможно отменить!</p>
-
-                </div>
-                <div class="modal-footer">
-                    <button id="modal-cancel" type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Отмена</button>
-                    <button id="modal-delete" type="button" class="btn btn-danger">Удалить</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  {{> deleteModal}}
 
 
 </div>
@@ -95,56 +72,12 @@
 
 
 <script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+<script type="text/javascript" src="/scripts/admin.js"></script>
 <script>
-
-
-
     $(document).ready(function () {
-        $(".delete-button").click(function () {
-            //$(this).parent().parent().parent().css('display', 'none');
-            //$.post("/admin/archive/delete", { id: $(this).attr('name') });
-            var modal = $('#deleteModal');
-            modal.attr('name', $(this).attr('name'));
-            modal.modal();
-        });
-
-        $("#modal-delete").click(function () {
-            let modal = $('#deleteModal');
-            let idToDelete = modal.attr('name');
-            console.log(idToDelete);
-            $(`[concertId=${idToDelete}]`).css('display', 'none');
-            $.post("/admin/archive/delete", { id: idToDelete });
-            modal.modal('hide');
-
-        });
-
-        $(".fileToUpload").change(function () {
-      if ($(this).val().length>0){
-            $(this).siblings('.form-control').prop('disabled', false);
-
-      }
-        });
-
-        $(".save-button").click(function (ev) {
-            var target=ev.target;
-            target.setAttribute('disabled','disabled');
-            var formName = $(this).attr('name');
-            var formData = $('#' + formName).serialize();
-            $.post("/admin/archive/edit", formData, (data, status) => {
-                target.removeAttribute('disabled');
-                var oldColor = $(this).css('backgroundColor');
-                $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
-                    $(this).animate({ backgroundColor: oldColor });
-                });
-            }).fail(() => {
-                target.removeAttribute('disabled');
-                var oldColor = $(this).css('backgroundColor');
-                $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
-                    $(this).animate({ backgroundColor: oldColor });
-                });
-            });
-
-        });
+        posterUploadSetEvent('/admin/concerts/posterupload');
+        deleteWithModalSetEvent('/admin/archive/delete');
+        saveSetEvent("/admin/archive/edit");
     });
     
 </script>
