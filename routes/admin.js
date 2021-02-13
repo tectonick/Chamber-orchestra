@@ -510,6 +510,10 @@ router.get("/musicians", async (req, res) => {
     `SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`,
     function (err, musicians) {
       if (err) console.log(err);
+      musicians=musicians.map((musician)=>{
+        musician.bio=musician.bio.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+        return musician;
+      });
       res.render("admin/musicians.hbs", { layout: false, musicians });
     }
   );
@@ -530,6 +534,7 @@ router.post("/musicians/translate", urlencodedParser,async (req, res) => {
   let currentLang = globals.languages[req.getLocale()];
   var id=req.body.id;
   var sourceLang=req.getLocale();
+
   db.query(
     `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`,
     async function (err, musician) {
@@ -543,9 +548,11 @@ router.post("/musicians/translate", urlencodedParser,async (req, res) => {
           var destLang=globals.languages.getNameById(langId);
           var name = await translate(musician[0].name,sourceLang,destLang);
           var bio = await translate(musician[0].bio,sourceLang,destLang);
+          bio=bio.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
           db.query(`UPDATE musicians_translate SET name = '${name}', \
-          bio = '${bio}' WHERE ${id}=musicianId AND ${langId}=languageId;`,
-          function (err, results) {}) 
+          bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`,
+          function (err, results) {   if  (err) {
+            console.log(err);}}) 
         }        
       } catch (error) {
         console.log(err);

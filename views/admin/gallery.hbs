@@ -30,15 +30,12 @@
 
 $(document).ready(function(){
   $(".delete-button").click(function(){
-      console.log(this.parentNode.parentNode);
     this.parentNode.parentNode.style.display='none';
     $.post("/admin/gallery/delete", {filename:$(this).attr('id')});
   });
-
   $("#files").change(function(){
       if ($(this).val().length>0){
             $(this).siblings('.form-control').prop('disabled', false);
-
       }
   });
 });

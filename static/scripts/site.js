@@ -6,11 +6,6 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log(`Service Worker: Error: ${err}`));
   });
 }
-
-
-
-
-
       window.addEventListener('beforeunload', (event) => {
         // Cancel the event as stated by the standard.
         //event.preventDefault();
@@ -49,7 +44,6 @@ document.getElementById('en').onclick=()=>{
 document.getElementById('ru').onclick=()=>{
     document.cookie = "locale=ru; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
 };
-
 document.getElementById('by').onclick=()=>{
   document.cookie = "locale=by; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
 };
