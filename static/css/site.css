@@ -351,6 +351,11 @@ label {
   opacity: 0.2 !important;
 }
 
+.fc-scrollgrid-section-body .fc-day{
+  height: 11vw;
+  overflow: hidden;
+}
+
 /* .fc .fc-day-other .fc-daygrid-day-top {
   opacity: 1 !important;
 } */
@@ -385,9 +390,8 @@ label {
 }
 
 .fc-daygrid-day{
-  background-size: 100% auto; 
-  background-repeat: no-repeat;
-  background-position-y: bottom;
+  background-size: cover;
+
 }
 
 .fc-header-toolbar > div {

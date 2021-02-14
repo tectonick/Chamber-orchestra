@@ -69,11 +69,9 @@
     function setPosters(){
         document.querySelectorAll(".fc-event-title").forEach((idEl)=>{
             var id = idEl.innerHTML;
-            var cell=idEl.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+            var cell=idEl.closest('.fc-day');
             var frame = cell.querySelector(".fc-daygrid-day-frame");
-            //var number=frame.querySelector('.fc-daygrid-day-top');
             cell.style.backgroundImage=`url("/img/posters/${id}.jpg")`;
-            //number.style.backgroundColor="rgba(255,255,255,0.5)"
             cell.style.cursor="pointer";
             frame.style.backgroundColor="rgb(255,255,255)"
             frame.style.opacity="0.5";
@@ -91,7 +89,6 @@
             alert("Ошибка HTTP: " + response.status);
         }
         concerts.forEach((concert) => {
-            console.log(concert);
             concertDate = new Date(concert.date);
             concertDate -= concertDate.getTimezoneOffset() * 60 * 1000;
 
