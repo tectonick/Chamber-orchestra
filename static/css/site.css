@@ -568,6 +568,27 @@ margin: 1rem auto;
 }
 
 
+#spotify .album{
+  width: 100%;
+  margin: 5px 5px;
+}
+
+#streaming-links{
+  overflow: hidden;
+}
+
+.streaming-link{
+  margin: 0px 15px;
+  transition: opacity 0.3s;
+}
+
+.streaming-link img{
+  height: 5vh;
+  width: auto;
+}
+.streaming-link:hover{
+  opacity: 0.6;
+}
 
 /*artists*/
 @media (min-width: 576px) {
@@ -576,7 +597,7 @@ margin: 1rem auto;
   }
   .card-columns {
     column-count: 1;
-  }
+  }  
 }
 @media (min-width: 768px) {
   .card-columns {
@@ -584,6 +605,10 @@ margin: 1rem auto;
   }
   .disks .card-columns {
     column-count: 2;
+  }
+  #spotify .album{
+    width: 48%;
+    margin: 0 5px;
   }
 }
 

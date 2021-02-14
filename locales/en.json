@@ -42,7 +42,7 @@
 	"musicians.keyboards": "Keyboards",
 	"composers.title": "Composers",
 	"artists.title": "Guest artists",
-	"layout.navbar.disks": "Discography",
+	"layout.navbar.disks": "Music albums",
 	"disks.title": "Discography",
 	"contacts.tech_editor": "Technical editor: Mikalai Kisialiou korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Next events",
@@ -72,5 +72,6 @@
 	"history.artdirectors.d9": "Vladimir Baidov (2001-2003, Belarus)",
 	"history.artdirectors.d10": "Petr Vandilovsky (2003-2009, Belarus)",
 	"history.artdirectors.d11": "Eugeny Bushkov (2009-present, Russia)",
-	"history.musicians": "Employees of all years"
+	"history.musicians": "Employees of all years",
+	"disks.streaming": "Streaming"
 }

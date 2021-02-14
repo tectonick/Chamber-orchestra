@@ -42,7 +42,7 @@
 	"musicians.keyboards": "Клавишные",
 	"composers.title": "Композиторы",
 	"artists.title": "Приглашенные артисты",
-	"layout.navbar.disks": "Дискография",
+	"layout.navbar.disks": "Музыкальные альбомы",
 	"disks.title": "Дискография",
 	"contacts.tech_editor": "Технический редактор: Николай Киселев korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Концерты",
@@ -72,5 +72,6 @@
 	"history.artdirectors.d9": "Владимир Байдов (2001-2003, Беларусь)",
 	"history.artdirectors.d10": "Петр Вандиловский (2003-2009, Беларусь)",
 	"history.artdirectors.d11": "Евгений Бушков (2009-настоящее время, Россия)",
-	"history.musicians": "Сотрудники всех лет"
+	"history.musicians": "Сотрудники всех лет",
+	"disks.streaming": "Стриминг"
 }

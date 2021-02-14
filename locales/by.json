@@ -42,7 +42,7 @@
 	"musicians.keyboards": "Клавішныя",
 	"composers.title": "Кампазітары",
 	"artists.title": "Запрошаныя артысты",
-	"layout.navbar.disks": "Дыскаграфія",
+	"layout.navbar.disks": "Музычныя альбомы",
 	"disks.title": "Дыскаграфія",
 	"contacts.tech_editor": "Тэхнічны рэдактар: Мікалай Кісялёў korn9509@gmail.com",
 	"layout.navbar.nextEvents": "Канцэрты",
@@ -72,5 +72,6 @@
 	"history.artdirectors.d9": "Уладзімір Байдаў (2001-2003, Беларусь)",
 	"history.artdirectors.d10": "Пётр Вандзілоўскі (2003-2009, Беларусь)",
 	"history.artdirectors.d11": "Яўген Бушкоў (2009-цяперашні час, Расія)",
-	"history.musicians": "Супрацоўнікі ўсіх гадоў"
+	"history.musicians": "Супрацоўнікі ўсіх гадоў",
+	"disks.streaming": "Стрымінг"
 }
