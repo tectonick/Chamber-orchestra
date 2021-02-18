@@ -9,38 +9,7 @@
 
     <div class="separator container"><h3>{{this.name}}</h3></div>
     <div class="month-events">
-
-    {{#each this.concerts}}
-    <div class="row event-row">
-
-
-        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
-            <div id="{{this.id}}" class="row">
-
-                <div class="col-12 col-md-4 p-0">
-                    <img class="poster" loading=lazy  src="/img/posters/{{this.id}}.jpg" alt="">
-                </div>
-                <div class="col-12 col-md-8 p-4">
-                    <p>{{this.title}}</p>
-                    <pre>{{this.description}}</pre>
-
-                    {{#if this.ticket}}
-                    <a class="btn buy btn-sm btn-success mb-3" href="{{this.ticket}}">{{../../__ 'events.buy'}}</a>
-                    {{/if}}
-                    <div class="ya-share2 ml-4" data-image="http://belsco.net/img/posters/{{this.id}}.jpg"
-                        data-title="{{this.title}}" data-url="http://belsco.net/events#{{this.id}}"
-                        data-services="vkontakte,twitter,facebook,odnoklassniki,viber,telegram"></div>
-                    <div class="concert-day d-none d-md-block">{{this.day}}</div>
-                    <div class="concert-time">{{this.time}}</div>
-                    <div class="concert-place">{{this.place}}</div>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-
-    {{/each}}
+         {{#each this.concerts}}{{> concertCard concert=this future=true}}{{/each}}
     </div>
 
     {{/each}}

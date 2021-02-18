@@ -1,100 +1,12 @@
-<div class="artists">
-    <div class="separator container"><h3>{{__ 'artists.conductors'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[0]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.violins'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[1]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.violas'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[2]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.cellos'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[3]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'artists.basses'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[4]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'artists.pianists'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[5]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.winds'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[6]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.folks'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[7]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.vocalists'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[8]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-    <div class="separator container"><h3>{{__ 'artists.voices'}}</h3></div>
-    <div class="card-columns">
-        {{#each artists.[9]}}
-        <div class="card "> <img class="card-img-top"  loading=lazy src="/img/about/artists/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}} ({{this.instrument}}, {{this.country}})</p></div>
-        </div>
-        {{/each}}     
-    </div>
-    
-
-
-
-
-
-
-
-
+<div class="artists">    
+    {{> artistsGroup group=artists.[0] name='artists.conductors'}}
+    {{> artistsGroup group=artists.[1] name='artists.violins'}}
+    {{> artistsGroup group=artists.[2] name='artists.violas'}}
+    {{> artistsGroup group=artists.[3] name='artists.cellos'}}
+    {{> artistsGroup group=artists.[4] name='artists.basses'}}
+    {{> artistsGroup group=artists.[5] name='artists.pianists'}}
+    {{> artistsGroup group=artists.[6] name='artists.winds'}}
+    {{> artistsGroup group=artists.[7] name='artists.folks'}}
+    {{> artistsGroup group=artists.[8] name='artists.vocalists'}}
+    {{> artistsGroup group=artists.[9] name='artists.voices'}}    
 </div>

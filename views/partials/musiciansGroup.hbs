@@ -1,0 +1,9 @@
+    <div class="separator container">
+        <h3>{{__ name}}</h3>
+    </div>
+
+    <div class="card-columns">
+        {{#each group}}
+        {{> musicianCard musician=this}}
+        {{/each}}
+    </div>

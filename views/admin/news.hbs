@@ -5,53 +5,10 @@
         </form>
 
     </div>
+
     {{#each events}}
-    <div rowId="{{this.id}}" class="row searchable event-row">
-
-
-        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
-            <div class="row">
-                <div class="col-12 col-md-4 p-0">
-                    <img class="poster" loading=lazy src="/img/news/{{this.id}}.jpg" alt="">
-                    <form class="form-group" action="/admin/news/posterupload" method="post"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{this.id}}">
-                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                    </form>
-                </div>
-                <div class="col-12 col-md-8 p-4">
-
-                    <form class='form-group' action="/admin/news/edit" id="edit-form-{{this.id}}" method="POST">
-                        <input type="hidden" name="id" value="{{this.id}}">
-                        <textarea name="title" class="form-control w-100" placeholder="Название"
-                            rows="1">{{this.title}}</textarea>
-                        <textarea name="text" class="form-control w-100" placeholder="Текст"
-                            rows="10">{{this.text}}</textarea>
-                        {{!-- <textarea name="date" class="form-control w-100" rows="1">{{this.date}}</textarea> --}}
-                        <input type="datetime-local" class="form-control" name="date" value="{{this.date}}">
-                    </form>
-
-                </div>
-
-                <div class="col-12">
-                    <div class="form-group">
-                        <input name='{{this.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
-                            type="submit" value="Удалить новость"></input>
-                        <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
-                            value="Сохранить новость"></input>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-
-    </div>
+        {{> eventForm event=this}}    
     {{/each}}
-
-
-
 
 {{> deleteModal}}
 

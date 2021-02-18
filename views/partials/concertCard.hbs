@@ -1,0 +1,25 @@
+    <div class="row event-row">
+        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+            <div id="{{concert.id}}" class="row">
+
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" loading=lazy  src="/img/posters/{{concert.id}}.jpg" alt="">
+                </div>
+                <div class="col-12 col-md-8 p-4">
+                    <p>{{concert.title}}</p>
+                    <pre>{{concert.description}}</pre>
+                    {{#if concert.ticket}}
+                        {{#if future}}
+                             <a class="btn buy btn-sm btn-success mb-3" href="{{concert.ticket}}">{{@root.__ 'events.buy'}}</a>
+                         {{/if}}                    
+                    {{/if}}
+                    <div class="ya-share2 ml-4" data-image="http://belsco.net/img/posters/{{concert.id}}.jpg"
+                        data-title="{{concert.title}}" data-url="http://belsco.net/events#{{concert.id}}"
+                        data-services="vkontakte,twitter,facebook,odnoklassniki,viber,telegram"></div>
+                    <div class="concert-day d-none d-md-block">{{concert.day}}</div>
+                    <div class="concert-time">{{concert.time}}</div>
+                    <div class="concert-place">{{concert.place}}</div>
+                </div>
+            </div>
+        </div>
+    </div>

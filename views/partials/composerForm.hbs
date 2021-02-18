@@ -1,0 +1,53 @@
+<div rowId="{{composer.id}}" class="row col-lg-6 col-xl-4 col-12 searchable event-row">
+
+
+        <div class="concert col-11 offset-1">
+            <div class="row">
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" loading=lazy src="/img/about/composers/{{composer.id}}.jpg" alt="">
+                    <form class="form-group" action="/admin/composers/posterupload" method="post"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{composer.id}}">
+                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 p-4 form-container">
+
+                    <form class='form-group' action="/admin/composers/edit" id="edit-form-{{composer.id}}" method="POST">
+                        <input type="hidden" name="id" value="{{composer.id}}">
+                        <textarea name="name" class="form-control w-100" placeholder="Имя"
+                            rows="1">{{composer.name}}</textarea>
+                        <textarea name="country" class="form-control w-100" placeholder="Страна"
+                            rows="1">{{composer.country}}</textarea>
+                        <div class="form-check">
+                            <input type="checkbox" name="isInResidence" value='1' {{#if composer.isInResidence}}
+                                checked{{else}}{{/if}}>
+                            <label class="form-check-label" for="isInResidence">Композитор-inresidence</label>
+                        </div>
+                    </form>
+
+                    <form action="/admin/composers/translate" method="post" id="translate-form-{{composer.id}}">
+                        <div class="form-group">
+                            <input type="hidden" name="id" value="{{composer.id}}">
+                        </div>
+                    </form>
+                    <input name='translate-form-{{composer.id}}' class='translate-button form-control' type="submit"
+                        value="Перевести на остальные языки"></input>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <input name='{{composer.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                            type="submit" value="Удалить композитора"></input>
+                        <input name='edit-form-{{composer.id}}' class='save-button form-control' type="submit"
+                            value="Сохранить композитора"></input>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>

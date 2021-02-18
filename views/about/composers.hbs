@@ -4,11 +4,7 @@
     <div class="card-columns">
        
         {{#each composers.InResidence}}
-        <div class="card"> <img class="card-img-top" loading=lazy src="/img/about/composers/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer">
-                <p>{{this.name}} ({{this.country}})</p>
-            </div>
-        </div>
+        {{> composerCard composer=this}}
         {{/each}}     
     </div>
     <br>
@@ -16,11 +12,7 @@
     <div class="separator container"><h3>{{__ 'composers.Partners'}}</h3></div>
     <div class="card-columns">        
         {{#each composers.Partners}}
-        <div class="card"> <img class="card-img-top" loading=lazy src="/img/about/composers/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer">
-                <p>{{this.name}} ({{this.country}})</p>
-            </div>
-        </div>
+        {{> composerCard composer=this}}
         {{/each}}     
     </div>
 

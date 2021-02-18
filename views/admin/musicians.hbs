@@ -7,61 +7,8 @@
 <div class="row">
 
     {{#each musicians}}
-    <div rowId="{{this.id}}" class="row col-lg-6 col-12 searchable event-row">
-
-
-        <div class="concert col-11 offset-1">
-            <div class="row">
-                <div class="col-12 col-md-4 p-0">
-                    <img class="poster" loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="">
-                    <form class="form-group" action="/admin/musicians/posterupload" method="post"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{this.id}}">
-                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                    </form>
-                </div>
-                <div class="col-12 col-md-8 p-4 form-container">
-
-                    <form class='form-group' action="/admin/musicians/edit" id="edit-form-{{this.id}}" method="POST">
-                        <input type="hidden" name="id" value="{{this.id}}">
-                        <textarea name="name" class="form-control w-100" placeholder="Имя" rows="1">{{this.name}}</textarea>
-                        <textarea name="bio" class="form-control w-100" placeholder="Биография" rows="10">{{this.bio}}</textarea>
-                        <select class="form-control w-100" name="groupId">
-                            <option value="{{this.groupId}}" selected hidden>Изменить группу</option>
-                            <option value="1">Первые скрипки</option>
-                            <option value="2">Вторые скрипки</option>
-                            <option value="3">Альты</option>
-                            <option value="4">Виолончели</option>
-                            <option value="5">Контрабасы</option>
-                            <option value="6">Клавишные</option>
-                        </select>
-                    </form>
-                    <form action="/admin/musicians/translate" method="post" id="translate-form-{{this.id}}">
-                        <div class="form-group">
-                            <input type="hidden" name="id" value="{{this.id}}">
-                        </div>
-                    </form>
-                    <input name='translate-form-{{this.id}}' class='translate-button form-control' type="submit"
-                        value="Перевести на остальные языки"></input>
-                </div>
-
-                <div class="col-12 ">
-                    <div class="form-group">
-                        <input name='{{this.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
-                            type="submit" value="Удалить музыканта"></input>
-                        <input name='edit-form-{{this.id}}' class='save-button form-control' type="submit"
-                            value="Сохранить музыканта"></input>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-
-    </div>
+        {{> musicianForm musician=this}}    
     {{/each}}
-
 
 
 

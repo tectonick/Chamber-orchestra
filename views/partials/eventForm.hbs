@@ -1,0 +1,42 @@
+<div rowId="{{event.id}}" class="row searchable event-row">
+
+
+        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+            <div class="row">
+                <div class="col-12 col-md-4 p-0">
+                    <img class="poster" loading=lazy src="/img/news/{{event.id}}.jpg" alt="">
+                    <form class="form-group" action="/admin/news/posterupload" method="post"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
+                    </form>
+                </div>
+                <div class="col-12 col-md-8 p-4">
+
+                    <form class='form-group' action="/admin/news/edit" id="edit-form-{{event.id}}" method="POST">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <textarea name="title" class="form-control w-100" placeholder="Название"
+                            rows="1">{{event.title}}</textarea>
+                        <textarea name="text" class="form-control w-100" placeholder="Текст"
+                            rows="10">{{event.text}}</textarea>
+                        {{!-- <textarea name="date" class="form-control w-100" rows="1">{{event.date}}</textarea> --}}
+                        <input type="datetime-local" class="form-control" name="date" value="{{event.date}}">
+                    </form>
+
+                </div>
+
+                <div class="col-12">
+                    <div class="form-group">
+                        <input name='{{event.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                            type="submit" value="Удалить новость"></input>
+                        <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
+                            value="Сохранить новость"></input>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>

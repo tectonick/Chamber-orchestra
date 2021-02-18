@@ -1,109 +1,51 @@
 <div class="container musicians-container">
+    {{> musiciansGroup group=musicians.[0] name='musicians.violins1'}}
+    {{> musiciansGroup group=musicians.[1] name='musicians.violins2'}}
+    {{> musiciansGroup group=musicians.[2] name='musicians.violas'}}
+    {{> musiciansGroup group=musicians.[3] name='musicians.cellos'}}
+    {{> musiciansGroup group=musicians.[4] name='musicians.bass'}}
+    {{> musiciansGroup group=musicians.[5] name='musicians.keyboards'}}
+</div>
 
-
-<div class="separator container"><h3>{{__ 'musicians.violins1'}}</h3></div>
-
-    <div class="card-columns">
-        {{#each musicians.[0]}}
-        <div class="card bio-button" id="{{this.id}}"  > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
+<!-- Bio Modal -->
+<div class="modal fade" id="bioModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xlg" role="document">
+        <div class="modal-content">
+            <div id='modal-body' class="modal-body container-fluid">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class='row'>
+                    <div class="col-12 col-md-5 img-col">
+                        <img class='w-100' id="bio-pic" src="" alt="">
+                    </div>
+                    <div class="col-12 col-md-7 bio-col">
+                        <h5 id="modal-label"></h5>
+                        <pre id="bio">
+                            </pre>
+                    </div>
+                </div>
+            </div>
         </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'musicians.violins2'}}</h3></div>
-
-    <div class="card-columns">
-        {{#each musicians.[1]}}
-        <div class="card bio-button" id="{{this.id}}"  > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'musicians.violas'}}</h3></div>
-    <div class="card-columns">
-        {{#each musicians.[2]}}
-        <div class="card bio-button" id="{{this.id}}"  > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'musicians.cellos'}}</h3></div>
-    <div class="card-columns">
-        {{#each musicians.[3]}}
-        <div class="card bio-button" id="{{this.id}}"  > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'musicians.bass'}}</h3></div>
-    <div class="card-columns">
-        {{#each musicians.[4]}}
-        <div class="card bio-button" id="{{this.id}}" > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
-        </div>
-        {{/each}}     
-    </div>
-
-    <div class="separator container"><h3>{{__ 'musicians.keyboards'}}</h3></div>
-    <div class="card-columns">
-        {{#each musicians.[5]}}
-        <div class="card bio-button" id="{{this.id}}"   > <img class="card-img-top"  loading=lazy src="/img/about/musicians/{{this.id}}.jpg" alt="Card image cap">
-            <div class="card-footer"><p>{{this.name}}</p></div>
-        </div>
-        {{/each}}     
     </div>
 </div>
 
 
 
- <!-- Modal -->
-    <div class="modal fade" id="bioModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-xlg" role="document">
-            <div class="modal-content">
-                <div id='modal-body' class="modal-body container-fluid">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class='row'>
-                        <div class="col-12 col-md-5 img-col">
-                            <img class='w-100' id="bio-pic" src="" alt="">
-                        </div>
-                        <div class="col-12 col-md-7 bio-col">
-                             <h5 id="modal-label"></h5>
-
-                            <pre id="bio">
-                            </pre>
-                        </div>
-                    </div>       
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-
-<script> 
+<script>
     $(document).ready(async function () {
-        $(".bio-button").click( async function (event) {
+        $(".bio-button").click(async function (event) {
             event.preventDefault();
             var modal = $('#bioModal');
             modal.attr('name', $(this).attr('name'));
-            var id=$(this).attr('id');
-            var response = await fetch('/about/musicians/getById?id='+id);
-            var musician= await response.json();
-            var modalBody=document.getElementById('modal-body');
-            document.getElementById('bio').innerHTML=musician[0].bio;
-            document.getElementById('bio-pic').src='/img/about/musicians/'+id+'.jpg';
-            document.getElementById('modal-label').innerHTML=musician[0].name;
-            
-
-
+            var id = $(this).attr('id');
+            var response = await fetch('/about/musicians/getById?id=' + id);
+            var musician = await response.json();
+            var modalBody = document.getElementById('modal-body');
+            document.getElementById('bio').innerHTML = musician[0].bio;
+            document.getElementById('bio-pic').src = '/img/about/musicians/' + id + '.jpg';
+            document.getElementById('modal-label').innerHTML = musician[0].name;
             modal.modal();
         });
     })

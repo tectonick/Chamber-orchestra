@@ -21,6 +21,7 @@ i18n.configure({
   cookie: 'locale',
   // where to store json files - defaults to './locales'
   directory: path.join(__dirname,'locales'),
+  register: global,
 
 
 
@@ -50,6 +51,9 @@ const hbs=handlebars.create({
   extname:"hbs",
   i18n:i18n
 });
+
+
+
 
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
