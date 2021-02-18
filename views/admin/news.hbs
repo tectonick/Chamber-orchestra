@@ -6,9 +6,7 @@
 
     </div>
 
-    {{#each events}}
-        {{> eventForm event=this}}    
-    {{/each}}
+    {{#each events}}{{> eventForm event=this}}{{/each}}
 
 {{> deleteModal}}
 

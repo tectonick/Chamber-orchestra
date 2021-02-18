@@ -7,9 +7,7 @@
 <div class="row">
 
 
-    {{#each artists}}
-        {{> artistForm artist=this}}    
-    {{/each}}
+    {{#each artists}}{{> artistForm artist=this}}{{/each}}
 
 {{> deleteModal}}
 
