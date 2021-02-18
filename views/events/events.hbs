@@ -9,7 +9,7 @@
 
     <div class="separator container"><h3>{{this.name}}</h3></div>
     <div class="month-events">
-         {{#each this.concerts}}{{> concertCard concert=this future=true}}{{/each}}
+         {{#each this.concerts}}{{> cards/concert concert=this future=true}}{{/each}}
     </div>
 
     {{/each}}
