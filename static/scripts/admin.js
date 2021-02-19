@@ -12,13 +12,20 @@ function posterUploadSetEvent(path) {
         method: "post",
         enctype: "multipart/form-data",
         body: image,
-      }).then((res) => {
+      }).then(async (res) => {
         if (res.status == 200) {
           poster.src = imgsrc + "?random=" + new Date().getTime();
         }
+        if (res.status == 400) {
+          let errorResponse=await res.json();
+          alert(errorResponse.error);
+          poster.src=imgsrc;
+        }
+      }).catch((err)=>{
+        console.log(err);
       });
     } else {
-      this.style.backgroundColor = "red";
+      alert("Image should be jpg, png or gif");
     }
   });
 }

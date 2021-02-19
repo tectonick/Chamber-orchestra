@@ -218,7 +218,8 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) {
         console.log(err);
-        res.sendStatus(400);
+        res.statusCode=400;
+        res.json({error:err.message});
       } else {
         res.sendStatus(200);
       }
@@ -227,8 +228,13 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
 
 
 router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
-  await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 
@@ -282,8 +288,13 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
 });
 
 router.post("/news/posterupload", urlencodedParser, async (req, res) => {
-  await PosterUpload(req.files.fileToUpload, '/static/img/news/', req.body.id, imageProcessor.posterImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/news/', req.body.id, imageProcessor.posterImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 
@@ -401,8 +412,13 @@ router.post("/artists/edit", urlencodedParser, (req, res) => {
 });
 
 router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
-  await PosterUpload(req.files.fileToUpload, '/static/img/about/artists/', req.body.id, imageProcessor.smallImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/about/artists/', req.body.id, imageProcessor.smallImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 router.get("/composers", async (req, res) => {
@@ -491,8 +507,13 @@ router.post("/composers/edit", urlencodedParser, (req, res) => {
 });
 
 router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
-  await PosterUpload(req.files.fileToUpload, '/static/img/about/composers/', req.body.id, imageProcessor.smallImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/about/composers/', req.body.id, imageProcessor.smallImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 
@@ -594,8 +615,13 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
 });
 
 router.post("/musicians/posterupload", urlencodedParser, async (req, res) => {
-  await PosterUpload(req.files.fileToUpload, '/static/img/about/musicians/', req.body.id, imageProcessor.smallImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/about/musicians/', req.body.id, imageProcessor.smallImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 
@@ -686,9 +712,13 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
 });
 
 router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
-
-  await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
-  res.sendStatus(200); 
+  try {
+    await PosterUpload(req.files.fileToUpload, '/static/img/posters/', req.body.id, imageProcessor.posterImage);
+    res.sendStatus(200); 
+  } catch (error) {
+    res.statusCode=400;
+    res.json({error:error.message});
+  }
 });
 
 

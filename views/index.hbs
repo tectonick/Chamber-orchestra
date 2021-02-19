@@ -20,12 +20,10 @@
                             <div class="col-4 p-2 p-md-3">
                                 <div class="card card-body">
                                     <a href="/events#{{this.id}}">
-                                        <img class="img-fluid" src="/img/posters/{{this.id}}.jpg">
+                                        <img class="img-fluid" src="/img/posters/{{this.id}}.jpg" alt="">
                                     </a>
-
                                 </div>
                             </div>
-
                             {{/each}}
                         </div>
                     </div>
@@ -81,7 +79,6 @@
             $(".page-link").click(function () {
                 var pageButtonText = $(this).text();
                 var pageNum;
-                console.log(pageButtonText);
                 if (Number.isInteger(Number(pageButtonText))) {
                     activePage = Number(pageButtonText);
                     pageNum = activePage;

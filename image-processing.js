@@ -17,6 +17,8 @@ function smallImage(filepath){
   })
   .catch(err => {
     console.error(err);
+    throw err;
+
   });
 
 }
@@ -34,6 +36,7 @@ function galleryImage(filepath){
     })
     .catch(err => {
       console.error(err);
+      throw err;
     });
   
   }
@@ -53,7 +56,9 @@ function galleryImage(filepath){
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
     .catch(err => {
+
       console.error(err);
+      throw err;
     });
   
   }
