@@ -619,6 +619,10 @@ margin: 1rem auto;
   .disks .card-columns {
     column-count: 3;
   }
+  #spotify .album{
+    width: 32%;
+    margin: 0 3px;
+  }
 }
 
 @media (min-width: 1200px) {
