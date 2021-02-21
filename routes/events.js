@@ -9,6 +9,9 @@ router.get("/", (req, res) => {
     db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date",
         function (err, results) {
             if (err) console.log(err);
+            results.forEach(element => {
+                element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+              });
             var months = viewhelpers.OrganizeConcertsInMonths(results, req.getLocale());
             res.render("events/events.hbs", { months, title });
         });
@@ -19,6 +22,9 @@ router.get("/archive", (req, res) => {
     db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
         function (err, results) {
             if (err) console.log(err);
+            results.forEach(element => {
+                element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+            });
             var months = viewhelpers.OrganizeConcertsInMonths(results);
             res.render("events/archive.hbs", { months, title });
         });

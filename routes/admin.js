@@ -179,6 +179,7 @@ router.get("/concerts", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {         
+        element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
         element.date=DateToISOLocal(element.date);
       });
       res.render("admin/concerts.hbs", { events, layout: false });
@@ -210,11 +211,12 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
+  var description = req.body.description.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
   let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
   db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
     hidden = '${hidden}', ticket = '${req.body.ticket}',\
-    description = '${req.body.description}' WHERE ${req.body.id}=id;`,
+    description = '${description}' WHERE ${req.body.id}=id;`,
     function (err, results) {
       if (err) {
         console.log(err);
@@ -244,6 +246,7 @@ router.get("/news", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {
+        element.text=element.text.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
         element.date=DateToISOLocal(element.date);
       });
       res.render('admin/news.hbs', { events, layout: false });
@@ -274,9 +277,10 @@ router.post("/news/add", urlencodedParser, async (req, res) => {
 
 router.post("/news/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
+  var text = req.body.text.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
   db.query(`UPDATE news SET title = '${req.body.title}', \
     date = '${date}',\
-    text = '${req.body.text}' WHERE ${req.body.id}=id;`,
+    text = '${text}' WHERE ${req.body.id}=id;`,
     function (err, results) {
       if (err) {
         console.log(err);
@@ -532,6 +536,7 @@ router.get("/musicians", async (req, res) => {
     function (err, musicians) {
       if (err) console.log(err);
       musicians=musicians.map((musician)=>{
+
         musician.bio=musician.bio.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
         return musician;
       });
@@ -666,6 +671,7 @@ router.get("/archive", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {
+        element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
         element.date=DateToISOLocal(element.date);
       });
       res.render("admin/archive.hbs", { events, layout: false });
@@ -696,11 +702,12 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
 
 router.post("/archive/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
+  var description = req.body.description.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
   let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
   db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
     hidden = '${hidden}', ticket = '${req.body.ticket}',\
-    description = '${req.body.description}' WHERE ${req.body.id}=id;`,
+    description = '${description}' WHERE ${req.body.id}=id;`,
     function (err, results) {
       if (err) {
         console.log(err);
