@@ -73,5 +73,19 @@
 	"history.artdirectors.d10": "Petr Vandilovsky (2003-2009, Belarus)",
 	"history.artdirectors.d11": "Eugeny Bushkov (2009-present, Russia)",
 	"history.musicians": "Employees of all years",
-	"disks.streaming": "Streaming"
+	"disks.streaming": "Streaming",
+	"index.description": "Belarusian state chamber orchestra - The leading chamber orchestra of the Republic of Belarus",
+	"events.description": "Next concerts",
+	"calendar.description": "Calendar of concerts",
+	"archive.description": "Past concerts",
+	"history.description": "History of belarusian state chamber orchestra",
+	"conductor.description": "Conductor of belarusian state chamber orchestra",
+	"musicians.description": "Musicians of belarusian state chamber orchestra",
+	"artists.description": "Artists played with belarusian state chamber orchestra",
+	"composers.description": "Composers had written for belarusian state chamber orchestra",
+	"photos.description": "Photos of belarusian state chamber orchestra",
+	"videos.description": "Videos of belarusian state chamber orchestra",
+	"disks.description": "Discography and streamong of belarusian state chamber orchestra",
+	"press.description": "Press about belarusian state chamber orchestra",
+	"contacts.description": "Contacts of belarusian state chamber orchestra"
 }

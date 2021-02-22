@@ -6,14 +6,17 @@ const globals = require("../globals.js");
 
 
 router.get("/", (req,res)=>{
+    var description=res.__('history.description');
     var title =res.__('layout.navbar.history')+' | '+res.__('title');
-    res.render('about/about.hbs', {title});
+    res.render('about/about.hbs', {title, description});
 });
 router.get("/conductor", (req,res)=>{
+    var description=res.__('conductor.description');
     var title =res.__('layout.navbar.conductor')+' | '+res.__('title');
-    res.render('about/conductor.hbs', {title});
+    res.render('about/conductor.hbs', {title, description});
 });
 router.get("/musicians", (req,res)=>{
+    var description=res.__('musicians.description');
     var title =res.__('layout.navbar.musicians')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} `,
@@ -23,7 +26,7 @@ router.get("/musicians", (req,res)=>{
         musiciansAll.forEach((musician)=>{
             musicians[musician.groupId-1].push(musician);
         });
-        res.render('about/musicians.hbs', {title, musicians});
+        res.render('about/musicians.hbs', {title, musicians, description});
     });    
 });
 
@@ -42,6 +45,7 @@ router.get("/musicians/getById", (req,res)=>{
 
  
 router.get("/artists", async (req,res)=>{
+    var description=res.__('artists.description');
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
@@ -53,7 +57,7 @@ router.get("/artists", async (req,res)=>{
                 artists[artist.groupId-1].push(artist);
         });
         
-        res.render('about/artists.hbs',{title, artists});
+        res.render('about/artists.hbs',{title, artists, description});
     });  
 
     
@@ -61,6 +65,7 @@ router.get("/artists", async (req,res)=>{
 });
 
 router.get("/composers", async (req,res)=>{
+    var description=res.__('composers.description');
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
@@ -76,7 +81,7 @@ router.get("/composers", async (req,res)=>{
             }
         });
         composers = {InResidence, Partners};
-        res.render("about/composers.hbs",{title,composers});
+        res.render("about/composers.hbs",{title,composers, description});
     });  
 });
 
