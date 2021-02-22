@@ -27,7 +27,7 @@ router.get("/archive", (req, res) => {
             results.forEach(element => {
                 element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
             });
-            var months = viewhelpers.OrganizeConcertsInMonths(results);
+            var months = viewhelpers.OrganizeConcertsInMonths(results, req.getLocale());
             res.render("events/archive.hbs", { months, title , description});
         });
 });

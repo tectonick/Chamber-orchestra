@@ -10,6 +10,7 @@ const imageProcessor = require("../image-processing");
 const bcrypt = require('bcrypt');
 const globals = require("../globals.js");
 var unirest = require("unirest");
+const config= require("config");
 
 
 function translate(text, source, dest) {
@@ -53,12 +54,8 @@ req.send([
 }
 
 
-const admin = {
-  user: "root",
-  passhash: "$2b$12$8/U31eNNYwPxhTMdcC4ogeIttkJNHUUreKGUEuZHFoPD.TT.e//9u"
-}
+const admin = config.get("adminUser");
 var sessionId = 'none';
-
 //look new password hash with this command
 //console.log(bcrypt.hashSync("your_new_password", 12));
 
@@ -117,8 +114,6 @@ async function SaveTmpPoster(tmpfile, dstFolder, newId, thumbnailFolder){
   });
 }
 
-
-
 async function PosterUpload(fileToUpload, folder, id, imageProcessorFunction){
   let tmpfile = path.join(__dirname, '..', '/tmp/', fileToUpload.name);
   await fileToUpload.mv(tmpfile);
@@ -137,7 +132,6 @@ function FilesToArray(files){
 }
 
 //Middleware
-
 router.use(function (req, res, next) {
   if ((req.cookies.id === sessionId) || (req.path == "/login") || (req.path == "/logout")) {
     next();

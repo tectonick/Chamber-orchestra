@@ -47,4 +47,11 @@ document.getElementById('ru').onclick=()=>{
 document.getElementById('by').onclick=()=>{
   document.cookie = "locale=by; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
 };
+document.getElementById('fr').onclick=()=>{
+  document.cookie = "locale=fr; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
+};
+document.getElementById('de').onclick=()=>{
+  document.cookie = "locale=de; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
+};
+
 

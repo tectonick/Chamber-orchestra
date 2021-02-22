@@ -1,12 +1,13 @@
 const mysql = require("mysql2");
-
+const config= require("config");
 
 //db connection
+dbConfig=config.get('db');
 const db = mysql.createPool({
-  host: "localhost",
-  user: "belscone_root",
-  password: "M51cT4n5qb",
-  database: "belscone_chamber",
+  host: dbConfig.host,
+  user: dbConfig.user,
+  password: dbConfig.password,
+  database: dbConfig.database,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
