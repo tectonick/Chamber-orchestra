@@ -9,68 +9,79 @@
 
 <url>
   <loc>https://belsco.net/</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://belsco.net/events</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <loc>https://belsco.net/events/</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/events/calendar</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/events/archive</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/about</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/about/conductor</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/about/musicians</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/about/artists</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/about/composers</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://belsco.net/about/press</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://belsco.net/archive</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/media/photos</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/media/videos</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/media/disks</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/press</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://belsco.net/contacts</loc>
-  <lastmod>2020-09-15T19:27:09+00:00</lastmod>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://belsco.net/disks</loc>
-  <lastmod>2020-09-21T19:27:09+00:00</lastmod>
+  <loc>https://belsco.net/events</loc>
+  <lastmod>2021-02-22T11:40:51+00:00</lastmod>
   <priority>0.80</priority>
 </url>
+
 
 </urlset>
