@@ -59,17 +59,7 @@ var sessionId = 'none';
 //look new password hash with this command
 //console.log(bcrypt.hashSync("your_new_password", 12));
 
-const PageIDs = {
-  concerts:1,
-  news:2,
-  gallery:3,
-  artists:4,
-  composers:5,
-  musicians:6,
-  press:7,
-  archive:8,
-  disks:9
-}
+
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
@@ -143,13 +133,11 @@ router.use(function (req, res, next) {
 //Routes
 router.get('/', function (req, res) {
   var title ='Admin'+' | '+res.__('title');
-  let id = req.session.menuId;
-  res.render("admin/admin", { id, title, PageIDs });
+  res.render("admin/admin", { title });
 });
 
 router.get("/login", (req, res) => {  
   var title ='Login'+' | '+res.__('title');
-  req.session.menuId = PageIDs.concerts;
   res.render("admin/login", {title});
 });
 
@@ -186,7 +174,7 @@ router.post("/concerts/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeleteImageById(req.body.id, '/static/img/posters/').then(()=>{
-        res.render('admin/admin', { id: PageIDs.concerts });
+        res.redirect("/admin/");
       });      
     });
 });
@@ -197,7 +185,6 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultImage(results.insertId, '/static/img/posters/').then(function(){
-        req.session.menuId = PageIDs.concerts;
         res.redirect("/admin/");
       });
     });
@@ -253,7 +240,7 @@ router.post("/news/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeleteImageById(req.body.id,'/static/img/news/').then(()=>{
-        res.render('admin/admin', { id: PageIDs.news });
+        res.redirect("/admin/");
       });
       
     });
@@ -264,7 +251,6 @@ router.post("/news/add", urlencodedParser, async (req, res) => {
     async function (err, results) {
       if (err) console.log(err);
       await MakeDefaultImage(results.insertId,  '/static/img/news/');
-      req.session.menuId = PageIDs.news;
       res.redirect("/admin/");
     });
 });
@@ -318,7 +304,6 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
       });
     });
   });    
-  req.session.menuId = PageIDs.gallery;
   res.redirect('/admin/');
 });
 
@@ -340,7 +325,7 @@ router.post("/artists/delete", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       db.query(`DELETE FROM artists WHERE id=${req.body.id}`,()=>{});
       DeleteImageById(req.body.id, '/static/img/about/artists/').then(()=>{
-        res.render('admin/admin', { id: PageIDs.artists });
+        res.redirect("/admin/");
       });      
     });
 });
@@ -387,7 +372,6 @@ router.post("/artists/add", urlencodedParser, async (req, res) => {
         })        
       }
       await MakeDefaultImage(results.insertId,  '/static/img/about/artists');
-      req.session.menuId = PageIDs.artists;
       res.redirect("/admin/");
     });
 });
@@ -437,7 +421,7 @@ router.post("/composers/delete", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       db.query(`DELETE FROM composers WHERE id=${req.body.id}`,()=>{});
       DeleteImageById(req.body.id, '/static/img/about/composers/').then(()=>{
-        res.render('admin/admin', { id: PageIDs.composers });
+        res.redirect("/admin/");
       });      
     });
 });
@@ -483,7 +467,6 @@ router.post("/composers/add", urlencodedParser, async(req, res) => {
         })        
       }
       await MakeDefaultImage(results.insertId, '/static/img/about/composers');
-      req.session.menuId = PageIDs.composers;
       res.redirect("/admin/");
     });
 });
@@ -545,7 +528,7 @@ router.post("/musicians/delete", urlencodedParser, (req, res) => {
       if (err) console.log(err);
       db.query(`DELETE FROM musicians WHERE id=${req.body.id}`,()=>{});
       DeleteImageById(req.body.id, '/static/img/about/musicians/').then(()=>{
-        res.render('admin/musicians', { id: PageIDs.musicians });
+        res.render('admin/musicians');
       });      
     });
 });
@@ -592,7 +575,6 @@ router.post("/musicians/add", urlencodedParser, async (req, res) => {
         })        
       }
       await MakeDefaultImage(results.insertId, '/static/img/about/musicians');
-      req.session.menuId = PageIDs.musicians;
       res.redirect("/admin/");
     });
 });
@@ -655,7 +637,6 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
       });
     });
   });    
-  req.session.menuId = PageIDs.press;
   res.redirect('/admin/');
 });
 
@@ -678,7 +659,7 @@ router.post("/archive/delete", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       DeleteImageById(req.body.id,'/static/img/posters/').then(()=>{
-        res.render('admin/admin', { id: PageIDs.archive });
+        res.redirect("/admin/");
       });
     });
 });
@@ -688,7 +669,6 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
     function (err, results) {
       if (err) console.log(err);
       MakeDefaultImage(results.insertId, '/static/img/posters/').then(()=>{
-        req.session.menuId = PageIDs.archive;
         res.redirect("/admin/");
       })
     });
@@ -747,7 +727,6 @@ router.post("/disks/upload", urlencodedParser, (req, res) => {
       });
     });
   });    
-  req.session.menuId = PageIDs.disks;
   res.redirect('/admin/');
 });
 

@@ -12,7 +12,7 @@
 
 
 
-  {{> deleteModal}}
+    {{> deleteModal}}
 
 
 </div>
@@ -22,13 +22,9 @@
 
 
 
-
-<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
-<script type="text/javascript" src="/scripts/admin.js"></script>
 <script>
-    $(document).ready(function () {
-        posterUploadSetEvent('/admin/concerts/posterupload');
-        deleteWithModalSetEvent('/admin/archive/delete');
-        saveSetEvent("/admin/archive/edit");
-    });    
+    posterUploadSetEvent('/admin/concerts/posterupload');
+    deleteWithModalSetEvent('/admin/archive/delete');
+    saveSetEvent("/admin/archive/edit");
+
 </script>

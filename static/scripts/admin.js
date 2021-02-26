@@ -1,3 +1,40 @@
+let container=document.querySelector('#edit-container');
+document.querySelectorAll('.menu-link').forEach((link)=>{
+    link.addEventListener('click',async (e)=>{
+        e.preventDefault();
+        let response = await fetch(link.href);
+        let pageData = await response.text();
+        container.innerHTML=pageData;
+        eval(container.querySelector('script').innerText);
+        sessionStorage.setItem('current-admin-page',link.href);
+    })
+});
+document.addEventListener('DOMContentLoaded', async ()=>{
+    let page = sessionStorage.getItem('current-admin-page')??'/admin/concerts';
+    let response = await fetch(page);
+    let pageData = await response.text();
+    container.innerHTML=pageData;
+    eval(container.querySelector('script').innerText);
+    console.log('Dispatched');
+});
+document.getElementById("search-input").addEventListener("input",function(){
+var searchables=document.querySelectorAll('.searchable');
+if (this.value===""){
+    searchables.forEach((element)=>{element.style.display=(element.classList.contains("card"))?"inline-block":"block";})
+} else{
+     searchables.forEach((element)=>{
+        var regex = new RegExp( this.value, 'i' );
+         if (element.innerHTML.match(regex)){
+             element.style.display=(element.classList.contains("card"))?"inline-block":"block";
+         } else{
+             element.style.display="none";
+         }             
+    });
+}
+})
+
+
+
 function posterUploadSetEvent(path) {
   $(".fileToUpload").change(function () {
     let filename = this.value;
@@ -31,6 +68,7 @@ function posterUploadSetEvent(path) {
 }
 
 function deleteWithModalSetEvent(path) {
+
   $(".delete-button").click(function () {
     var modal = $("#deleteModal");
     modal.attr("name", $(this).attr("name"));

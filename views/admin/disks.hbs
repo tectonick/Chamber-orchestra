@@ -28,7 +28,7 @@
 
 <script>
 
-$(document).ready(function(){
+
   $(".delete-button").click(function(){
     this.parentNode.parentNode.style.display='none';
     $.post("/admin/disks/delete", {filename:$(this).attr('id')});
@@ -40,7 +40,6 @@ $(document).ready(function(){
 
       }
   });
-});
 </script>
 
 

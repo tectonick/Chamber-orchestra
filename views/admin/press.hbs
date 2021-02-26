@@ -28,7 +28,6 @@
 
 <script>
 
-$(document).ready(function(){
   $(".delete-button").click(function(){
     this.parentNode.parentNode.style.display='none';
     $.post("/admin/press/delete", {filename:$(this).attr('id')});
@@ -39,10 +38,6 @@ $(document).ready(function(){
             $(this).siblings('.form-control').prop('disabled', false);
       }
   });
-});
-
-
-
 
 </script>
 

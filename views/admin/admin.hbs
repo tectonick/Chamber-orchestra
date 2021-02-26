@@ -12,47 +12,26 @@
                             <input type="text" id="search-input" class="form-control" placeholder="Поиск" aria-label="search"
                                 aria-describedby="basic-addon1">
                         </div>
-                        <a href="#" id="{{PageIDs.concerts}}" onclick="$('.edit-container').load('/admin/concerts');" class="list-group-item list-group-item-action bg-light">Афиши</a>
-                        <a href="#" id="{{PageIDs.news}}" onclick="$('.edit-container').load('/admin/news');" class="list-group-item list-group-item-action bg-light">Новости</a>
-                        <a href="#" id="{{PageIDs.gallery}}" onclick="$('.edit-container').load('/admin/gallery');" class="list-group-item list-group-item-action bg-light">Галерея</a>
-                        <a href="#" id="{{PageIDs.artists}}" onclick="$('.edit-container').load('/admin/artists');" class="list-group-item list-group-item-action bg-light">Приглашенные артисты</a>
-                        <a href="#" id="{{PageIDs.composers}}" onclick="$('.edit-container').load('/admin/composers');" class="list-group-item list-group-item-action bg-light">Композиторы</a>
-                        <a href="#" id="{{PageIDs.musicians}}" onclick="$('.edit-container').load('/admin/musicians');" class="list-group-item list-group-item-action bg-light">Музыканты</a>
-                        <a href="#" id="{{PageIDs.press}}" onclick="$('.edit-container').load('/admin/press');" class="list-group-item list-group-item-action bg-light">Пресса</a>
-                        <a href="#" id="{{PageIDs.archive}}" onclick="$('.edit-container').load('/admin/archive');" class="list-group-item list-group-item-action bg-light">Архив</a>
-                        <a href="#" id="{{PageIDs.disks}}" onclick="$('.edit-container').load('/admin/disks');" class="list-group-item list-group-item-action bg-light">Дискография</a>
-                        <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
+                        <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши</a>
+                        <a href="/admin/news" class="menu-link list-group-item list-group-item-action bg-light">Новости</a>
+                        <a href="/admin/gallery" class="menu-link list-group-item list-group-item-action bg-light">Галерея</a>
+                        <a href="/admin/artists" class="menu-link list-group-item list-group-item-action bg-light">Приглашенные артисты</a>
+                        <a href="/admin/composers" class="menu-link list-group-item list-group-item-action bg-light">Композиторы</a>
+                        <a href="/admin/musicians" class="menu-link list-group-item list-group-item-action bg-light">Музыканты</a>
+                        <a href="/admin/press" class="menu-link list-group-item list-group-item-action bg-light">Пресса</a>
+                        <a href="/admin/archive" class="menu-link list-group-item list-group-item-action bg-light">Архив</a>
+                        <a href="/admin/disks" class="menu-link list-group-item list-group-item-action bg-light">Дискография</a>
+                        <a href="/admin/logout" class="menu-link list-group-item list-group-item-action bg-light">Выйти</a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-sm-8 col-md-10 edit-container">
+            <div id="edit-container" class="edit-container col-12 col-sm-8 col-md-10 ">
                
             </div>
         </div>
 </div>
 
 
-<script>
-$(document).ready(function(){
-    var id={{id}}+'';
-    $(`#${id}`).trigger("click");
-});
-document.getElementById("search-input").addEventListener("input",function(){
-    var searchables=document.querySelectorAll('.searchable');
-    if (this.value===""){
-        searchables.forEach((element)=>{element.style.display=(element.classList.contains("card"))?"inline-block":"block";})
-    } else{
-         searchables.forEach((element)=>{
-            var regex = new RegExp( this.value, 'i' );
-             if (element.innerHTML.match(regex)){
-                 element.style.display=(element.classList.contains("card"))?"inline-block":"block";
-             } else{
-                 element.style.display="none";
-             }             
-        });
-    }
-})
-
-
-</script>
+<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+<script type="text/javascript" src="/scripts/admin.js"></script>
