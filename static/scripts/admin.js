@@ -9,11 +9,12 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         sessionStorage.setItem('current-admin-page',link.href);
     })
 });
-document.addEventListener('DOMContentLoaded', async ()=>{
+window.addEventListener('load', async ()=>{
     let page = sessionStorage.getItem('current-admin-page')??'/admin/concerts';
     let response = await fetch(page);
     let pageData = await response.text();
     container.innerHTML=pageData;
+    console.log('INIT');
     eval(container.querySelector('script').innerText);
     console.log('Dispatched');
 });
