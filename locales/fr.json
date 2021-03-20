@@ -87,5 +87,17 @@
 	"videos.description": "Vidéos de l'orchestre de chambre d'État biélorusse",
 	"disks.description": "Discographie et streamong de l'orchestre de chambre de l'état biélorusse",
 	"press.description": "Presse sur l'orchestre de chambre d'État biélorusse",
-	"contacts.description": "Contacts de l'orchestre de chambre d'État biélorusse"
+	"contacts.description": "Contacts de l'orchestre de chambre d'État biélorusse",
+	"month.january":"Janvier",
+    "month.february":"Février",
+    "month.march":"Mars",
+    "month.april":"Avril",
+    "month.may":"Mai",
+    "month.june":"Juin",
+    "month.july":"Juillet",
+    "month.august":"Août",
+    "month.september":"Septembre",
+    "month.october":"Octobre",
+    "month.november":"Novembre",
+    "month.december":"Décembre"
 	}

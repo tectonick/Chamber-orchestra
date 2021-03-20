@@ -3,106 +3,31 @@ const path = require("path");
 const e = require("express");
 
 //because handlebars cant handle nested helpers :(
-const MonthNamesEN = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const MonthNamesRU = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апрель",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь",
-];
-const MonthNamesBY = [
-  "Студзень",
-  "Люты",
-  "Сакавік",
-  "Красавік",
-  "Май",
-  "Чэрвень",
-  "Ліпень",
-  "Аўгуст",
-  "Верасень",
-  "Кастрычнік",
-  "Лістапад",
-  "Снежань ",
-];
-const MonthNamesDE = [
-  "Januar",
-  "Februar",
-  "März",
-  "April",
-  "Mai",
-  "Juni",
-  "Juli",
-  "August",
-  "September",
-  "Oktober",
-  "November",
-  "Dezember",
-];
-const MonthNamesFR = [
-  "Janvier",
-  "Février",
-  "Mars",
-  "Avril",
-  "Mai",
-  "Juin",
-  "Juillet",
-  "Août",
-  "Septembre",
-  "Octobre",
-  "Novembre",
-  "Décembre",
-];
+
+  const MonthNames = [
+    "month.january",
+    "month.february",
+    "month.march",
+    "month.april",
+    "month.may",
+    "month.june",
+    "month.july",
+    "month.august",
+    "month.september",
+    "month.october",
+    "month.november",
+    "month.december",
+  ];
 
 function OrganizeConcertsInMonths(concerts, lang) {
   var months = [];
-  var MonthNames;
-  switch (lang) {
-    case "en":
-      MonthNames = MonthNamesEN;
-      break;
-    case "ru":
-      MonthNames = MonthNamesRU;
-      break;
-    case "by":
-      MonthNames = MonthNamesBY;
-      break;
-    case "de":
-      MonthNames = MonthNamesDE;
-      break;
-    case "fr":
-      MonthNames = MonthNamesFR;
-      break;
-    default:
-      MonthNames = MonthNamesEN;
-      break;
-  }
   if (typeof concerts == "undefined") {
     return months;
   }
   concerts.forEach((element) => {
     var nameMonth =
-      MonthNames[element.date.getMonth()] + " " + element.date.getFullYear();
+      MonthNames[element.date.getMonth()];
+    var year=element.date.getFullYear();
     element.day = element.date.getDate();
     element.time = element.date.toTimeString().slice(0, 5);
     let index = months.findIndex((val) => {
@@ -111,6 +36,7 @@ function OrganizeConcertsInMonths(concerts, lang) {
     if (index === -1) {
       months.push({
         name: nameMonth,
+        year:year,
         concerts: [element],
       });
     } else {

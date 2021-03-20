@@ -87,5 +87,17 @@
 	"videos.description": "Videos of belarusian state chamber orchestra",
 	"disks.description": "Discography and streamong of belarusian state chamber orchestra",
 	"press.description": "Press about belarusian state chamber orchestra",
-	"contacts.description": "Contacts of belarusian state chamber orchestra"
+	"contacts.description": "Contacts of belarusian state chamber orchestra",
+	"month.january":"January",
+    "month.february":"February",
+    "month.march":"March",
+    "month.april":"April",
+    "month.may":"May",
+    "month.june":"June",
+    "month.july":"July",
+    "month.august":"August",
+    "month.september":"September",
+    "month.october":"October",
+    "month.november":"November",
+    "month.december":"December"
 }

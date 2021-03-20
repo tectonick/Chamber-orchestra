@@ -87,5 +87,17 @@
 	"videos.description": "Videos des belarussischen Staatskammerorchesters",
 	"disks.description": "Diskographie und Streamong des belarussischen Staatskammerorchesters",
 	"press.description": "Presse über belarussisches Staatskammerorchester",
-	"contacts.description": "Kontakte des belarussischen Staatskammerorchesters"
+	"contacts.description": "Kontakte des belarussischen Staatskammerorchesters",
+	"month.january":"Januar",
+    "month.february":"Februar",
+    "month.march":"März",
+    "month.april":"April",
+    "month.may":"Mai",
+    "month.june":"Juni",
+    "month.july":"Juli",
+    "month.august":"August",
+    "month.september":"September",
+    "month.october":"Oktober",
+    "month.november":"November",
+    "month.december":"Dezember"
 }
