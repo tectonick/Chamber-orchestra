@@ -768,6 +768,11 @@ margin: 1rem auto;
 }
 
 /*Admin*/
+.menu-link span{
+  float: right;
+  color: #aaaaaa;
+}
+
 #sidebar-wrapper {
   min-height: 100%;
   margin-left: -15rem;

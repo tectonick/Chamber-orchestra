@@ -12,15 +12,15 @@
                             <input type="text" id="search-input" class="form-control" placeholder="Поиск" aria-label="search"
                                 aria-describedby="basic-addon1">
                         </div>
-                        <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши</a>
-                        <a href="/admin/news" class="menu-link list-group-item list-group-item-action bg-light">Новости</a>
-                        <a href="/admin/gallery" class="menu-link list-group-item list-group-item-action bg-light">Галерея</a>
-                        <a href="/admin/artists" class="menu-link list-group-item list-group-item-action bg-light">Приглашенные артисты</a>
-                        <a href="/admin/composers" class="menu-link list-group-item list-group-item-action bg-light">Композиторы</a>
-                        <a href="/admin/musicians" class="menu-link list-group-item list-group-item-action bg-light">Музыканты</a>
-                        <a href="/admin/press" class="menu-link list-group-item list-group-item-action bg-light">Пресса</a>
-                        <a href="/admin/archive" class="menu-link list-group-item list-group-item-action bg-light">Архив</a>
-                        <a href="/admin/disks" class="menu-link list-group-item list-group-item-action bg-light">Дискография</a>
+                        <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши <span>{{stat.new_concerts_count}}</span></a>
+                        <a href="/admin/news" class="menu-link list-group-item list-group-item-action bg-light">Новости<span>{{stat.news_count}}</span></a>
+                        <a href="/admin/gallery" class="menu-link list-group-item list-group-item-action bg-light">Галерея<span>{{stat.gallery_count}}</span></a>
+                        <a href="/admin/artists" class="menu-link list-group-item list-group-item-action bg-light">Приглашенные артисты<span>{{stat.artists_count}}</span></a>
+                        <a href="/admin/composers" class="menu-link list-group-item list-group-item-action bg-light">Композиторы<span>{{stat.composers_count}}</span></a>
+                        <a href="/admin/musicians" class="menu-link list-group-item list-group-item-action bg-light">Музыканты<span>{{stat.musicians_count}}</span></a>
+                        <a href="/admin/press" class="menu-link list-group-item list-group-item-action bg-light">Пресса<span>{{stat.press_count}}</span></a>
+                        <a href="/admin/archive" class="menu-link list-group-item list-group-item-action bg-light">Архив<span>{{stat.old_concerts_count}}</span></a>
+                        <a href="/admin/disks" class="menu-link list-group-item list-group-item-action bg-light">Дискография<span>{{stat.disks_count}}</span></a>
                         <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
                     </div>
                 </div>

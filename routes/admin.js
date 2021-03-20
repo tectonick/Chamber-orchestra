@@ -132,8 +132,19 @@ router.use(function (req, res, next) {
 
 //Routes
 router.get('/', function (req, res) {
-  var title ='Admin'+' | '+res.__('title');
-  res.render("admin/admin", { title });
+  db.query("CALL STAT()",
+    async function (err, data) {
+      if (err) console.log(err);
+      var title ='Admin'+' | '+res.__('title');
+      let stat=data[0][0];
+      let galleryFiles=await fs.readdir('./static/img/gallery');
+      let disksFiles=await fs.readdir('./static/img/disks');
+      let pressFiles=await fs.readdir('./static/img/press');
+      stat.gallery_count=galleryFiles.length;
+      stat.disks_count=disksFiles.length;
+      stat.press_count=pressFiles.length;
+      res.render("admin/admin", { title, stat });
+    });
 });
 
 router.get("/login", (req, res) => {  
