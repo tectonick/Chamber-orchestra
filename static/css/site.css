@@ -444,6 +444,7 @@ label {
   color: #aaaaaa;
 }
 
+
 .concert-place {
   position: absolute;
   bottom: 8px;
@@ -459,7 +460,6 @@ label {
   font-size: 100%;
   color: #aaaaaa;
 }
-
 pre {
   font-family: Cambria, serif;
   white-space: pre-wrap; /* Since CSS 2.1 */

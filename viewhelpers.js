@@ -2,8 +2,6 @@ const fs = require("fs").promises;
 const path = require("path");
 const e = require("express");
 
-//because handlebars cant handle nested helpers :(
-
   const MonthNames = [
     "month.january",
     "month.february",
@@ -19,7 +17,7 @@ const e = require("express");
     "month.december",
   ];
 
-function OrganizeConcertsInMonths(concerts, lang) {
+function OrganizeConcertsInMonths(concerts) {
   var months = [];
   if (typeof concerts == "undefined") {
     return months;
@@ -29,6 +27,9 @@ function OrganizeConcertsInMonths(concerts, lang) {
       MonthNames[element.date.getMonth()];
     var year=element.date.getFullYear();
     element.day = element.date.getDate();
+    element.month=element.date.getMonth()+1;
+    if (element.day<10) element.day='0'+element.day;
+    if (element.month<10) element.month='0'+element.month;
     element.time = element.date.toTimeString().slice(0, 5);
     let index = months.findIndex((val) => {
       return val.name == nameMonth;
