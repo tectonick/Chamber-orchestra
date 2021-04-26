@@ -1,7 +1,9 @@
 <div class="container-fluid">
 
     {{#each months}}
-    <div class="separator container"><h3>{{this.name}}</h3></div>
+    <div class="separator container">
+        <h3>{{../__ this.name}} {{this.year}}</h3>
+    </div>
 
     <div class="month-events">
         {{#each this.concerts}}{{> cards/concert concert=this}}{{/each}}

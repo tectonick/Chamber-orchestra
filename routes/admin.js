@@ -73,6 +73,9 @@ function DateToISOLocal(date){
   var localDate = date - date.getTimezoneOffset() * 60 * 1000;
   return new Date(localDate).toISOString().slice(0, 19);  
 }
+
+
+
 async function MakeDefaultImage(newId, folder){  
   let src = path.join(__dirname, '..', folder, "placeholder.jpg");
   let dest = path.join(__dirname, '..', folder, newId  + ".jpg");
@@ -172,7 +175,7 @@ router.get("/concerts", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {         
-        element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+        element.description=viewhelpers.UnescapeQuotes(element.description);
         element.date=DateToISOLocal(element.date);
       });
       res.render("admin/concerts.hbs", { events, layout: false });
@@ -203,7 +206,7 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
 
 router.post("/concerts/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
-  var description = req.body.description.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
+  var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
   db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\
@@ -238,7 +241,7 @@ router.get("/news", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {
-        element.text=element.text.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+        element.text=viewhelpers.UnescapeQuotes(element.text);
         element.date=DateToISOLocal(element.date);
       });
       res.render('admin/news.hbs', { events, layout: false });
@@ -268,7 +271,7 @@ router.post("/news/add", urlencodedParser, async (req, res) => {
 
 router.post("/news/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
-  var text = req.body.text.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
+  var text = viewhelpers.EscapeQuotes(req.body.text);
   db.query(`UPDATE news SET title = '${req.body.title}', \
     date = '${date}',\
     text = '${text}' WHERE ${req.body.id}=id;`,
