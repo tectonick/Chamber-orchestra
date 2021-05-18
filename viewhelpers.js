@@ -17,6 +17,14 @@ const e = require("express");
     "month.december",
   ];
 
+
+  function EscapeQuotes(str){
+    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;")
+  }
+  function UnescapeQuotes(str){
+   return str.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+  }
+
 function OrganizeConcertsInMonths(concerts) {
   var months = [];
   if (typeof concerts == "undefined") {
@@ -88,4 +96,6 @@ module.exports = {
   OrganizeConcertsInMonths,
   OrganizeConcertsInTriplets,
   NamesOfDirFilesWOExtension,
+  EscapeQuotes,
+  UnescapeQuotes
 };
