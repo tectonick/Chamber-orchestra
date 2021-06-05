@@ -99,5 +99,6 @@
     "month.september":"September",
     "month.october":"October",
     "month.november":"November",
-    "month.december":"December"
+    "month.december":"December",
+	"events.noevents":"There is no concerts soon."
 }
