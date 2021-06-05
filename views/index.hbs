@@ -13,6 +13,10 @@
             <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel" data-interval="5000">
                 <div class="carousel-inner w-100" role="listbox">
 
+                    {{#unless false}}
+                        {{__ 'events.noevents'}}
+                    {{/unless}}
+
                     {{#each triplets}}
                     <div class="carousel-item">
                         <div class="row">
