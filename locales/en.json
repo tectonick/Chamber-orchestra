@@ -1,5 +1,5 @@
 {
-	"title": "Belarussian State Chamber Orchestra",
+	"title": "Belarusian State Chamber Orchestra",
 	"layout.navbar.media": "Media",
 	"layout.navbar.events": "Events",
 	"layout.navbar.about": "About us",
@@ -44,7 +44,7 @@
 	"artists.title": "Guest artists",
 	"layout.navbar.disks": "Music albums",
 	"disks.title": "Discography",
-	"contacts.tech_editor": "Technical editor: Mikalai Kisialiou korn9509@gmail.com",
+	"contacts.tech_editor": "Content manager and site creator: Mikalai Kisialiou admin@belsco.net",
 	"layout.navbar.nextEvents": "Next events",
 	"layout.navbar.calendar": "Calendar",
 	"calendar.title": "Events calendar",

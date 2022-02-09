@@ -16,7 +16,7 @@ i18n.configure({
   // setup some locales - other locales default to en silently
   locales: ['en', 'ru', 'by', 'de', 'fr'],
   defaultLocale: 'en',
- 
+  queryParameter: 'lang',
   // sets a custom cookie name to parse locale settings from
   cookie: 'locale',
   // where to store json files - defaults to './locales'
