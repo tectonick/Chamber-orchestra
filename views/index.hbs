@@ -57,7 +57,7 @@
         <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item ml-auto">
-                    <p class="page-link">🢔</p>
+                    <p class="page-link">←</p>
                 </li>
             </ul>
         </nav>
@@ -80,7 +80,7 @@
                     activePage = Number(pageButtonText);
                     pageNum = activePage;
                 } else {
-                    if (pageButtonText === "🢔") {
+                    if (pageButtonText === "←") {
                         activePage = (activePage - 1 >= 1) ? (activePage - 1) : (1);
                     } else {
                         activePage = (activePage + 1 > MAXPAGE) ? (MAXPAGE) : (activePage + 1);
@@ -129,7 +129,7 @@
                     }
                     pagination.append(`<li class="page-item ${active}" id="${i}"><p class="page-link">${i}</p></li>`);
                 }
-                pagination.append(`<li class="page-item mr-auto"><p class="page-link" >🢖</p></li>`);
+                pagination.append(`<li class="page-item mr-auto"><p class="page-link" >→</p></li>`);
 
                 activePageLI = $(".active", pagination);
 
