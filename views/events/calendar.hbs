@@ -35,13 +35,6 @@
                 left: 'prev,today,next',
                 right: 'title'
             },
-
-            eventMouseEnter: function (info) {
-                var id = info.event.id;
-                var link = "/events#" + id;
-            },
-            eventMouseLeave: function (info) {
-            },
             eventTimeFormat: { // like '14:30:00'
                 hour: '2-digit',
                 minute: '2-digit',
@@ -71,13 +64,13 @@
             var id = idEl.innerHTML;
             var cell=idEl.closest('.fc-day');
             var frame = cell.querySelector(".fc-daygrid-day-frame");
+            var link = frame.querySelector(".fc-daygrid-event").href;
             cell.style.backgroundImage=`url("/img/posters/${id}.jpg")`;
             cell.style.cursor="pointer";
             frame.style.backgroundColor="rgb(255,255,255)"
             frame.style.opacity="0.5";
             cell.addEventListener('click',()=>{
-                window.location = "/events#"+id;
-
+                window.location = link;
             })
         });
     }
