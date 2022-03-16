@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-12 col-md-8 p-4">
                     <p>{{concert.title}}</p>
-                    <pre>{{concert.description}}</pre>
+                    <pre>{{{concert.description}}}</pre>
                     {{#if concert.ticket}}
                         {{#if future}}
                              <a class="btn buy btn-sm btn-success mb-3" href="{{concert.ticket}}">{{@root.__ 'events.buy'}}</a>
