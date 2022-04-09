@@ -528,8 +528,8 @@ router.get("/musicians", async (req, res) => {
       if (err) console.log(err);
       musicians=musicians.map((musician)=>{
 
-        musician.bio=musician.bio.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
-        return musician;
+        musician.bio=viewhelpers.UnescapeQuotes(musician.bio);
+        return musician; 
       });
       res.render("admin/musicians.hbs", { layout: false, musicians });
     }
@@ -565,7 +565,8 @@ router.post("/musicians/translate", urlencodedParser,async (req, res) => {
           var destLang=globals.languages.getNameById(langId);
           var name = await translate(musician[0].name,sourceLang,destLang);
           var bio = await translate(musician[0].bio,sourceLang,destLang);
-          bio=bio.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
+          
+          bio=viewhelpers.EscapeQuotes(bio);
           db.query(`UPDATE musicians_translate SET name = '${name}', \
           bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`,
           function (err, results) {   if  (err) {
@@ -596,7 +597,7 @@ router.post("/musicians/add", urlencodedParser, async (req, res) => {
 router.post("/musicians/edit", urlencodedParser, (req, res) => {
   let langId = globals.languages[req.getLocale()];
   db.query(`UPDATE musicians_translate SET name = '${req.body.name}', \
-    bio = '${req.body.bio}' WHERE ${req.body.id}=musicianId AND ${langId}=languageId;`,
+    bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${req.body.id}=musicianId AND ${langId}=languageId;`,
     function (err, results) {
       if (err) {
         console.log(err);
@@ -660,7 +661,7 @@ router.get("/archive", (req, res) => {
     function (err, events) {
       if (err) console.log(err);
       events.forEach(element => {
-        element.description=element.description.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+        element.description=viewhelpers.UnescapeQuotes(element.description);
         element.date=DateToISOLocal(element.date);
       });
       res.render("admin/archive.hbs", { events, layout: false });
@@ -690,7 +691,7 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
 
 router.post("/archive/edit", urlencodedParser, (req, res) => {
   var date = req.body.date.slice(0, 19).replace('T', ' ');
-  var description = req.body.description.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;");
+  var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden= ((typeof req.body.hidden)=='undefined')?0:1;
   db.query(`UPDATE concerts SET title = '${req.body.title}', \
     date = '${date}', place = '${req.body.place}',\

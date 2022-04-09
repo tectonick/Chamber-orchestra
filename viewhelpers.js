@@ -19,10 +19,11 @@ const e = require("express");
 
 
   function EscapeQuotes(str){
-    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;")
+    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;");
+    
   }
   function UnescapeQuotes(str){
-   return str.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'");
+   return str.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'").replace(/\&grave\;/g,"`");
   }
 
 function OrganizeConcertsInMonths(concerts) {
