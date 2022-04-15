@@ -1,0 +1,79 @@
+/*Gallery*/
+
+.gallery-container {
+    h1 {
+        text-align: center;
+        margin-top: 70px;
+        font-family: "Droid Sans", sans-serif;
+        font-weight: bold;
+        color: #58595a;
+    }
+
+    p.page-description {
+        text-align: center;
+        margin: 30px auto;
+        font-size: 18px;
+        color: #85878c;
+    }
+}
+
+.tz-gallery {
+    padding: 10px;
+    -webkit-backface-visibility: hidden;
+
+    .thumbnail {
+        padding: 0;
+        margin-bottom: 30px;
+        background-color: #fff;
+        border-color: rgba(0, 0, 0, 0.18);
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 4px;
+        -webkit-backface-visibility: hidden;
+        transition: 0.15s ease-in-out;
+
+        /*-webkit-transition: 0s;*/
+
+        &:hover {
+            -ms-transform: translateY(-10px) scale(1.02);
+            -webkit-transform: translateY(-10px) scale(1.02);
+            -moz-transform: translateY(-10px) scale(1.02);
+            -o-transform: translateY(-10px) scale(1.02);
+            transform: translateY(-10px) scale(1.02);
+        }
+    }
+
+    .lightbox img {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .caption {
+        padding: 10px 30px;
+        text-align: center;
+
+        h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        p {
+            font-size: 12px;
+            color: #7b7d7d;
+            margin: 0;
+        }
+    }
+}
+
+.baguetteBox-button {
+    background-color: transparent !important;
+}
+
+.thumbnail {
+    margin-bottom: 0px !important;
+}
+
+.photo-card {
+    border: none !important;
+    background: none !important;
+}

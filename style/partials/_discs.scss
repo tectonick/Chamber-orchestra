@@ -1,0 +1,24 @@
+/*Discs*/
+
+#spotify .album {
+    width: 100%;
+    margin: 5px 5px;
+}
+
+#streaming-links {
+    overflow: hidden;
+}
+
+.streaming-link {
+    margin: 0px 10px;
+    transition: opacity 0.3s;
+
+    img {
+        height: 5vh;
+        width: auto;
+    }
+
+    &:hover {
+        opacity: 0.6;
+    }
+}

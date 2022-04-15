@@ -1,0 +1,56 @@
+/*artists*/
+@media (min-width: 576px) {
+    .card-columns {
+        column-count: 2;
+        column-count: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-columns {
+        column-count: 3;
+    }
+
+    .disks .card-columns {
+        column-count: 2;
+    }
+
+    #spotify .album {
+        width: 48%;
+        margin: 0 5px;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-columns {
+        column-count: 4;
+    }
+
+    .disks .card-columns {
+        column-count: 3;
+    }
+
+    #spotify .album {
+        width: 32%;
+        margin: 0 3px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-columns {
+        column-count: 5;
+    }
+
+    .disks .card-columns {
+        column-count: 4;
+    }
+}
+
+.artists,
+.disks {
+    margin: 5px 40px;
+}
+
+.full-width {
+    max-width: 100%;
+}

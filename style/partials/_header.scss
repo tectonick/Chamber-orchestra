@@ -1,0 +1,118 @@
+/*header */
+@use "config";
+
+.navbar {
+    padding: 0px;
+    background-color: rgba(253, 253, 253, 1);
+    transition: 0.2s;
+
+    a:hover {
+        color: config.$link-hover-color !important;
+    }
+}
+
+.navbar-brand {
+    width: 180px;
+}
+
+#logo {
+    width: 180px;
+    transition: 0.2s width;
+}
+
+@media (max-width: 992px) {
+    nav #logo {
+        width: 100px;
+    }
+}
+
+.navbar-nav a {
+    font-size: 1.5em;
+}
+
+.nav-item {
+    margin: 0px 15px;
+}
+
+.locale-change:hover,
+.social-img:hover {
+    opacity: 0.8;
+}
+
+.locale-change img {
+    height: 40px;
+}
+
+.dropdown-item {
+
+    &.active,
+    &:active {
+        background-color: #EEEEEE !important;
+    }
+}
+
+.dropdown-menu-lang {
+    right: 0;
+    left: auto;
+    right: 0;
+    left: auto;
+}
+
+@media (max-width: 992px) {
+    .dropdown-menu-lang {
+        left: 0;
+        right: auto;
+    }
+}
+
+@media (min-width: 992px) {
+    .animate {
+        animation-duration: 0.3s;
+        -webkit-animation-duration: 0.3s;
+        animation-fill-mode: both;
+        -webkit-animation-fill-mode: both;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0rem);
+        opacity: 1;
+    }
+
+    0% {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes slideIn {
+    0% {
+        -webkit-transform: transform;
+        -webkit-opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        -webkit-opacity: 1;
+    }
+
+    0% {
+        -webkit-transform: translateY(1rem);
+        -webkit-opacity: 0;
+    }
+}
+
+.slideIn {
+    -webkit-animation-name: slideIn;
+    animation-name: slideIn;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
