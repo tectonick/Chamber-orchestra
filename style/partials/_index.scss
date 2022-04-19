@@ -1,70 +1,67 @@
-/*Index*/
+/* Index */
 
 .page-link {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: background-color 0.2s;
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-}
-
-.page-item.active .page-link {
-    color: #000;
-    background-color: #cccccc;
-    border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
 }
 
 .page-link:hover {
-    color: #555555;
-    text-decoration: none;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-    background-color: rgba(200, 200, 200, 0.25) !important;
-    border: 1px solid #dee2e6 !important;
+  color: #555;
+  text-decoration: none;
+  border-color: #dee2e6;
+  background-color: rgb(200 200 200 / 25%) !important;
+  border: 1px solid #dee2e6 !important;
 }
 
 .active .page-link {
-    background-color: rgba(200, 200, 200, 0.25) !important;
-    border: 1px solid #dee2e6 !important;
+  background-color: rgb(200 200 200 / 25%) !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+.page-item.active .page-link {
+  color: #000;
+  background-color: #ccc;
+  border: none;
 }
 
 .pagination {
-    display: none;
+  display: none;
 }
 
-/*Main*/
+/* Main */
 
 #main_orchestra {
-    width: 100%;
+  width: 100%;
 }
 
 .carousel-control-next-icon,
 .carousel-control-prev-icon {
-    width: 30px;
-    height: 30px;
+  width: 30px;
+  height: 30px;
 }
 
 @media (min-width: 600px) {
-    .carousel-control-prev-icon {
-        width: 40px !important;
-        height: 40px !important;
-    }
+  .carousel-control-prev-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
 }
 
 .card-deck {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-flow: row wrap;
-    flex-flow: row wrap;
-    margin-right: -15px;
-    margin-left: -15px;
+  display: flexbox;
+  display: flex;
+  flex-flow: row wrap;
+  margin-right: -15px;
+  margin-left: -15px;
 }
 
 .img-fluid {
-    opacity: 70%;
+  opacity: 0.7;
 
-    &:hover {
-        opacity: 100%;
-    }
+  &:hover {
+    opacity: 1;
+  }
 }

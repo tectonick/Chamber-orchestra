@@ -1,4 +1,3 @@
-const jimp = require("jimp");
 const Jimp = require("jimp");
 const path=require('path');
 const config= require("config");

@@ -1,6 +1,5 @@
 const fs = require("fs").promises;
 const path = require("path");
-const e = require("express");
 
   const MonthNames = [
     "month.january",
@@ -23,7 +22,7 @@ const e = require("express");
     
   }
   function UnescapeQuotes(str){
-   return str.replace(/\&quot\;/g,"\"").replace(/\&rsquo\;/g,"\'").replace(/\&grave\;/g,"`");
+   return str.replace(/&quot;/g,"\"").replace(/&rsquo;/g,"'").replace(/&grave;/g,"`");
   }
 
 function OrganizeConcertsInMonths(concerts) {

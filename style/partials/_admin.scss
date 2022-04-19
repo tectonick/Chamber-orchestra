@@ -1,55 +1,55 @@
 /*Admin*/
 
 .menu-link span {
-    float: right;
-    color: #aaaaaa;
+  float: right;
+  color: #aaaaaa;
 }
 
 #sidebar-wrapper {
-    min-height: 100%;
-    margin-left: -15rem;
-    -webkit-transition: margin 0.25s ease-out;
-    -moz-transition: margin 0.25s ease-out;
-    -o-transition: margin 0.25s ease-out;
-    transition: margin 0.25s ease-out;
-    overflow-wrap: break-word;
+  min-height: 100%;
+  margin-left: -15rem;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
+  overflow-wrap: break-word;
 }
 
 .sidebar-wrapper .sidebar-heading {
-    padding: 0.875rem 1.25rem;
-    font-size: 1.2rem;
-    overflow-wrap: break-word;
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+  overflow-wrap: break-word;
 }
 
 #page-content-wrapper {
-    min-width: 100vw;
+  min-width: 100vw;
 }
 
 #wrapper.toggled .sidebar-wrapper {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .save-block {
-    position: absolute;
-    bottom: 0px;
+  position: absolute;
+  bottom: 0px;
 }
 
 .form-control {
-    white-space: normal !important;
-    height: auto !important;
+  white-space: normal !important;
+  height: auto !important;
 }
 
 @media (min-width: 768px) {
-    .sidebar-wrapper {
-        margin-left: 0;
-    }
+  .sidebar-wrapper {
+    margin-left: 0;
+  }
 
-    #page-content-wrapper {
-        min-width: 0;
-        width: 100%;
-    }
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
 
-    #wrapper.toggled .sidebar-wrapper {
-        margin-left: -15rem;
-    }
+  #wrapper.toggled .sidebar-wrapper {
+    margin-left: -15rem;
+  }
 }

@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const viewhelpers = require("../viewhelpers");
 const db = require("../db");
 const globals = require("../globals.js");
 
@@ -80,7 +79,7 @@ router.get("/composers", async (req,res)=>{
                 Partners.push(composer);
             }
         });
-        composers = {InResidence, Partners};
+        let composers = {InResidence, Partners};
         res.render("about/composers.hbs",{title,composers, description});
     });  
 });

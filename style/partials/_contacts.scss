@@ -1,20 +1,21 @@
 @use "config";
 
 .contacts-block {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 
-    p {
-        font-size: 130%;
-    }
+  p {
+    font-size: 130%;
+  }
 }
 
 @media (min-width: 600px) {
-    .contacts-block p {
-        font-size: 130%;
-    }
+  .contacts-block p {
+    font-size: 130%;
+  }
 }
+
 .contacts-block a:hover {
-    color: config.$link-hover-color !important;
+  color: config.$link-hover-color !important;
 }

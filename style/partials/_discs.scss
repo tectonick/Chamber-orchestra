@@ -1,24 +1,24 @@
-/*Discs*/
+/* Discs */
 
 #spotify .album {
-    width: 100%;
-    margin: 5px 5px;
+  width: 100%;
+  margin: 5px;
 }
 
 #streaming-links {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .streaming-link {
-    margin: 0px 10px;
-    transition: opacity 0.3s;
+  margin: 0 10px;
+  transition: opacity 0.3s;
 
-    img {
-        height: 5vh;
-        width: auto;
-    }
+  img {
+    height: 5vh;
+    width: auto;
+  }
 
-    &:hover {
-        opacity: 0.6;
-    }
+  &:hover {
+    opacity: 0.6;
+  }
 }

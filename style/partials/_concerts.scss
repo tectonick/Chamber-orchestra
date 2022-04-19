@@ -1,97 +1,93 @@
-/*Concerts*/
+/* Concerts */
 
 .separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin-top: 5px;
-    margin-bottom: 0px;
-    color: rgba(0, 0, 0, 0.5);
-    padding: 0 10px 0 10px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 0;
+  color: rgb(0 0 0 / 50%);
+  padding: 0 10px;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid rgb(0 0 0 / 18%);
+  }
+
+  &::before {
+    margin-right: 0.25em;
+  }
+
+  &::after {
+    margin-left: 0.25em;
+  }
 }
 
 .month-events {
-    margin-top: 25px;
+  margin-top: 25px;
 }
 
 @media (max-width: 768px) {
-    .month-events {
-        margin-top: 5px;
-    }
+  .month-events {
+    margin-top: 5px;
+  }
 
-    .separator h3 {
-        font-size: larger;
-    }
-}
-
-.separator {
-
-    &::before,
-    &::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.18);
-    }
-
-    &::before {
-        margin-right: .25em;
-    }
-
-    &::after {
-        margin-left: .25em;
-    }
+  .separator h3 {
+    font-size: larger;
+  }
 }
 
 label {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .buy {
-    position: absolute;
-    bottom: 8px;
-    left: 170px;
-    opacity: 0.6;
-    margin-left: 1.5rem !important;
-    margin-bottom: 0 !important;
-    height: 24px;
-    padding: 0rem 0.75rem;
-    font-size: 1rem;
-    border: none;
-    opacity: 0.8;
+  position: absolute;
+  bottom: 8px;
+  left: 170px;
+  margin-left: 1.5rem !important;
+  margin-bottom: 0 !important;
+  height: 24px;
+  padding: 0 0.75rem;
+  font-size: 1rem;
+  border: none;
+  opacity: 0.8;
 }
 
 .poster {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .event-row {
-    margin-bottom: 3.5vw;
+  margin-bottom: 3.5vw;
 }
 
 .calendar-container {
-    background-color: rgba(230, 230, 230, 0.3);
+  background-color: rgb(230 230 230 / 30%);
 }
 
 #calendar {
-    padding-top: 10px !important;
+  padding-top: 10px !important;
 }
 
 .fc-daygrid-event-harness {
-    visibility: hidden;
-    width: 1200%;
+  visibility: hidden;
+  width: 1200%;
 }
 
 .fc-daygrid-day-frame {
-    transition: opacity 0.5s;
+  transition: opacity 0.5s;
 
-    &:hover {
-        opacity: 0.2 !important;
-    }
+  &:hover {
+    opacity: 0.2 !important;
+  }
 }
 
 .fc-scrollgrid-section-body .fc-day {
-    height: 11vw;
-    overflow: hidden;
+  height: 11vw;
+  overflow: hidden;
 }
 
 /* .fc .fc-day-other .fc-daygrid-day-top {
@@ -99,145 +95,143 @@ label {
   } */
 
 @media (min-width: 480px) {
-    .fc-daygrid-event-harness {
-        width: 150%;
-    }
+  .fc-daygrid-event-harness {
+    width: 150%;
+  }
 }
 
 @media (min-width: 768px) {
-    .fc-daygrid-event-harness {
-        width: 40%;
-    }
+  .fc-daygrid-event-harness {
+    width: 40%;
+  }
 }
 
 @media (min-width: 992px) {
-    .fc-daygrid-event-harness {
-        width: 23%;
-    }
+  .fc-daygrid-event-harness {
+    width: 23%;
+  }
 }
 
 @media (min-width: 1200px) {
-    .fc-daygrid-event-harness {
-        width: 12%;
-    }
+  .fc-daygrid-event-harness {
+    width: 12%;
+  }
 }
 
 .fc {
-
-    .fc-button-primary:focus,
-    .fc-button:focus {
-        box-shadow: none !important;
-    }
+  .fc-button-primary:focus,
+  .fc-button:focus {
+    box-shadow: none !important;
+  }
 }
 
 .fc-daygrid-day {
-    background-size: cover;
+  background-size: cover;
 }
 
 .fc-header-toolbar {
-    >div {
-        max-width: 33%;
-    }
+  >div {
+    max-width: 33%;
+  }
 
-    h2 {
-        font-size: 1.25rem !important;
-        text-transform: capitalize;
-    }
+  h2 {
+    font-size: 1.25rem !important;
+    text-transform: capitalize;
+  }
 }
 
 @media (max-width: 480px) {
-    .fc-header-toolbar h2 {
-        font-size: 1rem !important;
-    }
+  .fc-header-toolbar h2 {
+    font-size: 1rem !important;
+  }
 }
 
 .concert,
 .group,
 .block,
 .carousel-thumbnails {
-    background-color: rgba(230, 230, 230, 0.3);
-    border: 1px solid rgba(0, 0, 0, 0);
-    font-size: 100%;
+  background-color: rgb(230 230 230 / 30%);
+  border: 1px solid rgb(0 0 0 / 0%);
+  font-size: 100%;
 }
 
 @media (min-width: 768px) {
-    .concert {
-        font-size: 80%;
-    }
+  .concert {
+    font-size: 80%;
+  }
 }
 
 @media (min-width: 992px) {
-    .concert {
-        font-size: 110%;
-    }
+  .concert {
+    font-size: 110%;
+  }
 }
 
 @media (min-width: 1200px) {
-    .concert {
-        font-size: 1.3vw;
-    }
+  .concert {
+    font-size: 1.3vw;
+  }
 }
 
 .concert-day {
-    position: absolute;
-    top: -4.5vw;
-    right: -1.3vw;
-    font-size: 5.5vw;
-    color: #aaaaaa;
+  position: absolute;
+  top: -4.5vw;
+  right: -1.3vw;
+  font-size: 5.5vw;
+  color: #aaa;
 }
 
 .concert-place {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    font-size: 100%;
-    color: #aaaaaa;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  font-size: 100%;
+  color: #aaa;
 }
 
 .concert-time {
-    position: absolute;
-    bottom: 32px;
-    right: 8px;
-    font-size: 100%;
-    color: #aaaaaa;
+  position: absolute;
+  bottom: 32px;
+  right: 8px;
+  font-size: 100%;
+  color: #aaa;
 }
 
 pre {
-    font-family: Cambria, serif;
-    white-space: pre-wrap;
+  font-family: Cambria, serif;
+  white-space: pre-wrap;
 
-    /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;
+  /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;
 
-    /* Mozilla, since 1999 */
-    white-space: -pre-wrap;
+  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;
 
-    /* Opera 4-6 */
-    white-space: -o-pre-wrap;
+  /* Opera 4-6 */
+  white-space: -o-pre-wrap;
 
-    /* Opera 7 */
-    word-wrap: break-word;
+  /* Opera 7 */
+  word-wrap: break-word;
 
-    /* Internet Explorer 5.5+ */
+  /* Internet Explorer 5.5+ */
 }
 
 .card-body {
-    padding: 0px;
+  padding: 0;
 }
 
 .ya-share2 {
-    position: absolute;
-    bottom: 8px;
-    left: 0px;
-    opacity: 0.6;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  opacity: 0.6;
 }
 
 @media (max-width: 768px) {
-
-    .concert-place,
-    .concert-time {
-        bottom: 10px;
-        right: 0px;
-        position: relative;
-    }
+  .concert-place,
+  .concert-time {
+    bottom: 10px;
+    right: 0;
+    position: relative;
+  }
 }

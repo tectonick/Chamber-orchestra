@@ -1,142 +1,131 @@
-/*History and conductor*/
+/* History and conductor */
 
 .block-img {
-    float: right;
-    margin: 10px;
-    max-width: 100%;
-    opacity: 0.8;
+  float: right;
+  margin: 10px;
+  max-width: 100%;
+  opacity: 0.8;
 }
 
 #allMusiciansList {
-    column-gap: 20px;
+  column-gap: 20px;
 }
 
 @media (min-width: 576px) {
-    #allMusiciansList {
-        column-count: 1;
-    }
+  #allMusiciansList {
+    column-count: 1;
+  }
 }
 
 @media (min-width: 768px) {
-    #allMusiciansList {
-        column-count: 2;
-    }
+  #allMusiciansList {
+    column-count: 2;
+  }
 }
 
 @media (min-width: 992px) {
-    #allMusiciansList {
-        column-count: 3;
-    }
+  #allMusiciansList {
+    column-count: 3;
+  }
 }
 
 @media (min-width: 1200px) {
-    #allMusiciansList {
-        column-count: 4;
-    }
+  #allMusiciansList {
+    column-count: 4;
+  }
 }
 
 @media (min-width: 992px) {
-    .block-img {
-        max-width: 40%;
-    }
+  .block-img {
+    max-width: 40%;
+  }
 }
 
 blockquote {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  position: relative;
+  clear: both;
+  color: #b1b1b1;
+  padding: 10px 0;
+  z-index: 1;
+  margin: 30px 4rem;
+  align-self: center;
+  border-top: solid 1px;
+  border-bottom: solid 1px;
+
+  cite {
+    color: black;
+  }
+
+  &::after {
+    position: absolute;
+    content: "”";
+    color: rgb(200 200 200 / 100%);
+    font-size: 10rem;
+    line-height: 0;
+    bottom: -43px;
+    right: 30px;
+  }
+
+  p {
     position: relative;
-    clear: both;
-    color: #b1b1b1;
-    padding: 10px 0px;
+    color: #292a2b;
+    line-height: 1;
+    margin: 0;
+    padding-top: 20px;
     z-index: 1;
-    margin: 30px 4rem;
-    align-self: center;
-    border-top: solid 1px;
-    border-bottom: solid 1px;
-
-    cite {
-        color: black;
-    }
-
-    p {
-        position: relative;
-        line-height: 1;
-        margin: 0;
-    }
-
-    &:after {
-        position: absolute;
-        content: "”";
-        color: rgba(200, 200, 200, 1);
-        font-size: 10rem;
-        line-height: 0;
-        bottom: -43px;
-        right: 30px;
-    }
-
-    p {
-        position: relative;
-        color: #292a2b;
-        line-height: 1;
-        margin: 0;
-        padding-top: 20px;
-        z-index: 1;
-    }
+  }
 }
 
 .text p {
-    text-indent: 30px;
+  text-indent: 30px;
 }
 
 .bio-button {
-    cursor: pointer;
-    transition: color 0.2s;
+  cursor: pointer;
+  transition: color 0.2s;
 
-    &:hover {
-        color: #AE5C39 !important;
-    }
-}
-
-.modal-xlg {
-    margin-left: 15%;
-    max-width: 70% !important;
-    margin-right: 15%;
+  &:hover {
+    color: #ae5c39 !important;
+  }
 }
 
 .modal-content {
-    border-radius: 0 !important;
-}
-
-.modal-xlg {
-
-    .modal-body,
-    .img-col {
-        padding: 0 !important;
-    }
-
-    .bio-col {
-        padding: 1rem !important;
-    }
-
-    .close {
-        margin: 0.5rem;
-    }
+  border-radius: 0 !important;
 }
 
 .modal-body {
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
 
-    &::-webkit-scrollbar-track {
-        background: #ffffff;
-    }
+  &::-webkit-scrollbar-track {
+    background: #fff;
+  }
 
-    &::-webkit-scrollbar-thumb {
-        background: #cfcfcf;
+  &::-webkit-scrollbar-thumb {
+    background: #cfcfcf;
 
-        &:hover {
-            background: #a1a1a1;
-        }
+    &:hover {
+      background: #a1a1a1;
     }
+  }
+}
+
+.modal-xlg {
+  margin-left: 15%;
+  max-width: 70% !important;
+  margin-right: 15%;
+
+  .modal-body,
+  .img-col {
+    padding: 0 !important;
+  }
+
+  .bio-col {
+    padding: 1rem !important;
+  }
+
+  .close {
+    margin: 0.5rem;
+  }
 }

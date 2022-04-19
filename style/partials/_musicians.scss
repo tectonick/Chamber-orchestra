@@ -1,88 +1,89 @@
-/*musicians*/
+/* musicians */
 
 .musicians-pic {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .musicians p {
-    font-size: 100%;
-    margin-bottom: 1px;
+  font-size: 100%;
+  margin-bottom: 1px;
 }
 
 .group {
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
-    .musicians {
-        font-size: 100%;
-    }
+  .musicians {
+    font-size: 100%;
+  }
 }
 
 @media (min-width: 768px) {
-    .musicians {
-        font-size: 100%;
-    }
+  .musicians {
+    font-size: 100%;
+  }
 }
 
 @media (min-width: 992px) {
-    .musicians {
-        font-size: 110%;
-    }
+  .musicians {
+    font-size: 110%;
+  }
 }
 
 @media (min-width: 1200px) {
-    .musicians {
-        font-size: 1.3vw;
-    }
-}
-
-.musicians-container .card-columns {
-    column-count: 2;
-    text-align: center;
-
-    .card {
-        margin: 1rem auto;
-    }
+  .musicians {
+    font-size: 1.3vw;
+  }
 }
 
 .card-columns {
-    column-count: 2;
+  column-count: 2;
 }
 
 .card {
-    display: inline-block;
-}
-
-@media (min-width: 576px) {
-    .musicians-container .card-columns {
-        column-count: 2;
-    }
-}
-
-@media (min-width: 992px) {
-    .musicians-container .card-columns {
-        column-count: 3;
-    }
-}
-
-@media (min-width: 1200px) {
-    .musicians-container .card-columns {
-        column-count: 3;
-    }
+  display: inline-block;
 }
 
 .musicians-container .card {
-    -webkit-backface-visibility: hidden;
-    transition: 0.15s ease-in-out;
+  backface-visibility: hidden;
+  transition: 0.15s ease-in-out;
 
-    &:hover {
-        transform: translateY(-5px) scale(1.01);
-        -webkit-transform: translateY(-5px) scale(1.01);
+  &:hover {
+    transform: translateY(-5px) scale(1.01);
+    transform: translateY(-5px) scale(1.01);
 
-        /*box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1);*/
-        /*-webkit-transition: 0s;*/
-    }
+    /* box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1); */
+
+    /* -webkit-transition: 0s; */
+  }
+}
+
+.musicians-container .card-columns {
+  column-count: 2;
+  text-align: center;
+
+  .card {
+    margin: 1rem auto;
+  }
+}
+
+@media (min-width: 576px) {
+  .musicians-container .card-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 992px) {
+  .musicians-container .card-columns {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1200px) {
+  .musicians-container .card-columns {
+    column-count: 3;
+  }
 }

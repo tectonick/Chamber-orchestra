@@ -2,11 +2,11 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw_cached_site.js')
-      .then(reg => console.log('Service Worker: Registered (Pages)'))
+      .then(() => console.log('Service Worker: Registered (Pages)'))
       .catch(err => console.log(`Service Worker: Error: ${err}`));
   });
 }
-      window.addEventListener('beforeunload', (event) => {
+      window.addEventListener('beforeunload', () => {
         // Cancel the event as stated by the standard.
         //event.preventDefault();
         document.getElementById('page-container').style.opacity=0;

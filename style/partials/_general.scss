@@ -1,73 +1,66 @@
-/*General*/
+/* General */
 @use "config";
 
-
-
-
 html {
-    height: 100%;
-    margin: 0;
-    width: 100%;
-    overflow-x: hidden;
+  height: 100%;
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
-    font-family: config.$font-stack;
-    overflow-x: hidden;
-    background-image: url("/img/background.jpg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    display: flex;
-    width: 100%;
-    flex-direction: column;
+  font-family: config.$font-stack;
+  overflow-x: hidden;
+  background-image: url("/img/background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 }
 
 #page-container {
-    position: relative;
-    min-height: 100vh;
-    opacity: 0;
-    transition: opacity 0.15s;
+  position: relative;
+  min-height: 100vh;
+  opacity: 0;
+  transition: opacity 0.15s;
 }
 
 #content-wrap {
-    padding-bottom: 15rem;
+  padding-bottom: 15rem;
 
-    /* Footer height */
+  /* Footer height */
 }
 
 a {
-    &:hover {
-        text-decoration: none;
-    }
+  &:hover {
+    text-decoration: none;
+  }
 
-    color: black;
-    word-wrap: break-word;
+  color: black;
+  word-wrap: break-word;
 }
 
-
-
 .close {
-    color: white;
-    -webkit-text-stroke: 1px black;
-    -webkit-text-fill-color: white;
-    opacity: .5;
-    position: absolute;
-    z-index: 5;
-    right: 1px;
+  color: white;
+  -webkit-text-stroke: 1px black;
+  -webkit-text-fill-color: white;
+  opacity: 0.5;
+  position: absolute;
+  z-index: 5;
+  right: 1px;
 }
 
 .modal-xlg .row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: 0px;
-    margin-left: 0px;
+  display: flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 0;
+  margin-left: 0;
 }
 
-
 .card-footer p {
-    color: black;
-    margin-bottom: 0;
+  color: black;
+  margin-bottom: 0;
 }

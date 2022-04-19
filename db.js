@@ -1,8 +1,8 @@
 const mysql = require("mysql2");
-const config= require("config");
+const config = require("config");
 
 //db connection
-dbConfig=config.get('db');
+let dbConfig = config.get("db");
 const db = mysql.createPool({
   host: dbConfig.host,
   user: dbConfig.user,
@@ -10,7 +10,7 @@ const db = mysql.createPool({
   database: dbConfig.database,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
 });
 // db.connect((err) => {
 //   if (err) {
@@ -21,6 +21,4 @@ const db = mysql.createPool({
 //   }
 // });
 
-
-module.exports=db;
-
+module.exports = db;
