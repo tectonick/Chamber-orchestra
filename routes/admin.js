@@ -602,7 +602,7 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
 router.get("/musicians", async (req, res) => {
   let langId = globals.languages[req.getLocale()];
   db.query(
-    `SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`,
+    `SELECT musicians.id, groupId, name, bio, hidden FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`,
     function (err, musicians) {
       if (err) console.log(err);
       musicians = musicians.map((musician) => {
@@ -694,8 +694,9 @@ router.post("/musicians/add", urlencodedParser, async (req, res) => {
 
 router.post("/musicians/edit", urlencodedParser, (req, res) => {
   let langId = globals.languages[req.getLocale()];
+  let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   db.query(
-    `UPDATE musicians_translate SET name = '${req.body.name}', \
+    `UPDATE musicians_translate SET name = '${req.body.name}',  \
     bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
       req.body.id
     }=musicianId AND ${langId}=languageId;`,
@@ -705,7 +706,7 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
         res.sendStatus(400);
       } else {
         db.query(
-          `UPDATE musicians SET groupId = '${req.body.groupId}' WHERE ${req.body.id}=id;`
+          `UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;`
         );
         res.sendStatus(200);
       }

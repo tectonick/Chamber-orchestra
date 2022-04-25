@@ -18,7 +18,7 @@ router.get("/musicians", (req,res)=>{
     var description=res.__('musicians.description');
     var title =res.__('layout.navbar.musicians')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
-    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} `,
+    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND hidden=0 `,
     function (err, musiciansAll) {
         if (err) console.log(err);
         var musicians=[[],[],[],[],[],[],[]] //groups;
