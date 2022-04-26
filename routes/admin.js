@@ -32,7 +32,7 @@ function translate(text, source, dest) {
 
     req.headers({
       "x-rapidapi-host": "microsoft-translator-text.p.rapidapi.com",
-      "x-rapidapi-key": "d0e77b726emshfc7f66b4a30ff26p1a2da2jsn335b9afc1c7a",
+      "x-rapidapi-key": config.get("rapidapikey"),
       "content-type": "application/json",
       accept: "application/json",
       useQueryString: true,

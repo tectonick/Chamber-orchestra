@@ -89,8 +89,8 @@ app.use(
   session({
     secret: config.get("sessionSecret"),
     store: sessionStore,
-	resave: false,
-	saveUninitialized: false,
+    resave: false,
+    saveUninitialized: false,
   })
 );
 
