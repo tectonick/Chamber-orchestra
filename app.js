@@ -12,10 +12,11 @@ const session = require("express-session");
 const i18n = require("i18n");
 const logger = require("./logger");
 const db = require("./db");
-const sqlite3 = require('sqlite3')
-const sqliteStoreFactory =require('express-session-sqlite').default;
+var MySQLStore = require('express-mysql-session')(session);
 
-const SqliteStore = sqliteStoreFactory(session);
+
+var sessionStore = new MySQLStore({}/* session store options */, db.promise());;
+
 
 let environment = process.env.NODE_ENV || "production";
 var isDevelopment = environment === "development";
@@ -86,22 +87,9 @@ app.use(function (req, res, next) {
 app.use(
   session({
     secret: "k3SGNSuwKJAe3E5t",
-    store: new SqliteStore({
-      // Database library to use. Any library is fine as long as the API is compatible
-      // with sqlite3, such as sqlite3-offline
-      driver: sqlite3.Database,
-      // for in-memory database
-      // path: ':memory:'
-      path: 'sessions.db',
-      // Session TTL in milliseconds
-      ttl: 1234,
-      // (optional) Session id prefix. Default is no prefix.
-      prefix: 'sess:',
-      // (optional) Adjusts the cleanup timer in milliseconds for deleting expired session rows.
-      // Default is 5 minutes.
-      cleanupInterval: 900000
-    }),
-    resave: false,
+    store: sessionStore,
+	resave: false,
+	saveUninitialized: false,
   })
 );
 
