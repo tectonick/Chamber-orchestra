@@ -14,7 +14,7 @@ const logger = require("./logger");
 const db = require("./db");
 
 
-let environment = process.env.NODE_ENV??'production';
+let environment = process.env.NODE_ENV||'production';
 var isDevelopment = environment === 'development';
 
 i18n.configure({
@@ -53,9 +53,9 @@ function errorHandler (err, req, res, next) {
 
   let request={method:req.method, url:req.originalUrl, ip:req.ip};
   err.request=request;
+
   logger.error(err);
   res.status(500);
-
   console.log(request);
   if (isDevelopment) {
     res.render('errordev', { error: err, request: request, layout: false });

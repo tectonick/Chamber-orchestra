@@ -20,13 +20,4 @@ try {
   logger.error(error);
 }
 
-// db.connect((err) => {
-//   if (err) {
-//     return console.error("Error connecting to MySQL: " + err.message);
-//   }
-//   else {
-//     console.log("Connected to MySQL");
-//   }
-// });
-
 module.exports = db;
