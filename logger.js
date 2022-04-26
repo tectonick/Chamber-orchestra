@@ -8,7 +8,7 @@ const logger = createLogger({
       format: 'YYYY-MM-DD HH:mm:ss'
     }),
     format.splat(),
-    format.printf(info => `${info.timestamp} ${info.level}: ${info.message} ${info.stack??''}${info.request?('\nRequest '+JSON.stringify(info.request)):''}`)
+    format.printf(info => `${info.timestamp} ${info.level}: ${info.message} ${info.stack||''}${info.request?('\nRequest '+JSON.stringify(info.request)):''}`)
   ),
   transports: [
     new transports.File({ filename: path.join('logs','error.log'), level: 'error' }),
