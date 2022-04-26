@@ -1,10 +1,10 @@
 //basic modules
 const config = require("config");
 const logger = require("./logger");
-const fs = require('fs');
+const fs = require("fs");
 const path = require("path");
 //check for configuration
-if (!fs.existsSync(path.join('config','local.json'))){
+if (!fs.existsSync(path.join("config", "local.json"))) {
   logger.error("No local.json config file");
   process.exit(1);
 }
@@ -20,12 +20,11 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 //session
 const session = require("express-session");
-var MySQLStore = require('express-mysql-session')(session);
+var MySQLStore = require("express-mysql-session")(session);
 //other
 const i18n = require("i18n");
 const db = require("./db");
 const https = require("https");
-
 
 let environment = process.env.NODE_ENV || "production";
 const PORT = process.env.PORT || 80;
@@ -72,7 +71,6 @@ function errorHandler(err, req, res, next) {
 
 db.triggerServerDbError = errorHandler;
 
-
 const app = express();
 
 const hbs = handlebars.create({
@@ -93,7 +91,7 @@ app.use(function (req, res, next) {
   }
   next();
 });
-var sessionStore = new MySQLStore({}/* session store options */, db.promise());
+var sessionStore = new MySQLStore({} /* session store options */, db.promise());
 app.use(
   session({
     secret: config.get("sessionSecret"),
@@ -122,10 +120,9 @@ app.listen(PORT, () => {
   logger.info(`Server started on ${environment} mode`);
 });
 
-
 let sslOptions = {
-  key: fs.readFileSync(path.join("sec","key.pem")),
-  cert: fs.readFileSync(path.join("sec","cert.pem")),
+  key: fs.readFileSync(path.join("sec", "key.pem")),
+  cert: fs.readFileSync(path.join("sec", "cert.pem")),
 };
 
 // eslint-disable-next-line no-unused-vars

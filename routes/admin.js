@@ -130,11 +130,7 @@ function FilesToArray(files) {
 
 //Middleware
 router.use(function (req, res, next) {
-  if (
-    req.session.user ||
-    req.path == "/login" ||
-    req.path == "/logout"
-  ) {
+  if (req.session.user || req.path == "/login" || req.path == "/logout") {
     next();
   } else {
     res.redirect("/admin/login");
@@ -169,7 +165,7 @@ router.post("/login", urlencodedParser, (req, res) => {
     req.body.username === admin.user &&
     bcrypt.compareSync(req.body.password, admin.passhash)
   ) {
-    req.session.user={username:admin.user};
+    req.session.user = { username: admin.user };
     res.redirect("/admin");
   } else {
     res.redirect("/admin/login");
@@ -183,7 +179,9 @@ router.get("/logout", function (req, res) {
 
 router.get("/concerts", async (req, res, next) => {
   try {
-    let [events] = await db.query("SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC");
+    let [events] = await db.query(
+      "SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC"
+    );
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = DateToISOLocal(element.date);
@@ -196,7 +194,7 @@ router.get("/concerts", async (req, res, next) => {
 
 router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
+    await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
     DeleteImageById(req.body.id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
@@ -207,9 +205,11 @@ router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/concerts/add", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`INSERT INTO concerts VALUES (0,'','1970-01-01 00:00:00','', '','',0)`);
-    await MakeDefaultImage(results.insertId, "/static/img/posters/")
-    res.redirect("/admin/");  
+    let [results] = await db.query(
+      `INSERT INTO concerts VALUES (0,'','1970-01-01 00:00:00','', '','',0)`
+    );
+    await MakeDefaultImage(results.insertId, "/static/img/posters/");
+    res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
@@ -220,12 +220,13 @@ router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
-    let [results] = await db.query(
+    await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${req.body.id}=id;`);
-    res.sendStatus(200);    
+      description = '${description}' WHERE ${req.body.id}=id;`
+    );
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
@@ -259,9 +260,9 @@ router.get("/news", async (req, res, next) => {
   }
 });
 
-router.post("/news/delete", urlencodedParser,async (req, res, next) => {
+router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`DELETE FROM news WHERE id=${req.body.id}`);
+    await db.query(`DELETE FROM news WHERE id=${req.body.id}`);
     await DeleteImageById(req.body.id, "/static/img/news/");
     res.redirect("/admin/");
   } catch (error) {
@@ -272,10 +273,10 @@ router.post("/news/delete", urlencodedParser,async (req, res, next) => {
 router.post("/news/add", urlencodedParser, async (req, res, next) => {
   try {
     let [results] = await db.query(
-      `INSERT INTO news VALUES (0,'','2999-01-01 00:00','')`);
+      `INSERT INTO news VALUES (0,'','2999-01-01 00:00','')`
+    );
     await MakeDefaultImage(results.insertId, "/static/img/news/");
     res.redirect("/admin/");
-    
   } catch (error) {
     next(error);
   }
@@ -285,11 +286,12 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
   var date = req.body.date.slice(0, 19).replace("T", " ");
   var text = viewhelpers.EscapeQuotes(req.body.text);
   try {
-    let [results] = await db.query(
+    await db.query(
       `UPDATE news SET title = '${req.body.title}', \
       date = '${date}',\
-      text = '${text}' WHERE ${req.body.id}=id;`);
-    res.sendStatus(200);    
+      text = '${text}' WHERE ${req.body.id}=id;`
+    );
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
@@ -350,21 +352,23 @@ router.get("/artists", async (req, res, next) => {
   try {
     let langId = globals.languages[req.getLocale()];
     let [artists] = await db.query(
-      `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `);
-      artists.reverse();
-      res.render("admin/artists.hbs", { layout: false, artists });
+      `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `
+    );
+    artists.reverse();
+    res.render("admin/artists.hbs", { layout: false, artists });
   } catch (error) {
     next(error);
   }
-
 });
 
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`DELETE FROM artists_translate WHERE artistId=${req.body.id}`);
+    await db.query(
+      `DELETE FROM artists_translate WHERE artistId=${req.body.id}`
+    );
     await db.query(`DELETE FROM artists WHERE id=${req.body.id}`);
-      await DeleteImageById(req.body.id, "/static/img/about/artists/")
-      res.redirect("/admin/");    
+    await DeleteImageById(req.body.id, "/static/img/about/artists/");
+    res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
@@ -375,46 +379,41 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
   var id = req.body.id;
   var sourceLang = req.getLocale();
   try {
-    let [results] = await db.query(
-      `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`);
-      try {
-        for (
-          let langId = 1;
-          langId < Object.keys(globals.languages).length;
-          langId++
-        ) {
-          if (currentLang == langId) {
-            continue;
-          }
-          var destLang = globals.languages.getNameById(langId);
-          var name = await translate(artist[0].name, sourceLang, destLang);
-          var country = await translate(
-            artist[0].country,
-            sourceLang,
-            destLang
-          );
-          var instrument = await translate(
-            artist[0].instrument,
-            sourceLang,
-            destLang
-          );
-          await db.query(`UPDATE artists_translate SET name = '${name}', \
+    let [artist] = await db.query(
+      `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`
+    );
+    try {
+      for (
+        let langId = 1;
+        langId < Object.keys(globals.languages).length;
+        langId++
+      ) {
+        if (currentLang == langId) {
+          continue;
+        }
+        var destLang = globals.languages.getNameById(langId);
+        var name = await translate(artist[0].name, sourceLang, destLang);
+        var country = await translate(artist[0].country, sourceLang, destLang);
+        var instrument = await translate(
+          artist[0].instrument,
+          sourceLang,
+          destLang
+        );
+        await db.query(`UPDATE artists_translate SET name = '${name}', \
           country = '${country}',\
           instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`);
-        }
-      } catch (error) {
-        logger.error(error);
-        res.sendStatus(500);
       }
-      res.sendStatus(200);
-    
+    } catch (error) {
+      logger.error(error);
+      res.sendStatus(500);
+    }
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
 });
 
 router.post("/artists/add", urlencodedParser, async (req, res, next) => {
-
   try {
     let [results] = await db.query(`INSERT INTO artists VALUES (0,0)`);
     for (
@@ -422,7 +421,9 @@ router.post("/artists/add", urlencodedParser, async (req, res, next) => {
       langId < Object.keys(globals.languages).length;
       langId++
     ) {
-      await db.query(`INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'','','')`);
+      await db.query(
+        `INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'','','')`
+      );
     }
     await MakeDefaultImage(results.insertId, "/static/img/about/artists");
     res.redirect("/admin/");
@@ -432,13 +433,13 @@ router.post("/artists/add", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
-  
   let langId = globals.languages[req.getLocale()];
   try {
-    let [results] = await  db.query(
+    await db.query(
       `UPDATE artists_translate SET name = '${req.body.name}', \
       country = '${req.body.country}',\
-      instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;`);
+      instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;`
+    );
     await db.query(
       `UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;`
     );
@@ -466,10 +467,11 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
 router.get("/composers", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let [composers] = await  db.query(
-      `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `);
+    let [composers] = await db.query(
+      `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `
+    );
     composers.reverse();
-    res.render("admin/composers.hbs", { layout: false, composers });    
+    res.render("admin/composers.hbs", { layout: false, composers });
   } catch (error) {
     next(error);
   }
@@ -477,51 +479,58 @@ router.get("/composers", async (req, res, next) => {
 
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(
-      `DELETE FROM composers_translate WHERE composerId=${req.body.id}`);
+    await db.query(
+      `DELETE FROM composers_translate WHERE composerId=${req.body.id}`
+    );
     await db.query(`DELETE FROM composers WHERE id=${req.body.id}`, () => {});
     await DeleteImageById(req.body.id, "/static/img/about/composers/");
-    res.redirect("/admin/");    
+    res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/composers/translate", urlencodedParser, async (req, res, next) => {
-  let currentLang = globals.languages[req.getLocale()];
-  var id = req.body.id;
-  var sourceLang = req.getLocale();
-  try {
-    let [composer] = await db.query(`SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`);
+router.post(
+  "/composers/translate",
+  urlencodedParser,
+  async (req, res, next) => {
+    let currentLang = globals.languages[req.getLocale()];
+    var id = req.body.id;
+    var sourceLang = req.getLocale();
     try {
-      for (
-        let langId = 1;
-        langId < Object.keys(globals.languages).length;
-        langId++
-      ) {
-        if (currentLang == langId) {
-          continue;
-        }
-        var destLang = globals.languages.getNameById(langId);
-        var name = await translate(composer[0].name, sourceLang, destLang);
-        var country = await translate(
-          composer[0].country,
-          sourceLang,
-          destLang
-        );
+      let [composer] = await db.query(
+        `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`
+      );
+      try {
+        for (
+          let langId = 1;
+          langId < Object.keys(globals.languages).length;
+          langId++
+        ) {
+          if (currentLang == langId) {
+            continue;
+          }
+          var destLang = globals.languages.getNameById(langId);
+          var name = await translate(composer[0].name, sourceLang, destLang);
+          var country = await translate(
+            composer[0].country,
+            sourceLang,
+            destLang
+          );
 
-        await db.query(`UPDATE composers_translate SET name = '${name}', \
+          await db.query(`UPDATE composers_translate SET name = '${name}', \
         country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`);
+        }
+      } catch (error) {
+        logger.error(error);
+        res.sendStatus(500);
       }
+      res.sendStatus(200);
     } catch (error) {
-      logger.error(error);
-      res.sendStatus(500);
+      next(error);
     }
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 router.post("/composers/add", urlencodedParser, async (req, res, next) => {
   try {
@@ -531,7 +540,9 @@ router.post("/composers/add", urlencodedParser, async (req, res, next) => {
       langId < Object.keys(globals.languages).length;
       langId++
     ) {
-      await db.query(`INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'','')`);
+      await db.query(
+        `INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'','')`
+      );
     }
     await MakeDefaultImage(results.insertId, "/static/img/about/composers");
     res.redirect("/admin/");
@@ -543,9 +554,10 @@ router.post("/composers/add", urlencodedParser, async (req, res, next) => {
 router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let [results] = await db.query(
+    await db.query(
       `UPDATE composers_translate SET name = '${req.body.name}', \
-      country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;`);
+      country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;`
+    );
     await db.query(
       `UPDATE composers SET isInResidence = '${req.body.isInResidence}' WHERE ${req.body.id}=id;`
     );
@@ -574,12 +586,13 @@ router.get("/musicians", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
     let [musicians] = await db.query(
-      `SELECT musicians.id, groupId, name, bio, hidden FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`);
-      musicians = musicians.map((musician) => {
-        musician.bio = viewhelpers.UnescapeQuotes(musician.bio);
-        return musician;
-      });
-      res.render("admin/musicians.hbs", { layout: false, musicians });
+      `SELECT musicians.id, groupId, name, bio, hidden FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`
+    );
+    musicians = musicians.map((musician) => {
+      musician.bio = viewhelpers.UnescapeQuotes(musician.bio);
+      return musician;
+    });
+    res.render("admin/musicians.hbs", { layout: false, musicians });
   } catch (error) {
     next(error);
   }
@@ -587,21 +600,28 @@ router.get("/musicians", async (req, res, next) => {
 
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`DELETE FROM musicians_translate WHERE musicianId=${req.body.id}`);
+    await db.query(
+      `DELETE FROM musicians_translate WHERE musicianId=${req.body.id}`
+    );
     await db.query(`DELETE FROM musicians WHERE id=${req.body.id}`);
-    await DeleteImageById(req.body.id, "/static/img/about/musicians/")
+    await DeleteImageById(req.body.id, "/static/img/about/musicians/");
     res.render("admin/musicians");
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/musicians/translate", urlencodedParser, async (req, res, next) => {
-  let currentLang = globals.languages[req.getLocale()];
-  var id = req.body.id;
-  var sourceLang = req.getLocale();
-  try {
-    let [musician] = await db.query(`SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`);
+router.post(
+  "/musicians/translate",
+  urlencodedParser,
+  async (req, res, next) => {
+    let currentLang = globals.languages[req.getLocale()];
+    var id = req.body.id;
+    var sourceLang = req.getLocale();
+    try {
+      let [musician] = await db.query(
+        `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`
+      );
       for (
         let langId = 1;
         langId < Object.keys(globals.languages).length;
@@ -617,13 +637,15 @@ router.post("/musicians/translate", urlencodedParser, async (req, res, next) => 
         bio = viewhelpers.EscapeQuotes(bio);
         await db.query(
           `UPDATE musicians_translate SET name = '${name}', \
-        bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`);
+        bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`
+        );
       }
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.post("/musicians/add", urlencodedParser, async (req, res, next) => {
   try {
@@ -634,7 +656,8 @@ router.post("/musicians/add", urlencodedParser, async (req, res, next) => {
       langId++
     ) {
       await db.query(
-        `INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'','')`);
+        `INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'','')`
+      );
     }
     await MakeDefaultImage(results.insertId, "/static/img/about/musicians");
     res.redirect("/admin/");
@@ -647,15 +670,16 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
-    let [results] = await db.query(
+    await db.query(
       `UPDATE musicians_translate SET name = '${req.body.name}',  \
       bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
         req.body.id
-      }=musicianId AND ${langId}=languageId;`);
+      }=musicianId AND ${langId}=languageId;`
+    );
     await db.query(
       `UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;`
     );
-    res.sendStatus(200);      
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }
@@ -713,7 +737,9 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
 
 router.get("/archive", async (req, res, next) => {
   try {
-    let [events] = await db.query("SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC");
+    let [events] = await db.query(
+      "SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC"
+    );
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = DateToISOLocal(element.date);
@@ -726,7 +752,7 @@ router.get("/archive", async (req, res, next) => {
 
 router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
+    await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
     await DeleteImageById(req.body.id, "/static/img/posters/");
     res.redirect("/admin/");
   } catch (error) {
@@ -736,9 +762,11 @@ router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/archive/add", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',0)`);
+    let [results] = await db.query(
+      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',0)`
+    );
     await MakeDefaultImage(results.insertId, "/static/img/posters/");
-    res.redirect("/admin/");    
+    res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
@@ -749,11 +777,12 @@ router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
-    let [results] = await db.query(
+    await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${req.body.id}=id;`);
+      description = '${description}' WHERE ${req.body.id}=id;`
+    );
     res.sendStatus(200);
   } catch (error) {
     next(error);
