@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const i18n = require("i18n");
+const config = require("config");
 const logger = require("./logger");
 const db = require("./db");
 var MySQLStore = require('express-mysql-session')(session);
@@ -86,7 +87,7 @@ app.use(function (req, res, next) {
 
 app.use(
   session({
-    secret: "k3SGNSuwKJAe3E5t",
+    secret: config.get("sessionSecret"),
     store: sessionStore,
 	resave: false,
 	saveUninitialized: false,

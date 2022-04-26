@@ -1,14 +1,4 @@
 {
-    "db":{
-        "host": "localhost",
-        "user": "belscone_root",
-        "password": "M51cT4n5qb",
-        "database": "belscone_chamber"
-    },
-    "adminUser":{
-        "user": "root",
-        "passhash": "$2b$12$8/U31eNNYwPxhTMdcC4ogeIttkJNHUUreKGUEuZHFoPD.TT.e//9u"
-    },
     "images":{
         "smallImage":{
             "size":400,

@@ -1,6 +1,9 @@
 #update zip
 update.zip
 
+#local configuration
+config/local.json
+
 # Logs
 logs/
 logs
