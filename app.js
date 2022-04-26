@@ -1,3 +1,14 @@
+//basic modules
+const config = require("config");
+const logger = require("./logger");
+const fs = require('fs');
+const path = require("path");
+//check for configuration
+if (!fs.existsSync(path.join('config','local.json'))){
+  logger.error("No local.json config file");
+  process.exit(1);
+}
+//express
 const express = require("express");
 const handlebars = require("express-handlebars");
 const mainRouter = require("./routes/main");
@@ -5,21 +16,19 @@ const aboutRouter = require("./routes/about");
 const mediaRouter = require("./routes/media");
 const adminRouter = require("./routes/admin");
 const eventsRouter = require("./routes/events");
-const path = require("path");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
+//session
 const session = require("express-session");
-const i18n = require("i18n");
-const config = require("config");
-const logger = require("./logger");
-const db = require("./db");
 var MySQLStore = require('express-mysql-session')(session);
-
-
-var sessionStore = new MySQLStore({}/* session store options */, db.promise());;
+//other
+const i18n = require("i18n");
+const db = require("./db");
+const https = require("https");
 
 
 let environment = process.env.NODE_ENV || "production";
+const PORT = process.env.PORT || 80;
 var isDevelopment = environment === "development";
 
 i18n.configure({
@@ -63,7 +72,7 @@ function errorHandler(err, req, res, next) {
 
 db.triggerServerDbError = errorHandler;
 
-const PORT = process.env.PORT || 80;
+
 const app = express();
 
 const hbs = handlebars.create({
@@ -84,7 +93,7 @@ app.use(function (req, res, next) {
   }
   next();
 });
-
+var sessionStore = new MySQLStore({}/* session store options */, db.promise());
 app.use(
   session({
     secret: config.get("sessionSecret"),
@@ -113,11 +122,10 @@ app.listen(PORT, () => {
   logger.info(`Server started on ${environment} mode`);
 });
 
-const https = require("https");
-const fs = require("fs");
+
 let sslOptions = {
-  key: fs.readFileSync("key.pem"),
-  cert: fs.readFileSync("cert.pem"),
+  key: fs.readFileSync(path.join("sec","key.pem")),
+  cert: fs.readFileSync(path.join("sec","cert.pem")),
 };
 
 // eslint-disable-next-line no-unused-vars

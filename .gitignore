@@ -4,6 +4,9 @@ update.zip
 #local configuration
 config/local.json
 
+#rsa keys
+sec/
+
 # Logs
 logs/
 logs
