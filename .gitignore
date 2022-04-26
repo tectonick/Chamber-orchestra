@@ -1,4 +1,8 @@
+#update zip
+update.zip
+
 # Logs
+logs/
 logs
 *.log
 npm-debug.log*

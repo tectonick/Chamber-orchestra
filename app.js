@@ -10,6 +10,12 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const session = require("express-session");
 const i18n = require("i18n");
+const logger = require("./logger");
+const db = require("./db");
+
+
+let environment = process.env.NODE_ENV??'production';
+var isDevelopment = environment === 'development';
 
 i18n.configure({
   // setup some locales - other locales default to en silently
@@ -24,19 +30,42 @@ i18n.configure({
 
   // setting of log level DEBUG - default to require('debug')('i18n:debug')
   logDebugFn: function (msg) {
-    console.log("debug", msg);
+    if (isDevelopment) logger.debug("i18n debug: %s", msg);
   },
 
   // setting of log level WARN - default to require('debug')('i18n:warn')
   logWarnFn: function (msg) {
-    console.log("warn", msg);
+    logger.info("i18n warn: %s", msg);
   },
 
   // setting of log level ERROR - default to require('debug')('i18n:error')
   logErrorFn: function (msg) {
-    console.log("error", msg);
+    logger.error("error", msg);
   },
 });
+
+db.triggerServerError=errorHandler;
+
+function errorHandler (err, req, res, next) {
+  if (res.headersSent) {
+    return next(err)
+  }
+
+  let request={method:req.method, url:req.originalUrl, ip:req.ip};
+  err.request=request;
+  logger.error(err);
+  res.status(500);
+
+  console.log(request);
+  if (isDevelopment) {
+    res.render('errordev', { error: err, request: request, layout: false });
+  } else{
+    res.render('error', { error: err, layout: false });
+  }
+}
+
+
+db.triggerServerDbError=errorHandler;
 
 const PORT = process.env.PORT || 80;
 const app = express();
@@ -70,20 +99,23 @@ app.use("/about", aboutRouter);
 app.use("/media", mediaRouter);
 app.use("/admin", adminRouter);
 app.use("/events", eventsRouter);
+app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log("Server started");
+//404 handling
+app.get('*', function(req, res){
+  res.status(404).render('404', { layout: false });
 });
 
-// const viewhelpers = require("./viewhelpers");
-// const db = require("./db");
+app.listen(PORT, () => {
+  logger.info(`Server started on ${environment} mode`);
+});
 
 const https = require("https");
 const fs = require("fs");
-// start https server
 let sslOptions = {
   key: fs.readFileSync("key.pem"),
   cert: fs.readFileSync("cert.pem"),
 };
+
 // eslint-disable-next-line no-unused-vars
 let serverHttps = https.createServer(sslOptions, app).listen(8001);

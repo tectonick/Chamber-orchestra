@@ -102,5 +102,8 @@
 	"month.december": "Декабрь",
 	"events.noevents": "Пока нет ближайших событий",
 	"artists.description": "artists.description",
-	"conductor.description": "conductor.description"
+	"conductor.description": "conductor.description",
+	"error.ops": "Упс",
+	"error.message": "Что-то пошло не так",
+	"error.message404": "Вы, кажется, заблудились. Мы не нашли такой странички."
 }

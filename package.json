@@ -24,7 +24,8 @@
     "jimp": "^0.16.0",
     "mysql2": "^2.1.0",
     "unirest": "^0.6.0",
-    "uuid.v4": "^1.0.0"
+    "uuid.v4": "^1.0.0",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "eslint": "^8.13.0",

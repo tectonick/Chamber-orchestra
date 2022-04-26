@@ -1,7 +1,7 @@
 const Jimp = require("jimp");
 const path=require('path');
 const config= require("config");
-
+const logger = require("./logger");
 
 
 let imagesConfig=config.get("images");
@@ -16,7 +16,7 @@ function smallImage(filepath){
       .writeAsync(path.join(dir,name+'.jpg')); //
   })
   .catch(err => {
-    console.error(err);
+    logger.error(err);
     throw err;
 
   });
@@ -34,7 +34,7 @@ function galleryImage(filepath){
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
     .catch(err => {
-      console.error(err);
+      logger.error(err);
       throw err;
     });
   
@@ -54,7 +54,7 @@ function galleryImage(filepath){
         .writeAsync(path.join(dir,name+'.jpg')); //
     })
     .catch(err => {
-      console.error(err);
+      logger.error(err);
       throw err;
     });
   

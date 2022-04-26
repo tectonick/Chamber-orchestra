@@ -11,6 +11,7 @@ const bcrypt = require("bcrypt");
 const globals = require("../globals.js");
 var unirest = require("unirest");
 const config = require("config");
+const logger = require("../logger");
 
 function translate(text, source, dest) {
   //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -59,7 +60,7 @@ function translate(text, source, dest) {
 const admin = config.get("adminUser");
 var sessionId = "none";
 //look new password hash with this command
-//console.log(bcrypt.hashSync("your_new_password", 12));
+//logger.info(bcrypt.hashSync("your_new_password", 12));
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
@@ -145,7 +146,7 @@ router.use(function (req, res, next) {
 //Routes
 router.get("/", function (req, res) {
   db.query("CALL STAT()", async function (err, data) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     var title = "Admin" + " | " + res.__("title");
     let stat = data[0][0];
     let galleryFiles = await fs.readdir("./static/img/gallery");
@@ -185,7 +186,7 @@ router.get("/concerts", (req, res) => {
   db.query(
     "SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC",
     function (err, events) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       events.forEach((element) => {
         element.description = viewhelpers.UnescapeQuotes(element.description);
         element.date = DateToISOLocal(element.date);
@@ -197,7 +198,7 @@ router.get("/concerts", (req, res) => {
 
 router.post("/concerts/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`, function (err) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     DeleteImageById(req.body.id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
@@ -208,7 +209,7 @@ router.post("/concerts/add", urlencodedParser, (req, res) => {
   db.query(
     `INSERT INTO concerts VALUES (0,'','1970-01-01 00:00:00','', '','',0)`,
     function (err, results) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       MakeDefaultImage(results.insertId, "/static/img/posters/").then(
         function () {
           res.redirect("/admin/");
@@ -229,7 +230,7 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
     description = '${description}' WHERE ${req.body.id}=id;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.statusCode = 400;
         res.json({ error: err.message });
       } else {
@@ -256,7 +257,7 @@ router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
 
 router.get("/news", (req, res) => {
   db.query("SELECT * FROM news ORDER BY date DESC", function (err, events) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     events.forEach((element) => {
       element.text = viewhelpers.UnescapeQuotes(element.text);
       element.date = DateToISOLocal(element.date);
@@ -267,7 +268,7 @@ router.get("/news", (req, res) => {
 
 router.post("/news/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM news WHERE id=${req.body.id}`, function (err) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     DeleteImageById(req.body.id, "/static/img/news/").then(() => {
       res.redirect("/admin/");
     });
@@ -278,7 +279,7 @@ router.post("/news/add", urlencodedParser, async (req, res) => {
   db.query(
     `INSERT INTO news VALUES (0,'','2999-01-01 00:00','')`,
     async function (err, results) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       await MakeDefaultImage(results.insertId, "/static/img/news/");
       res.redirect("/admin/");
     }
@@ -294,7 +295,7 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
     text = '${text}' WHERE ${req.body.id}=id;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(400);
       } else {
         res.sendStatus(200);
@@ -359,7 +360,7 @@ router.get("/artists", async (req, res) => {
   db.query(
     `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
     function (err, artists) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       artists.reverse();
       res.render("admin/artists.hbs", { layout: false, artists });
     }
@@ -370,7 +371,7 @@ router.post("/artists/delete", urlencodedParser, (req, res) => {
   db.query(
     `DELETE FROM artists_translate WHERE artistId=${req.body.id}`,
     function (err) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       db.query(`DELETE FROM artists WHERE id=${req.body.id}`, () => {});
       DeleteImageById(req.body.id, "/static/img/about/artists/").then(() => {
         res.redirect("/admin/");
@@ -387,7 +388,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res) => {
     `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`,
     async function (err, artist) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(500);
       }
       try {
@@ -416,7 +417,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res) => {
           instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`);
         }
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.sendStatus(500);
       }
       res.sendStatus(200);
@@ -426,7 +427,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res) => {
 
 router.post("/artists/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO artists VALUES (0,0)`, async function (err, results) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     for (
       let langId = 1;
       langId < Object.keys(globals.languages).length;
@@ -435,7 +436,7 @@ router.post("/artists/add", urlencodedParser, async (req, res) => {
       db.query(
         `INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'','','')`,
         (err) => {
-          if (err) console.log(err);
+          if (err) {db.triggerServerDbError(err,req,res);return;};
         }
       );
     }
@@ -452,7 +453,7 @@ router.post("/artists/edit", urlencodedParser, (req, res) => {
     instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(400);
       } else {
         db.query(
@@ -484,7 +485,7 @@ router.get("/composers", async (req, res) => {
   db.query(
     `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
     function (err, composers) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       composers.reverse();
       res.render("admin/composers.hbs", { layout: false, composers });
     }
@@ -495,7 +496,7 @@ router.post("/composers/delete", urlencodedParser, (req, res) => {
   db.query(
     `DELETE FROM composers_translate WHERE composerId=${req.body.id}`,
     function (err) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       db.query(`DELETE FROM composers WHERE id=${req.body.id}`, () => {});
       DeleteImageById(req.body.id, "/static/img/about/composers/").then(() => {
         res.redirect("/admin/");
@@ -512,7 +513,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
     `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`,
     async function (err, composer) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(500);
       }
       try {
@@ -536,7 +537,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
           country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`);
         }
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.sendStatus(500);
       }
 
@@ -547,7 +548,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
 
 router.post("/composers/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO composers VALUES (0,0)`, async function (err, results) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     for (
       let langId = 1;
       langId < Object.keys(globals.languages).length;
@@ -556,7 +557,7 @@ router.post("/composers/add", urlencodedParser, async (req, res) => {
       db.query(
         `INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'','')`,
         (err) => {
-          if (err) console.log(err);
+          if (err) {db.triggerServerDbError(err,req,res);return;};
         }
       );
     }
@@ -572,7 +573,7 @@ router.post("/composers/edit", urlencodedParser, (req, res) => {
     country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(400);
       } else {
         db.query(
@@ -604,7 +605,7 @@ router.get("/musicians", async (req, res) => {
   db.query(
     `SELECT musicians.id, groupId, name, bio, hidden FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`,
     function (err, musicians) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       musicians = musicians.map((musician) => {
         musician.bio = viewhelpers.UnescapeQuotes(musician.bio);
         return musician;
@@ -618,7 +619,7 @@ router.post("/musicians/delete", urlencodedParser, (req, res) => {
   db.query(
     `DELETE FROM musicians_translate WHERE musicianId=${req.body.id}`,
     function (err) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       db.query(`DELETE FROM musicians WHERE id=${req.body.id}`, () => {});
       DeleteImageById(req.body.id, "/static/img/about/musicians/").then(() => {
         res.render("admin/musicians");
@@ -636,7 +637,7 @@ router.post("/musicians/translate", urlencodedParser, async (req, res) => {
     `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`,
     async function (err, musician) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(500);
       }
       try {
@@ -658,14 +659,13 @@ router.post("/musicians/translate", urlencodedParser, async (req, res) => {
           bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`,
             function (err) {
               if (err) {
-                console.log(err);
+                {db.triggerServerDbError(err,req,res);return;};
               }
             }
           );
         }
       } catch (error) {
-        console.log(err);
-        res.sendStatus(500);
+        {db.triggerServerDbError(err,req,res);return;};
       }
       res.sendStatus(200);
     }
@@ -674,7 +674,7 @@ router.post("/musicians/translate", urlencodedParser, async (req, res) => {
 
 router.post("/musicians/add", urlencodedParser, async (req, res) => {
   db.query(`INSERT INTO musicians VALUES (0,0)`, async function (err, results) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     for (
       let langId = 1;
       langId < Object.keys(globals.languages).length;
@@ -683,7 +683,7 @@ router.post("/musicians/add", urlencodedParser, async (req, res) => {
       db.query(
         `INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'','')`,
         (err) => {
-          if (err) console.log(err);
+          if (err) {db.triggerServerDbError(err,req,res);return;};
         }
       );
     }
@@ -702,7 +702,7 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
     }=musicianId AND ${langId}=languageId;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(400);
       } else {
         db.query(
@@ -768,7 +768,7 @@ router.get("/archive", (req, res) => {
   db.query(
     "SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC",
     function (err, events) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       events.forEach((element) => {
         element.description = viewhelpers.UnescapeQuotes(element.description);
         element.date = DateToISOLocal(element.date);
@@ -780,7 +780,7 @@ router.get("/archive", (req, res) => {
 
 router.post("/archive/delete", urlencodedParser, (req, res) => {
   db.query(`DELETE FROM concerts WHERE id=${req.body.id}`, function (err) {
-    if (err) console.log(err);
+    if (err) {db.triggerServerDbError(err,req,res);return;};
     DeleteImageById(req.body.id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
@@ -791,7 +791,7 @@ router.post("/archive/add", urlencodedParser, (req, res) => {
   db.query(
     `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',0)`,
     function (err, results) {
-      if (err) console.log(err);
+      if (err) {db.triggerServerDbError(err,req,res);return;};
       MakeDefaultImage(results.insertId, "/static/img/posters/").then(() => {
         res.redirect("/admin/");
       });
@@ -810,7 +810,7 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
     description = '${description}' WHERE ${req.body.id}=id;`,
     function (err) {
       if (err) {
-        console.log(err);
+        {db.triggerServerDbError(err,req,res);return;};
         res.sendStatus(400);
       } else {
         res.sendStatus(200);

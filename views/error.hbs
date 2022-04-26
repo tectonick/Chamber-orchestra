@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+        body{
+            background-color: #c1c1c1;
+            background-image: url("/img/error.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+        }
+        div.error{           
+            position: absolute;
+            left: 65%;
+            top: 12vw;
+            font-family: Georgia;
+            font-size: 1.7rem;
+        }
+        div.error p{
+            width: 90%;
+            overflow-wrap: anywhere;
+        }
+        @media (max-width:750px) {
+            div.error{           
+                left: 62%;
+                top: 5%;
+                font-size: 0.8rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="error">
+        <h1>{{__ 'error.ops'}}</h1>
+        <p>{{__ 'error.message'}}<p>
+    </div>
+
+
+</body>
+</html>
+
+
+
+

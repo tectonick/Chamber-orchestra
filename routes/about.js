@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const globals = require("../globals.js");
-
+const logger = require("../logger");
 
 router.get("/", (req,res)=>{
     var description=res.__('history.description');
@@ -20,7 +20,7 @@ router.get("/musicians", (req,res)=>{
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND hidden=0 `,
     function (err, musiciansAll) {
-        if (err) console.log(err);
+        if (err) {db.triggerServerDbError(err,req,res);return;};
         var musicians=[[],[],[],[],[],[],[]] //groups;
         musiciansAll.forEach((musician)=>{
             musicians[musician.groupId-1].push(musician);
@@ -49,7 +49,7 @@ router.get("/artists", async (req,res)=>{
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
     function (err, artistsAll) {
-        if (err) console.log(err);
+        if (err) {db.triggerServerDbError(err,req,res);return;};
         var artists=[[],[],[],[],[],[],[],[],[],[]];
         artistsAll.forEach((artist)=>{
             if (artist.groupId>0)
@@ -69,7 +69,7 @@ router.get("/composers", async (req,res)=>{
     let langId = globals.languages[req.getLocale()];
     db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
     function (err, composersAll) {
-        if (err) console.log(err);
+        if (err) {db.triggerServerDbError(err,req,res);return;};
         var InResidence=[];
         var Partners=[];
         composersAll.forEach((composer)=>{
