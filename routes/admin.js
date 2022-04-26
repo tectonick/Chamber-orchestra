@@ -231,8 +231,6 @@ router.post("/concerts/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.statusCode = 400;
-        res.json({ error: err.message });
       } else {
         res.sendStatus(200);
       }
@@ -296,7 +294,6 @@ router.post("/news/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(400);
       } else {
         res.sendStatus(200);
       }
@@ -389,7 +386,6 @@ router.post("/artists/translate", urlencodedParser, async (req, res) => {
     async function (err, artist) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(500);
       }
       try {
         for (
@@ -454,7 +450,6 @@ router.post("/artists/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(400);
       } else {
         db.query(
           `UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;`
@@ -514,7 +509,6 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
     async function (err, composer) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(500);
       }
       try {
         for (
@@ -574,7 +568,6 @@ router.post("/composers/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(400);
       } else {
         db.query(
           `UPDATE composers SET isInResidence = '${req.body.isInResidence}' WHERE ${req.body.id}=id;`
@@ -638,7 +631,6 @@ router.post("/musicians/translate", urlencodedParser, async (req, res) => {
     async function (err, musician) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(500);
       }
       try {
         for (
@@ -673,7 +665,7 @@ router.post("/musicians/translate", urlencodedParser, async (req, res) => {
 });
 
 router.post("/musicians/add", urlencodedParser, async (req, res) => {
-  db.query(`INSERT INTO musicians VALUES (0,0)`, async function (err, results) {
+  db.query(`INSERT INTO musicians VALUES (0,0,0)`, async function (err, results) {
     if (err) {db.triggerServerDbError(err,req,res);return;};
     for (
       let langId = 1;
@@ -703,7 +695,6 @@ router.post("/musicians/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(400);
       } else {
         db.query(
           `UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;`
@@ -811,7 +802,6 @@ router.post("/archive/edit", urlencodedParser, (req, res) => {
     function (err) {
       if (err) {
         {db.triggerServerDbError(err,req,res);return;};
-        res.sendStatus(400);
       } else {
         res.sendStatus(200);
       }

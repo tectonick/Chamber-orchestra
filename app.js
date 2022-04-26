@@ -27,43 +27,34 @@ i18n.configure({
   // where to store json files - defaults to './locales'
   directory: path.join(__dirname, "locales"),
   register: global,
-
   // setting of log level DEBUG - default to require('debug')('i18n:debug')
   logDebugFn: function (msg) {
     if (isDevelopment) logger.debug("i18n debug: %s", msg);
   },
-
   // setting of log level WARN - default to require('debug')('i18n:warn')
   logWarnFn: function (msg) {
     logger.info("i18n warn: %s", msg);
   },
-
   // setting of log level ERROR - default to require('debug')('i18n:error')
   logErrorFn: function (msg) {
     logger.error("error", msg);
   },
 });
 
-db.triggerServerError=errorHandler;
-
 function errorHandler (err, req, res, next) {
   if (res.headersSent) {
     return next(err)
   }
-
   let request={method:req.method, url:req.originalUrl, ip:req.ip};
   err.request=request;
-
   logger.error(err);
   res.status(500);
-  console.log(request);
   if (isDevelopment) {
     res.render('errordev', { error: err, request: request, layout: false });
   } else{
     res.render('error', { error: err, layout: false });
   }
 }
-
 
 db.triggerServerDbError=errorHandler;
 
