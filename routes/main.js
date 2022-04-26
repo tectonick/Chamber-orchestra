@@ -1,20 +1,21 @@
 const express = require("express");
 const viewhelpers = require("../viewhelpers");
-const db = require("../db");
+const db = require("../db").promise();
 const router = express.Router();
 const logger = require("../logger");
 
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
     var title =res.__('title');
     var description=res.__('index.description');
-      db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date LIMIT 6",
-          function (err, results) {
-              if (err) {db.triggerServerDbError(err,req,res);return;};
-              var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
-              res.render("index.hbs", { triplets, title, description});
-          });
-  });
+    try {
+        let [results] = await db.query("SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date LIMIT 6");
+        var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
+        res.render("index.hbs", { triplets, title, description});
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 router.get("/contacts", (req, res) => {
@@ -23,31 +24,33 @@ router.get("/contacts", (req, res) => {
     res.render('contacts.hbs', {title, description});
 });
 
-router.get("/api/news", (req, res) => {
+router.get("/api/news", async (req, res, next) => {
     var blockNum=(req.query.block-1)|| 0;
     var offset=blockNum*5;
-    db.query(`SELECT * FROM news ORDER BY date DESC LIMIT 5 OFFSET ${offset}`,
-    function (err, results) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
+    try {
+        let [results]=await db.query(`SELECT * FROM news ORDER BY date DESC LIMIT 5 OFFSET ${offset}`);
         res.json(results);
-    });
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get("/api/news/count", (req, res) => {
-    db.query(`SELECT COUNT(id) as count FROM news`,
-    function (err, results) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
+router.get("/api/news/count", async (req, res, next) => {
+    try {
+        let [results] = await db.query(`SELECT COUNT(id) as count FROM news`);
         res.json(results);
-    });
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get("/api/concerts", (req, res) => {
-    db.query(`SELECT * FROM concerts WHERE hidden=FALSE ORDER BY date`,
-    function (err, concerts) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
-        res.statusCode=200;
-        res.json(concerts);
-    });
+router.get("/api/concerts", async (req, res, next) => {
+    try {
+        let [concerts] = await db.query(`SELECT * FROM concerts WHERE hidden=FALSE ORDER BY date`);
+        res.statusCode(200).json(concerts);
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.get("/press", async (req,res)=>{

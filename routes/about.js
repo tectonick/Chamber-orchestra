@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db");
+const db = require("../db").promise();
 const globals = require("../globals.js");
 const logger = require("../logger");
 
@@ -14,65 +14,62 @@ router.get("/conductor", (req,res)=>{
     var title =res.__('layout.navbar.conductor')+' | '+res.__('title');
     res.render('about/conductor.hbs', {title, description});
 });
-router.get("/musicians", (req,res)=>{
+router.get("/musicians", async (req,res, next)=>{
     var description=res.__('musicians.description');
     var title =res.__('layout.navbar.musicians')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
-    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND hidden=0 `,
-    function (err, musiciansAll) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
+    try {
+        let [results] = await db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND hidden=0 `)
         var musicians=[[],[],[],[],[],[],[]] //groups;
-        musiciansAll.forEach((musician)=>{
+        results.forEach((musician)=>{
             musicians[musician.groupId-1].push(musician);
         });
         res.render('about/musicians.hbs', {title, musicians, description});
-    });    
+    } catch (error) {
+        next(error);
+    }    
 });
 
-router.get("/musicians/getById", (req,res)=>{
+router.get("/musicians/getById", async (req,res)=>{
     let langId = globals.languages[req.getLocale()];
     var id=req.query.id;
-    db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND musicians.id=${id}`,
-    function (err, musician) {
-        if (err) {
-            res.sendStatus(400);
-        } else{
-            res.json(musician);
-        }
-    });    
+    try {
+        let [results] = await db.query(`SELECT musicians.id, groupId, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} AND musicians.id=${id}`);
+        res.json(results);
+    } catch (error) {
+        res.sendStatus(400);
+    }
 });
 
  
-router.get("/artists", async (req,res)=>{
+router.get("/artists", async (req,res,next)=>{
     var description=res.__('artists.description');
     var title =res.__('layout.navbar.artists')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
-    db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `,
-    function (err, artistsAll) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
+    try {
+        let [results] = await db.query(`SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `);
         var artists=[[],[],[],[],[],[],[],[],[],[]];
-        artistsAll.forEach((artist)=>{
+        results.forEach((artist)=>{
             if (artist.groupId>0)
                 artists[artist.groupId-1].push(artist);
         });
         
         res.render('about/artists.hbs',{title, artists, description});
-    });  
-
-    
+    } catch (error) {
+        next(error);
+    }
     
 });
 
-router.get("/composers", async (req,res)=>{
+router.get("/composers", async (req,res,next)=>{
     var description=res.__('composers.description');
     var title =res.__('layout.navbar.composers')+' | '+res.__('title');
     let langId = globals.languages[req.getLocale()];
-    db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `,
-    function (err, composersAll) {
-        if (err) {db.triggerServerDbError(err,req,res);return;};
+    try {
+        let [results] = await db.query(`SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `);
         var InResidence=[];
         var Partners=[];
-        composersAll.forEach((composer)=>{
+        results.forEach((composer)=>{
             if(composer.isInResidence){
                 InResidence.push(composer);
             } else{
@@ -81,7 +78,9 @@ router.get("/composers", async (req,res)=>{
         });
         let composers = {InResidence, Partners};
         res.render("about/composers.hbs",{title,composers, description});
-    });  
+    } catch (error) {
+        next(error);
+    }
 });
 
 
