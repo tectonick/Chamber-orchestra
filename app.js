@@ -13,9 +13,13 @@ const i18n = require("i18n");
 const logger = require("./logger");
 const db = require("./db");
 
+const sqlite = require("better-sqlite3");
 
-let environment = process.env.NODE_ENV||'production';
-var isDevelopment = environment === 'development';
+const SqliteStore = require("better-sqlite3-session-store")(session);
+const sessionDb = new sqlite("sessions.db");
+
+let environment = process.env.NODE_ENV || "production";
+var isDevelopment = environment === "development";
 
 i18n.configure({
   // setup some locales - other locales default to en silently
@@ -41,22 +45,22 @@ i18n.configure({
   },
 });
 
-function errorHandler (err, req, res, next) {
+function errorHandler(err, req, res, next) {
   if (res.headersSent) {
-    return next(err)
+    return next(err);
   }
-  let request={method:req.method, url:req.originalUrl, ip:req.ip};
-  err.request=request;
+  let request = { method: req.method, url: req.originalUrl, ip: req.ip };
+  err.request = request;
   logger.error(err);
   res.status(500);
   if (isDevelopment) {
-    res.render('errordev', { error: err, request: request, layout: false });
-  } else{
-    res.render('error', { error: err, layout: false });
+    res.render("errordev", { error: err, request: request, layout: false });
+  } else {
+    res.render("error", { error: err, layout: false });
   }
 }
 
-db.triggerServerDbError=errorHandler;
+db.triggerServerDbError = errorHandler;
 
 const PORT = process.env.PORT || 80;
 const app = express();
@@ -80,7 +84,19 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(session({ secret: "ssshhhhh" }));
+app.use(
+  session({
+    secret: "k3SGNSuwKJAe3E5t",
+    store: new SqliteStore({
+      client: sessionDb,
+      expired: {
+        clear: true,
+        intervalMs: 900000, //ms = 15min
+      },
+    }),
+    resave: false,
+  })
+);
 
 app.use(fileUpload());
 
@@ -93,8 +109,8 @@ app.use("/events", eventsRouter);
 app.use(errorHandler);
 
 //404 handling
-app.get('*', function(req, res){
-  res.status(404).render('404', { layout: false });
+app.get("*", function (req, res) {
+  res.status(404).render("404", { layout: false });
 });
 
 app.listen(PORT, () => {

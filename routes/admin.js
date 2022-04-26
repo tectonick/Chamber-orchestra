@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const uuidV4 = require("uuid.v4");
 const viewhelpers = require("../viewhelpers");
 const db = require("../db");
 const fs = require("fs").promises;
@@ -58,7 +57,6 @@ function translate(text, source, dest) {
 }
 
 const admin = config.get("adminUser");
-var sessionId = "none";
 //look new password hash with this command
 //logger.info(bcrypt.hashSync("your_new_password", 12));
 
@@ -133,7 +131,7 @@ function FilesToArray(files) {
 //Middleware
 router.use(function (req, res, next) {
   if (
-    req.cookies.id === sessionId ||
+    req.session.user ||
     req.path == "/login" ||
     req.path == "/logout"
   ) {
@@ -169,8 +167,7 @@ router.post("/login", urlencodedParser, (req, res) => {
     req.body.username === admin.user &&
     bcrypt.compareSync(req.body.password, admin.passhash)
   ) {
-    sessionId = uuidV4();
-    res.cookie("id", sessionId, { maxAge: 24 * 60 * 60 * 10000 });
+    req.session.user={username:admin.user};
     res.redirect("/admin");
   } else {
     res.redirect("/admin/login");
@@ -178,7 +175,7 @@ router.post("/login", urlencodedParser, (req, res) => {
 });
 
 router.get("/logout", function (req, res) {
-  res.clearCookie("id");
+  delete req.session.user;
   res.redirect("/");
 });
 
