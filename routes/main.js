@@ -50,7 +50,8 @@ router.get("/api/concerts", async (req, res, next) => {
     let [concerts] = await db.query(
       `SELECT * FROM concerts WHERE hidden=FALSE ORDER BY date`
     );
-    res.statusCode(200).json(concerts);
+    res.statusCode=200;
+    res.json(concerts);
   } catch (error) {
     next(error);
   }
