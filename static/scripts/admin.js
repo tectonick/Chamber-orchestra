@@ -1,4 +1,14 @@
 let container=document.querySelector('#update-container');
+
+function evalAllScripts(){
+  let scripts = container.querySelectorAll('script');
+  for (let script of scripts){
+    
+    eval(script.innerText);
+  }        
+}
+
+
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
@@ -7,10 +17,7 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         let response = await fetch(link.href);
         let pageData = await response.text();
         container.innerHTML=pageData;
-        let scripts = container.querySelectorAll('script');
-        for (let script of scripts){
-          eval(script.innerText);
-        }        
+
         sessionStorage.setItem('current-admin-page',link.href);
     })
 });
@@ -23,9 +30,7 @@ window.addEventListener('load', async ()=>{
     let response = await fetch(page);
     let pageData = await response.text();
     container.innerHTML=pageData;
-    console.log('INIT');
-    eval(container.querySelector('script').innerText);
-    console.log('Dispatched');
+    evalAllScripts()
 });
 document.getElementById("search-input").addEventListener("input",function(){
 var searchables=document.querySelectorAll('.searchable');
