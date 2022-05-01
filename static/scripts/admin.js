@@ -51,6 +51,34 @@ function staticHtmlLoadPageSetup(path, rootid="text-container"){
 });
 }
 
+function initTinyEditor(selector='textarea[name="description"]'){
+  tinymce.init({
+    selector: selector,
+    height: 300,
+  plugins: [
+    'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'anchor',
+    'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'insertdatetime', 'table', 'template', 'help', 'save'
+  ],
+    toolbar_mode: 'floating',
+    menubar: false,
+    
+    content_style: 'p { margin: 0;}',
+    toolbar: 'insertfile undo redo | styleselect link | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor'
+  });
+}
+
+function extendedEditorToggle(formid,name){
+  let btn = document.querySelector(`#${formid} .editor-toggle`);
+  if (btn.classList.contains("editor-toggled")){
+      btn.classList.remove("editor-toggled");
+      tinymce?.activeEditor?.save();
+      tinymce?.activeEditor?.destroy();
+  } else{
+      btn.classList.add("editor-toggled");
+      initTinyEditor(`#${formid} textarea[name="${name}"]`);
+  }
+}  
+
 function posterUploadSetEvent(path) {
   $(".fileToUpload").change(function () {
     let filename = this.value;
@@ -105,6 +133,7 @@ function saveSetEvent(path){
   $(".save-button").click(function (ev) {
     var target = ev.target;
     target.setAttribute('disabled', 'disabled');
+    tinymce?.activeEditor?.save();
     var formName = $(this).attr('name');
     var formData = $('#' + formName).serialize();
     $.post(path, formData, (data, status) => {

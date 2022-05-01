@@ -16,7 +16,21 @@
                     <form class='form-group' action="/admin/musicians/edit" id="edit-form-{{musician.id}}" method="POST">
                         <input type="hidden" name="id" value="{{musician.id}}">
                         <textarea name="name" class="form-control w-100" placeholder="Имя" rows="1">{{musician.name}}</textarea>
+                        
+
+                    <div class="form-group">
                         <textarea name="bio" class="form-control w-100" placeholder="Биография" rows="10">{{musician.bio}}</textarea>
+                        <div class="d-flex">
+<input type="button" class="form-control editor-toggle"
+                            onclick="extendedEditorToggle('edit-form-{{event.id}}','bio')"
+                            value="Расширенный редактор" />
+                        <input name='translate-form-{{musician.id}}' class='translate-button form-control' type="submit"
+                        value="Перевести на остальные языки"></input>
+                        </div>
+                        
+                    </div>
+
+
                         <select class="form-control w-100" name="groupId">
                             <option value="{{musician.groupId}}" selected hidden>Изменить группу</option>
                             <option value="1">Первые скрипки</option>
@@ -36,8 +50,7 @@
                             <input type="hidden" name="id" value="{{musician.id}}">
                         </div>
                     </form>
-                    <input name='translate-form-{{musician.id}}' class='translate-button form-control' type="submit"
-                        value="Перевести на остальные языки"></input>
+                    
                 </div>
 
                 <div class="col-12 ">

@@ -95,3 +95,16 @@
 [data-editable] .text-right {
     text-align: right;
 }
+
+@media (max-width: 992px) {
+  .ct-widget.ct-ignition{
+    left: 1px !important;
+    top: 1px !important;
+  }
+}
+
+.editor-toggled{
+  background: lightgray !important;
+  box-shadow: inset 0px 0px 5px 1px darkgrey !important;
+  border: none !important;
+}
