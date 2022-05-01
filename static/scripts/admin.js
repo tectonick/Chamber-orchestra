@@ -2,6 +2,7 @@ let container=document.querySelector('#edit-container');
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
+        editor?.destroy(); //DO NOT DELETE IT. It`s destroying editor described in contenttools/editor.js
         document.querySelector('#logo').style.visibility="visible";
         let response = await fetch(link.href);
         let pageData = await response.text();

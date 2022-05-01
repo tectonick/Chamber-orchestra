@@ -847,7 +847,6 @@ router.get("/pastmusicians", (req, res) => {
 router.post("/updatestatichtml", async (req, res) => {
   try {
     let file = req.body.file;
-    console.log(file);
     let html= req.body.content;
     await fs.writeFile(path.join("static",file),html);
     res.sendStatus(200);
