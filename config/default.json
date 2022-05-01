@@ -12,6 +12,11 @@
             "size":1600,
             "quality":70
         }
+    },
+    "paginationSize":{
+        "news":5,
+        "archive":10,
+        "admin":10
     }
 
 }

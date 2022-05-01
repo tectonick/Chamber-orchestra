@@ -24,6 +24,25 @@ if ('serviceWorker' in navigator) {
 
       window.onscroll = function() {scrollFunction()};
 
+
+      function setPaginationEvents(selector){
+        if ((typeof selector)==='undefined') return;
+        let container=document.querySelector(selector);
+        document.querySelectorAll('.page-link').forEach((link)=>{
+          link.addEventListener('click',async (e)=>{
+              e.preventDefault();
+              let response = await fetch(link.href);
+              let pageData = await response.text();
+              container.innerHTML=pageData;
+              let scripts = container.querySelectorAll('script');
+              for (let script of scripts){
+                eval(script.innerText);
+              }  
+          })
+        });
+      }
+
+
 function scrollFunction() {
   
   if (document.body.clientWidth>992) {

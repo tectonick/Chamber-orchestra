@@ -1,4 +1,4 @@
-let container=document.querySelector('#edit-container');
+let container=document.querySelector('#update-container');
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
@@ -14,6 +14,10 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         sessionStorage.setItem('current-admin-page',link.href);
     })
 });
+
+
+
+
 window.addEventListener('load', async ()=>{
     let page = sessionStorage.getItem('current-admin-page')??'/admin/concerts';
     let response = await fetch(page);
@@ -38,6 +42,9 @@ if (this.value===""){
     });
 }
 })
+
+
+
 
 
 function staticHtmlLoadPageSetup(path, rootid="text-container"){

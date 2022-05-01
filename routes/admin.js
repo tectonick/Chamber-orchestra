@@ -67,11 +67,7 @@ async function DeleteImageById(nameId, folder) {
   let imgToDel = path.join(__dirname, "..", folder, nameId + ".jpg");
   return fs.unlink(imgToDel);
 }
-function DateToISOLocal(date) {
-  // JS interprets db date as local and converts to UTC
-  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
-  return new Date(localDate).toISOString().slice(0, 19);
-}
+
 
 async function MakeDefaultImage(newId, folder) {
   let src = path.join(__dirname, "..", folder, "placeholder.jpg");
@@ -179,18 +175,26 @@ router.get("/logout", function (req, res) {
 
 router.get("/concerts", async (req, res, next) => {
   try {
+
+    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00'`);
+    let maxCount=countDbResult[0].count;
+    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/concerts",req.query.page,maxCount,config.get("paginationSize").admin);
+
     let [events] = await db.query(
-      "SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC"
+      `SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset}`
     );
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
-      element.date = DateToISOLocal(element.date);
+      element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render("admin/concerts.hbs", { events, layout: false });
+    res.render("admin/concerts.hbs", { pages, events, layout: false });
   } catch (error) {
     next(error);
   }
 });
+
+
+
 
 router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
   try {
@@ -249,12 +253,15 @@ router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
 
 router.get("/news", async (req, res, next) => {
   try {
-    let [events] = await db.query("SELECT * FROM news ORDER BY date DESC");
+    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM news`);
+    let maxCount=countDbResult[0].count;
+    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/news",req.query.page,maxCount,config.get("paginationSize").admin);
+    let [events] = await db.query(`SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`);
     events.forEach((element) => {
       element.text = viewhelpers.UnescapeQuotes(element.text);
-      element.date = DateToISOLocal(element.date);
+      element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render("admin/news.hbs", { events, layout: false });
+    res.render("admin/news.hbs", { pages, events, layout: false });
   } catch (error) {
     next(error);
   }
@@ -735,16 +742,21 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
   res.redirect("/admin/");
 });
 
+
+
 router.get("/archive", async (req, res, next) => {
   try {
+    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00'`);
+    let maxCount=countDbResult[0].count;
+    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/archive",req.query.page,maxCount,config.get("paginationSize").admin);
     let [events] = await db.query(
-      "SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC"
+      `SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`
     );
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
-      element.date = DateToISOLocal(element.date);
+      element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render("admin/archive.hbs", { events, layout: false });
+    res.render("admin/archive.hbs", { events, pages, layout: false });
   } catch (error) {
     next(error);
   }

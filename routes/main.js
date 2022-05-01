@@ -2,6 +2,7 @@ const express = require("express");
 const viewhelpers = require("../viewhelpers");
 const db = require("../db").promise();
 const router = express.Router();
+const config = require("config");
 
 router.get("/", async (req, res, next) => {
   var title = res.__("title");
@@ -17,32 +18,30 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/news", async (req, res, next) => {
+  try {
+    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM news`);
+    let maxCount=countDbResult[0].count;
+    let {pages, itemCount, offset}=viewhelpers.usePagination("news",req.query.page,maxCount,config.get("paginationSize").news);
+    let [news] = await db.query(
+      `SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`
+    );
+    news.forEach((element) => {
+      element.text = viewhelpers.UnescapeQuotes(element.text);
+      element.date = (new Date(element.date)).toDateString();
+    });
+    res.render("news.hbs", { news, pages, layout: false });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 router.get("/contacts", (req, res) => {
   var description = res.__("contacts.description");
   var title = res.__("layout.navbar.contacts") + " | " + res.__("title");
   res.render("contacts.hbs", { title, description });
-});
-
-router.get("/api/news", async (req, res, next) => {
-  var blockNum = req.query.block - 1 || 0;
-  var offset = blockNum * 5;
-  try {
-    let [results] = await db.query(
-      `SELECT * FROM news ORDER BY date DESC LIMIT 5 OFFSET ${offset}`
-    );
-    res.json(results);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/api/news/count", async (req, res, next) => {
-  try {
-    let [results] = await db.query(`SELECT COUNT(id) as count FROM news`);
-    res.json(results);
-  } catch (error) {
-    next(error);
-  }
 });
 
 router.get("/api/concerts", async (req, res, next) => {

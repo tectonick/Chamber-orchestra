@@ -5,7 +5,7 @@
         </form>
 
     </div>
-
+  {{> pagination pages=pages}}
     {{#each events}}{{> forms/event event=this}}{{/each}}
 
 {{> deleteModal}}

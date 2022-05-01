@@ -1,0 +1,11 @@
+            <ul class="pagination justify-content-center">
+                {{#each pages}}
+                <li class="page-item {{this.activeClass}}">
+                    <a href="{{this.href}}" class="page-link">{{this.number}}</a>
+                </li>
+                {{/each}}
+            </ul>
+
+            <script>
+                setPaginationEvents('#update-container');
+            </script>

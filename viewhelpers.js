@@ -17,6 +17,29 @@ const path = require("path");
   ];
 
 
+  function usePagination(baseUrl,currentPage,maxCount, itemCount=10){
+    currentPage=Number(currentPage)||1
+    let maxPages=Math.ceil(maxCount/itemCount);
+    let offset=(currentPage-1)*itemCount;
+    let pages=[];
+  
+    if (maxPages>1){
+      let previousPageNumber=(currentPage-1)||1;
+      let nextPageNumber=(currentPage+1>maxPages)?maxPages:currentPage+1;
+      let previousPage={number:"←", href:`${baseUrl}?page=${previousPageNumber}` };
+      let nextPage={number:"→", href:`${baseUrl}?page=${nextPageNumber}` };
+    
+      pages.push(previousPage);
+      for (let index = 1; index <= maxPages; index++) {
+        let isActive=(currentPage==index);
+        pages.push({number:index, href:`${baseUrl}?page=${index}`, activeClass:(isActive?'active':'')});
+      }
+      pages.push(nextPage)
+    }
+    return {pages, itemCount,offset};
+  }
+
+
   function EscapeQuotes(str){
     return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;");
     
@@ -93,10 +116,18 @@ async function NamesOfDirFilesWOExtension(basepath) {
   return names;
 }
 
+function DateToISOLocal(date) {
+  // JS interprets db date as local and converts to UTC
+  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
+  return new Date(localDate).toISOString().slice(0, 19);
+}
+
 module.exports = {
   OrganizeConcertsInMonths,
   OrganizeConcertsInTriplets,
   NamesOfDirFilesWOExtension,
   EscapeQuotes,
-  UnescapeQuotes
+  UnescapeQuotes,
+  usePagination,
+  DateToISOLocal
 };

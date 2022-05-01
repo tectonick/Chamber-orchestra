@@ -7,10 +7,10 @@
         </form>
 
     </div>
+
+    {{> pagination pages=pages}}
+
     {{#each events}}{{> forms/concert event=this}}{{/each}}
-
-
-
 
     {{> deleteModal}}
 
@@ -23,6 +23,7 @@
 
 
 <script>
+    
     posterUploadSetEvent('/admin/concerts/posterupload');
     deleteWithModalSetEvent('/admin/archive/delete');
     saveSetEvent("/admin/archive/edit");
