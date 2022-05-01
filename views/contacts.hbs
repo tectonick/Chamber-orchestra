@@ -14,16 +14,9 @@
             <img class="musicians-pic" src="/img/Contacts.jpg" alt="">
         </div>
         <div class="col-10 px-4 py-1 contacts-block">
-            <p>
-                <a href="tel:+375173948190" target="_blank">{{__ 'contacts.admin'}}</a><br />
-                <a href="tel:+375296932658" target="_blank">{{__ 'contacts.director'}}</a><br />
-                <a href="tel:+375297713147" target="_blank">{{__ 'contacts.editor'}}</a><br />
-                <a href="mailto:admin@belsco.net" target="_blank">{{__ 'contacts.tech_editor'}}</a><br>
-                <a href="mailto:manager@belsco.net" target="_blank">
-                     Email: manager@belsco.net
-                </a><br>
+            <div id="contacts-container" data-editable>
 
-            </p>
+            </div>
         </div> 
 
     </div>
@@ -32,3 +25,11 @@
 
 
 </div>
+
+<script>
+    $(document).ready(function () {
+        var lang = getCookie('locale');
+        $("#contacts-container").load(`/html/${lang}/contacts.html`);
+    });
+
+</script>

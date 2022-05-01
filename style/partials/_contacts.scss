@@ -19,3 +19,9 @@
 .contacts-block a:hover {
   color: config.$link-hover-color !important;
 }
+
+#contacts-container{
+  p{
+    margin-bottom: 0;
+  }
+}

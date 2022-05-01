@@ -844,6 +844,10 @@ router.get("/pastmusicians", (req, res) => {
   res.render("admin/pastmusicians.hbs", {layout: false });
 });
 
+router.get("/contacts", (req, res) => {
+  res.render("admin/contacts.hbs", {layout: false });
+});
+
 router.post("/updatestatichtml", async (req, res) => {
   try {
     let file = req.body.file;

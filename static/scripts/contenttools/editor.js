@@ -1,7 +1,7 @@
 var editor;
 
 window.addEventListener('editor', function(e) { 
-    editor?.destroy();
+    
     editor=ContentTools.EditorApp.get();
     editor.init('*[data-editable]', 'data-name');
     let file=e.detail;

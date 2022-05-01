@@ -40,12 +40,12 @@ if (this.value===""){
 })
 
 
-function staticHtmlLoadPageSetup(path){
+function staticHtmlLoadPageSetup(path, rootid="text-container"){
   $(document).ready(async ()=>{
     let file=path;
     let response=await fetch(file);
     let html=await response.text();
-    document.querySelector('#text-container').innerHTML=html;
+    document.querySelector('#'+rootid).innerHTML=html;
     let editorEvent=new CustomEvent('editor', { detail: file });
     window.dispatchEvent(editorEvent);        
 });
