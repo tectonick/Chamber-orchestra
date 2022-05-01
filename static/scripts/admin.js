@@ -17,7 +17,7 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         let response = await fetch(link.href);
         let pageData = await response.text();
         container.innerHTML=pageData;
-
+        evalAllScripts();
         sessionStorage.setItem('current-admin-page',link.href);
     })
 });
