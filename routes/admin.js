@@ -831,4 +831,28 @@ router.post("/disks/upload", urlencodedParser, (req, res) => {
   res.redirect("/admin/");
 });
 
+
+router.get("/about", (req, res) => {
+  res.render("admin/about.hbs", { layout: false });
+});
+
+router.get("/conductor", (req, res) => {
+  res.render("admin/conductor.hbs", {layout: false });
+});
+
+router.get("/pastmusicians", (req, res) => {
+  res.render("admin/pastmusicians.hbs", {layout: false });
+});
+
+router.post("/updatestatichtml", async (req, res) => {
+  try {
+    let file = req.body.file;
+    let html= req.body.content;
+    await fs.writeFile(path.join("static",file),html);
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(400);
+  }
+});
+
 module.exports = router;

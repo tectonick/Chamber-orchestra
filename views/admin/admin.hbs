@@ -21,6 +21,9 @@
                         <a href="/admin/press" class="menu-link list-group-item list-group-item-action bg-light">Пресса<span>{{stat.press_count}}</span></a>
                         <a href="/admin/archive" class="menu-link list-group-item list-group-item-action bg-light">Архив<span>{{stat.old_concerts_count}}</span></a>
                         <a href="/admin/disks" class="menu-link list-group-item list-group-item-action bg-light">Дискография<span>{{stat.disks_count}}</span></a>
+                        <a href="/admin/about" class="menu-link list-group-item list-group-item-action bg-light">Об оркестре</a>
+                        <a href="/admin/conductor" class="menu-link list-group-item list-group-item-action bg-light">О дирижере</a>
+                        <a href="/admin/pastmusicians" class="menu-link list-group-item list-group-item-action bg-light">Бывшие работники</a>
                         <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
                     </div>
                 </div>
@@ -33,5 +36,13 @@
 </div>
 
 
+{{#section 'head'}}
+    <!-- stuff that goes in head...example: -->
+    <link rel="stylesheet" type="text/css" href="/scripts/contenttools/content-tools.min.css">
+{{/section}}
+
+
+<script src="/scripts/contenttools/content-tools.min.js"></script>
+<script src="/scripts/contenttools/editor.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 <script type="text/javascript" src="/scripts/admin.js"></script>

@@ -2,10 +2,15 @@ let container=document.querySelector('#edit-container');
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
+        document.querySelector('.ct-app')?.remove();
+        document.querySelector('#logo').style.visibility="visible";
         let response = await fetch(link.href);
         let pageData = await response.text();
         container.innerHTML=pageData;
-        eval(container.querySelector('script').innerText);
+        let scripts = container.querySelectorAll('script');
+        for (let script of scripts){
+          eval(script.innerText);
+        }        
         sessionStorage.setItem('current-admin-page',link.href);
     })
 });
@@ -34,7 +39,22 @@ if (this.value===""){
 }
 })
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {return parts.pop().split(';').shift();} else {return 'en'};
+}
 
+function staticHtmlLoadPageSetup(path){
+  $(document).ready(async ()=>{
+    let file=path;
+    let response=await fetch(file);
+    let html=await response.text();
+    document.querySelector('#text-container').innerHTML=html;
+    let editorEvent=new CustomEvent('editor', { detail: file });
+    window.dispatchEvent(editorEvent);        
+});
+}
 
 function posterUploadSetEvent(path) {
   $(".fileToUpload").change(function () {
