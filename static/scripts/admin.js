@@ -2,7 +2,6 @@ let container=document.querySelector('#edit-container');
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
-        document.querySelector('.ct-app')?.remove();
         document.querySelector('#logo').style.visibility="visible";
         let response = await fetch(link.href);
         let pageData = await response.text();
@@ -39,11 +38,6 @@ if (this.value===""){
 }
 })
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {return parts.pop().split(';').shift();} else {return 'en'};
-}
 
 function staticHtmlLoadPageSetup(path){
   $(document).ready(async ()=>{

@@ -1,9 +1,11 @@
-
+var editor;
 
 window.addEventListener('editor', function(e) { 
-    var editor=ContentTools.EditorApp.get();
+    editor?.destroy();
+    editor=ContentTools.EditorApp.get();
     editor.init('*[data-editable]', 'data-name');
     let file=e.detail;
+
     document.querySelector('#logo').style.visibility="hidden";
     editor.addEventListener('saved', function (ev) {
         var name, payload, regions, xhr;
@@ -13,7 +15,6 @@ window.addEventListener('editor', function(e) {
         if (Object.keys(regions).length == 0) {
             return;
         }
-    
         // Set the editor as busy while we save our changes
         this.busy(true);
     
