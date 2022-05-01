@@ -178,7 +178,7 @@ router.get("/concerts", async (req, res, next) => {
 
     let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00'`);
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/concerts",req.query.page,maxCount,config.get("paginationSize").admin);
+    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/concerts",req.query.page,maxCount,config.get("paginationSize").admin);
 
     let [events] = await db.query(
       `SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset}`
@@ -255,7 +255,7 @@ router.get("/news", async (req, res, next) => {
   try {
     let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM news`);
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/news",req.query.page,maxCount,config.get("paginationSize").admin);
+    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/news",req.query.page,maxCount,config.get("paginationSize").admin);
     let [events] = await db.query(`SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`);
     events.forEach((element) => {
       element.text = viewhelpers.UnescapeQuotes(element.text);
@@ -748,7 +748,7 @@ router.get("/archive", async (req, res, next) => {
   try {
     let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00'`);
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("admin/archive",req.query.page,maxCount,config.get("paginationSize").admin);
+    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/archive",req.query.page,maxCount,config.get("paginationSize").admin);
     let [events] = await db.query(
       `SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`
     );

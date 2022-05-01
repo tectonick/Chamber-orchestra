@@ -22,7 +22,7 @@ router.get("/news", async (req, res, next) => {
   try {
     let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM news`);
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("news",req.query.page,maxCount,config.get("paginationSize").news);
+    let {pages, itemCount, offset}=viewhelpers.usePagination("/news",req.query.page,maxCount,config.get("paginationSize").news);
     let [news] = await db.query(
       `SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`
     );
