@@ -85,7 +85,7 @@
             concertDate = new Date(concert.date);
             concertDate -= concertDate.getTimezoneOffset() * 60 * 1000;
 
-            let concertUrl = ((concertDate >= Date.now()) ? ("/events#") : ("/events/archive#")) + concert.id;
+            let concertUrl = ((concertDate >= Date.now()) ? ("/events#") : ("/events/archive?id=")) + concert.id;
             calendar.addEvent({
                 title: concert.id,
                 id: concert.id,
