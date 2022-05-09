@@ -1,0 +1,18 @@
+{
+    "db":{
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": ""
+    },
+    "sessionSecret":"",
+    "adminUser":{
+        "user": "",
+        "passhash": ""
+    },
+    "rapidapikey":"",
+    "ssl":{
+        "key":"",
+        "cert":""
+    }
+}

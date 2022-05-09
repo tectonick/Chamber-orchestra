@@ -13,7 +13,8 @@ try {
   database: dbConfig.database,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  multipleStatements: true
 });
   logger.info(`Connected to db on ${dbConfig.host}:${dbConfig.database} as ${dbConfig.user}`);
 } catch (error) {

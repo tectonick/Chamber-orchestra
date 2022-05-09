@@ -18,9 +18,7 @@ const path = require("path");
 
 
   function usePagination(baseUrl,currentPage,maxCount, itemCount=10){
-    currentPage=Number(currentPage)||1
     let maxPages=Math.ceil(maxCount/itemCount);
-    let offset=(currentPage-1)*itemCount;
     let pages=[];
   
     if (maxPages>1){
@@ -36,7 +34,7 @@ const path = require("path");
       }
       pages.push(nextPage)
     }
-    return {pages, itemCount,offset};
+    return pages;
   }
 
 

@@ -147,8 +147,13 @@ function saveSetEvent(path){
     target.setAttribute('disabled', 'disabled');
     tinymce?.activeEditor?.save();
     var formName = $(this).attr('name');
-    var formData = $('#' + formName).serialize();
+    var form=$('#' + formName);
+    var formData = form.serialize();
+
+    
+
     $.post(path, formData, (data, status) => {
+        form.closest('.form-container').find('.translate-button').removeAttr('disabled');
         target.removeAttribute('disabled');
         var oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {

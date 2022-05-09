@@ -176,13 +176,19 @@ router.get("/logout", function (req, res) {
 router.get("/concerts", async (req, res, next) => {
   try {
 
-    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00'`);
-    let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/concerts",req.query.page,maxCount,config.get("paginationSize").admin);
+    let itemCount = config.get("paginationSize").admin;
+    let currentPage = Number(req.query.page)||1;
+    let offset=(currentPage-1)*itemCount;
 
-    let [events] = await db.query(
-      `SELECT * FROM concerts WHERE date>=NOW() OR date='1970-01-01 00:00:00' ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset}`
-    );
+    let sqlSelectDateCondition=`date>=NOW() OR date='1970-01-01 00:00:00'`;
+    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
+    SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
+    SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset};\
+    COMMIT;`);
+    let [, countDbResult, events]=countAndConcertsDbResult;
+    let maxCount=countDbResult[0].count;
+    let pages=viewhelpers.usePagination("/admin/concerts",currentPage,maxCount,itemCount);
+
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = viewhelpers.DateToISOLocal(element.date);
@@ -253,10 +259,19 @@ router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
 
 router.get("/news", async (req, res, next) => {
   try {
-    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM news`);
+    let itemCount = config.get("paginationSize").admin;
+    let currentPage = Number(req.query.page)||1;
+    let offset=(currentPage-1)*itemCount;
+
+    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
+    SELECT COUNT(id) as count FROM news;\
+    SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
+    COMMIT;`);
+    let [, countDbResult, events]=countAndConcertsDbResult;
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/news",req.query.page,maxCount,config.get("paginationSize").admin);
-    let [events] = await db.query(`SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`);
+    let pages=viewhelpers.usePagination("/admin/news",currentPage,maxCount,itemCount);
+
+
     events.forEach((element) => {
       element.text = viewhelpers.UnescapeQuotes(element.text);
       element.date = viewhelpers.DateToISOLocal(element.date);
@@ -266,6 +281,8 @@ router.get("/news", async (req, res, next) => {
     next(error);
   }
 });
+
+
 
 router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
@@ -371,9 +388,11 @@ router.get("/artists", async (req, res, next) => {
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
     await db.query(
-      `DELETE FROM artists_translate WHERE artistId=${req.body.id}`
+      `START TRANSACTION;\
+      DELETE FROM artists_translate WHERE artistId=${req.body.id};\
+      DELETE FROM artists WHERE id=${req.body.id};\
+      COMMIT;`
     );
-    await db.query(`DELETE FROM artists WHERE id=${req.body.id}`);
     await DeleteImageById(req.body.id, "/static/img/about/artists/");
     res.redirect("/admin/");
   } catch (error) {
@@ -389,7 +408,9 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
     let [artist] = await db.query(
       `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`
     );
+
     try {
+      let updateQuery="START TRANSACTION; ";
       for (
         let langId = 1;
         langId < Object.keys(globals.languages).length;
@@ -406,10 +427,13 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
           sourceLang,
           destLang
         );
-        await db.query(`UPDATE artists_translate SET name = '${name}', \
+        updateQuery+=`UPDATE artists_translate SET name = '${name}', \
           country = '${country}',\
-          instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`);
+          instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`;
       }
+      updateQuery+="COMMIT;";
+      await db.query(updateQuery);
+
     } catch (error) {
       logger.error(error);
       res.sendStatus(500);
@@ -422,17 +446,21 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
 
 router.post("/artists/add", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`INSERT INTO artists VALUES (0,0)`);
+    let insertQuery="START TRANSACTION; ";
+    insertQuery+=`INSERT INTO artists VALUES (0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    let languagesCount=Object.keys(globals.languages).length-1;
+    if (languagesCount>0) insertQuery+=`INSERT INTO artists_translate VALUES `;
     for (
       let langId = 1;
-      langId < Object.keys(globals.languages).length;
+      langId <= languagesCount;
       langId++
     ) {
-      await db.query(
-        `INSERT INTO artists_translate VALUES (0,${results.insertId},${langId},'','','')`
-      );
-    }
-    await MakeDefaultImage(results.insertId, "/static/img/about/artists");
+      insertQuery+=`(0,@ID,${langId},'','','')`;
+      insertQuery+=(langId < languagesCount)? `, `:`;`;
+    }    
+    insertQuery+='COMMIT;';
+    let [results]=await db.query(insertQuery);
+    await MakeDefaultImage(results[0].insertId, "/static/img/about/artists");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -443,12 +471,12 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
     await db.query(
-      `UPDATE artists_translate SET name = '${req.body.name}', \
+      `START TRANSACTION;\
+      UPDATE artists_translate SET name = '${req.body.name}', \
       country = '${req.body.country}',\
-      instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;`
-    );
-    await db.query(
-      `UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;`
+      instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;\
+      UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;\
+      COMMIT;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -487,9 +515,11 @@ router.get("/composers", async (req, res, next) => {
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
     await db.query(
-      `DELETE FROM composers_translate WHERE composerId=${req.body.id}`
+      `START TRANSACTION;\
+      DELETE FROM composers_translate WHERE composerId=${req.body.id};\
+      DELETE FROM composers WHERE id=${req.body.id};\
+      COMMIT;`
     );
-    await db.query(`DELETE FROM composers WHERE id=${req.body.id}`, () => {});
     await DeleteImageById(req.body.id, "/static/img/about/composers/");
     res.redirect("/admin/");
   } catch (error) {
@@ -509,6 +539,7 @@ router.post(
         `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`
       );
       try {
+        let updateQuery="START TRANSACTION; ";
         for (
           let langId = 1;
           langId < Object.keys(globals.languages).length;
@@ -524,10 +555,11 @@ router.post(
             sourceLang,
             destLang
           );
-
-          await db.query(`UPDATE composers_translate SET name = '${name}', \
-        country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`);
+          updateQuery+=`UPDATE composers_translate SET name = '${name}', \
+          country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`;
         }
+        updateQuery+="COMMIT;";
+        await db.query(updateQuery)
       } catch (error) {
         logger.error(error);
         res.sendStatus(500);
@@ -541,32 +573,41 @@ router.post(
 
 router.post("/composers/add", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`INSERT INTO composers VALUES (0,0)`);
+    let insertQuery="START TRANSACTION; ";
+    insertQuery+=`INSERT INTO composers VALUES (0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    let languagesCount=Object.keys(globals.languages).length-1;
+    if (languagesCount>0) insertQuery+=`INSERT INTO composers_translate VALUES `;
+
     for (
       let langId = 1;
-      langId < Object.keys(globals.languages).length;
+      langId <= languagesCount;
       langId++
     ) {
-      await db.query(
-        `INSERT INTO composers_translate VALUES (0,${results.insertId},${langId},'','')`
-      );
+      insertQuery+=`(0,@ID,${langId},'','')`;
+      insertQuery+=(langId < languagesCount)? `, `:`;`;
     }
-    await MakeDefaultImage(results.insertId, "/static/img/about/composers");
+    insertQuery+='COMMIT';
+    let [results]=await db.query(insertQuery);
+    await MakeDefaultImage(results[0].insertId, "/static/img/about/composers");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
 });
 
+
+
 router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
+
+  let isInResidence=req.body.isInResidence??0;
   try {
     await db.query(
-      `UPDATE composers_translate SET name = '${req.body.name}', \
-      country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;`
-    );
-    await db.query(
-      `UPDATE composers SET isInResidence = '${req.body.isInResidence}' WHERE ${req.body.id}=id;`
+      `START TRANSACTION;\
+      UPDATE composers_translate SET name = '${req.body.name}', \
+      country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;\
+      UPDATE composers SET isInResidence = '${isInResidence}' WHERE ${req.body.id}=id;\
+      COMMIT;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -608,9 +649,11 @@ router.get("/musicians", async (req, res, next) => {
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
     await db.query(
-      `DELETE FROM musicians_translate WHERE musicianId=${req.body.id}`
+      `START TRANSACTION;\
+      DELETE FROM musicians_translate WHERE musicianId=${req.body.id};\
+      DELETE FROM musicians WHERE id=${req.body.id};\
+      COMMIT;`
     );
-    await db.query(`DELETE FROM musicians WHERE id=${req.body.id}`);
     await DeleteImageById(req.body.id, "/static/img/about/musicians/");
     res.render("admin/musicians");
   } catch (error) {
@@ -629,6 +672,7 @@ router.post(
       let [musician] = await db.query(
         `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`
       );
+      let updateQuery="START TRANSACTION; ";
       for (
         let langId = 1;
         langId < Object.keys(globals.languages).length;
@@ -642,11 +686,12 @@ router.post(
         var bio = await translate(musician[0].bio, sourceLang, destLang);
 
         bio = viewhelpers.EscapeQuotes(bio);
-        await db.query(
+        updateQuery+=
           `UPDATE musicians_translate SET name = '${name}', \
-        bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`
-        );
+        bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`;
       }
+      updateQuery+="COMMIT;";
+      db.query(updateQuery);
       res.sendStatus(200);
     } catch (error) {
       next(error);
@@ -656,35 +701,41 @@ router.post(
 
 router.post("/musicians/add", urlencodedParser, async (req, res, next) => {
   try {
-    let [results] = await db.query(`INSERT INTO musicians VALUES (0,0,0)`);
+    let insertQuery="START TRANSACTION; ";
+    insertQuery+=`INSERT INTO musicians VALUES (0,0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    let languagesCount=Object.keys(globals.languages).length-1;
+    if (languagesCount>0) insertQuery+=`INSERT INTO musicians_translate VALUES `;
     for (
       let langId = 1;
-      langId < Object.keys(globals.languages).length;
+      langId <= languagesCount;
       langId++
     ) {
-      await db.query(
-        `INSERT INTO musicians_translate VALUES (0,${results.insertId},${langId},'','')`
-      );
+      insertQuery+=`(0,@ID,${langId},'','')`;
+      insertQuery+=(langId < languagesCount)? `, `:`;`;
     }
-    await MakeDefaultImage(results.insertId, "/static/img/about/musicians");
+    insertQuery+="COMMIT;"
+    console.log(insertQuery);
+    let [results]=await db.query(insertQuery);
+    await MakeDefaultImage(results[0].insertId, "/static/img/about/musicians");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
   }
 });
 
+
 router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
     await db.query(
-      `UPDATE musicians_translate SET name = '${req.body.name}',  \
+      `START TRANSACTION;\
+      UPDATE musicians_translate SET name = '${req.body.name}',  \
       bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
         req.body.id
-      }=musicianId AND ${langId}=languageId;`
-    );
-    await db.query(
-      `UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;`
+      }=musicianId AND ${langId}=languageId;\
+      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;\
+      COMMIT;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -746,12 +797,20 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
 
 router.get("/archive", async (req, res, next) => {
   try {
-    let [countDbResult] = await db.query(`SELECT COUNT(id) as count FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00'`);
+    let itemCount = config.get("paginationSize").admin;
+    let currentPage = Number(req.query.page)||1;
+    let offset=(currentPage-1)*itemCount;
+
+    let sqlSelectDateCondition=`date<NOW() AND date!='1970-01-01 00:00:00'`;
+    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
+    SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
+    SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
+    COMMIT;`);
+    let [, countDbResult, events]=countAndConcertsDbResult;
     let maxCount=countDbResult[0].count;
-    let {pages, itemCount, offset}=viewhelpers.usePagination("/admin/archive",req.query.page,maxCount,config.get("paginationSize").admin);
-    let [events] = await db.query(
-      `SELECT * FROM concerts WHERE date<NOW() AND date!='1970-01-01 00:00:00' ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}`
-    );
+    
+    let pages=viewhelpers.usePagination("/admin/archive",currentPage,maxCount,itemCount);
+
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = viewhelpers.DateToISOLocal(element.date);
@@ -761,6 +820,9 @@ router.get("/archive", async (req, res, next) => {
     next(error);
   }
 });
+
+
+
 
 router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
   try {

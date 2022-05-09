@@ -127,10 +127,12 @@ app.listen(PORT, () => {
   logger.info(`Server started on ${environment} mode`);
 });
 
-let sslOptions = {
-  key: fs.readFileSync(path.join("sec", "key.pem")),
-  cert: fs.readFileSync(path.join("sec", "cert.pem")),
-};
 
+
+let ssl=config.get("ssl");
+let sslOptions = {
+  key: fs.readFileSync(ssl.key),
+  cert: fs.readFileSync(ssl.cert),
+};
 // eslint-disable-next-line no-unused-vars
 let serverHttps = https.createServer(sslOptions, app).listen(8001);
