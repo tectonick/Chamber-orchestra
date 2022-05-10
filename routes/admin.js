@@ -460,7 +460,7 @@ router.post("/artists/add", urlencodedParser, async (req, res, next) => {
     }    
     insertQuery+='COMMIT;';
     let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[0].insertId, "/static/img/about/artists");
+    await MakeDefaultImage(results[1].insertId, "/static/img/about/artists");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -588,7 +588,7 @@ router.post("/composers/add", urlencodedParser, async (req, res, next) => {
     }
     insertQuery+='COMMIT';
     let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[0].insertId, "/static/img/about/composers");
+    await MakeDefaultImage(results[1].insertId, "/static/img/about/composers");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -714,9 +714,8 @@ router.post("/musicians/add", urlencodedParser, async (req, res, next) => {
       insertQuery+=(langId < languagesCount)? `, `:`;`;
     }
     insertQuery+="COMMIT;"
-    console.log(insertQuery);
     let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[0].insertId, "/static/img/about/musicians");
+    await MakeDefaultImage(results[1].insertId, "/static/img/about/musicians");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
