@@ -13,6 +13,7 @@
     "rapidapikey":"",
     "ssl":{
         "key":"",
-        "cert":""
+        "cert":"",
+        "httpsport":0
     }
 }
