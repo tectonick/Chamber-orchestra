@@ -232,7 +232,7 @@ router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
     concertToCopy=concertToCopy[0];
     let [results] = await db.query(
       `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),\
-      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',${concertToCopy.hidden})`
+      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',1)`
     );
     await fs.copyFile(`static/img/posters/${req.body.id}.jpg`,`static/img/posters/${results.insertId}.jpg`);
     res.redirect("/admin/");
