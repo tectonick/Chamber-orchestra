@@ -40,8 +40,13 @@
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <input name='{{event.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                    <input name='{{event.id}}' class='delete-button form-control'
                         type="submit" value="Удалить концерт"></input>
+                    <form class="form-group" action="/admin/concerts/copy" method="post">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <input name='copy-{{event.id}}' class='copy-button form-control'
+                        type="submit" value="Повторить концерт"></input>
+                    </form>
                     <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
                         value="Сохранить концерт"></input>
                 </div>

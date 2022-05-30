@@ -38,7 +38,7 @@ router.get("/archive", async (req, res, next) => {
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
 
-    let sqlSelectDateCondition=`date<NOW() AND date!='1970-01-01 00:00:00'`;
+    let sqlSelectDateCondition=`date<NOW()`;
     let [countAndConcertsDbResult] = await db.query(`START TRANSACTION; SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
     SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset}; COMMIT;`);
     let [, countDbResult, results]=countAndConcertsDbResult;

@@ -5,6 +5,14 @@
   color: #aaaaaa;
 }
 
+.menu-link-active {
+  background-color: #e9ecef !important;
+}
+
+.invalid-date{
+  background: palevioletred !important;
+}
+
 #sidebar-wrapper {
   min-height: 100%;
   margin-left: -15rem;

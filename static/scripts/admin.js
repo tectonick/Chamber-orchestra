@@ -18,7 +18,9 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         let pageData = await response.text();
         container.innerHTML=pageData;
         evalAllScripts();
-        sessionStorage.setItem('current-admin-page',link.href);
+        sessionStorage.setItem('current-admin-page',link.pathname);
+        document.querySelector(`a.menu-link-active`).classList.remove('menu-link-active');
+        document.querySelector(`a.menu-link[href="${link.pathname}"]`).classList.add('menu-link-active');
     })
 });
 
@@ -27,6 +29,7 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
 
 window.addEventListener('load', async ()=>{
     let page = sessionStorage.getItem('current-admin-page')??'/admin/concerts';
+    document.querySelector(`a.menu-link[href="${page}"]`).classList.add('menu-link-active');
     let response = await fetch(page);
     let pageData = await response.text();
     container.innerHTML=pageData;
@@ -123,6 +126,18 @@ function posterUploadSetEvent(path) {
   });
 }
 
+function copyConcertSetEvent() {
+  document.querySelectorAll('.copy-button').forEach((btn)=>{
+    btn.addEventListener('click',(e)=>{
+      console.log("HI")
+      e.preventDefault();
+      sessionStorage.setItem('current-admin-page','/admin/concerts');
+      e.target.form.submit();
+    })
+  });
+}
+
+
 function deleteWithModalSetEvent(path) {
 
   $(".delete-button").click(function () {
@@ -149,8 +164,7 @@ function saveSetEvent(path){
     var formName = $(this).attr('name');
     var form=$('#' + formName);
     var formData = form.serialize();
-
-    
+   
 
     $.post(path, formData, (data, status) => {
         form.closest('.form-container').find('.translate-button').removeAttr('disabled');

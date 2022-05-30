@@ -180,7 +180,7 @@ router.get("/concerts", async (req, res, next) => {
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
 
-    let sqlSelectDateCondition=`date>=NOW() OR date='1970-01-01 00:00:00'`;
+    let sqlSelectDateCondition=`date>=NOW()`;
     let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
     SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
     SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset};\
@@ -215,10 +215,26 @@ router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/concerts/add", urlencodedParser, async (req, res, next) => {
   try {
+
     let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'','1970-01-01 00:00:00','', '','',0)`
+      `INSERT INTO concerts VALUES (0,'',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),'', '','',1)`
     );
     await MakeDefaultImage(results.insertId, "/static/img/posters/");
+    res.redirect("/admin/");
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
+  try {
+    let [concertToCopy]=await db.query(`SELECT * FROM concerts WHERE id=${req.body.id}`);
+    concertToCopy=concertToCopy[0];
+    let [results] = await db.query(
+      `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),\
+      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',${concertToCopy.hidden})`
+    );
+    await fs.copyFile(`static/img/posters/${req.body.id}.jpg`,`static/img/posters/${results.insertId}.jpg`);
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -800,7 +816,7 @@ router.get("/archive", async (req, res, next) => {
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
 
-    let sqlSelectDateCondition=`date<NOW() AND date!='1970-01-01 00:00:00'`;
+    let sqlSelectDateCondition=`date<NOW()`;
     let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
     SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
     SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
@@ -836,7 +852,7 @@ router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
 router.post("/archive/add", urlencodedParser, async (req, res, next) => {
   try {
     let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',0)`
+      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',1)`
     );
     await MakeDefaultImage(results.insertId, "/static/img/posters/");
     res.redirect("/admin/");
