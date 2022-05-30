@@ -204,7 +204,8 @@ router.get("/concerts", async (req, res, next) => {
 
 router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
   try {
-    await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
+    let id=Number.parseInt(req.body.id);
+    await db.query(`DELETE FROM concerts WHERE id=${id}`);
     DeleteImageById(req.body.id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
@@ -228,7 +229,8 @@ router.post("/concerts/add", urlencodedParser, async (req, res, next) => {
 
 router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
   try {
-    let [concertToCopy]=await db.query(`SELECT * FROM concerts WHERE id=${req.body.id}`);
+    let id =Number.parseInt(req.body.id);
+    let [concertToCopy]=await db.query(`SELECT * FROM concerts WHERE id=${id}`);
     concertToCopy=concertToCopy[0];
     let [results] = await db.query(
       `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),\
@@ -245,12 +247,13 @@ router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
   var date = req.body.date.slice(0, 19).replace("T", " ");
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
+  let id=Number.parseInt(req.body.id);
   try {
     await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${req.body.id}=id;`
+      description = '${description}' WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -260,10 +263,11 @@ router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/posters/",
-      req.body.id,
+      id,
       imageProcessor.posterImage
     );
     res.sendStatus(200);
@@ -302,8 +306,9 @@ router.get("/news", async (req, res, next) => {
 
 router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
-    await db.query(`DELETE FROM news WHERE id=${req.body.id}`);
-    await DeleteImageById(req.body.id, "/static/img/news/");
+    let id=Number.parseInt(req.body.id);
+    await db.query(`DELETE FROM news WHERE id=${id}`);
+    await DeleteImageById(id, "/static/img/news/");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -326,10 +331,11 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
   var date = req.body.date.slice(0, 19).replace("T", " ");
   var text = viewhelpers.EscapeQuotes(req.body.text);
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `UPDATE news SET title = '${req.body.title}', \
       date = '${date}',\
-      text = '${text}' WHERE ${req.body.id}=id;`
+      text = '${text}' WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -339,10 +345,11 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/news/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id=Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/news/",
-      req.body.id,
+      id,
       imageProcessor.posterImage
     );
     res.sendStatus(200);
@@ -403,13 +410,14 @@ router.get("/artists", async (req, res, next) => {
 
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
-      DELETE FROM artists_translate WHERE artistId=${req.body.id};\
-      DELETE FROM artists WHERE id=${req.body.id};\
+      DELETE FROM artists_translate WHERE artistId=${id};\
+      DELETE FROM artists WHERE id=${id};\
       COMMIT;`
     );
-    await DeleteImageById(req.body.id, "/static/img/about/artists/");
+    await DeleteImageById(id, "/static/img/about/artists/");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -418,7 +426,7 @@ router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
   let currentLang = globals.languages[req.getLocale()];
-  var id = req.body.id;
+  var id = Number.parseInt(req.body.id);
   var sourceLang = req.getLocale();
   try {
     let [artist] = await db.query(
@@ -486,12 +494,13 @@ router.post("/artists/add", urlencodedParser, async (req, res, next) => {
 router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
       UPDATE artists_translate SET name = '${req.body.name}', \
       country = '${req.body.country}',\
-      instrument = '${req.body.instrument}' WHERE ${req.body.id}=artistId AND ${langId}=languageId;\
-      UPDATE artists SET groupId = '${req.body.group}' WHERE ${req.body.id}=id;\
+      instrument = '${req.body.instrument}' WHERE ${id}=artistId AND ${langId}=languageId;\
+      UPDATE artists SET groupId = '${req.body.group}' WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -502,10 +511,11 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/about/artists/",
-      req.body.id,
+      id,
       imageProcessor.smallImage
     );
     res.sendStatus(200);
@@ -530,13 +540,14 @@ router.get("/composers", async (req, res, next) => {
 
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
-      DELETE FROM composers_translate WHERE composerId=${req.body.id};\
-      DELETE FROM composers WHERE id=${req.body.id};\
+      DELETE FROM composers_translate WHERE composerId=${id};\
+      DELETE FROM composers WHERE id=${id};\
       COMMIT;`
     );
-    await DeleteImageById(req.body.id, "/static/img/about/composers/");
+    await DeleteImageById(id, "/static/img/about/composers/");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -548,7 +559,7 @@ router.post(
   urlencodedParser,
   async (req, res, next) => {
     let currentLang = globals.languages[req.getLocale()];
-    var id = req.body.id;
+    var id = Number.parseInt(req.body.id);
     var sourceLang = req.getLocale();
     try {
       let [composer] = await db.query(
@@ -618,11 +629,12 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
 
   let isInResidence=req.body.isInResidence??0;
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
       UPDATE composers_translate SET name = '${req.body.name}', \
-      country = '${req.body.country}' WHERE ${req.body.id}=composerId AND ${langId}=languageId;\
-      UPDATE composers SET isInResidence = '${isInResidence}' WHERE ${req.body.id}=id;\
+      country = '${req.body.country}' WHERE ${id}=composerId AND ${langId}=languageId;\
+      UPDATE composers SET isInResidence = '${isInResidence}' WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -633,10 +645,11 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/about/composers/",
-      req.body.id,
+      id,
       imageProcessor.smallImage
     );
     res.sendStatus(200);
@@ -664,13 +677,14 @@ router.get("/musicians", async (req, res, next) => {
 
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
-      DELETE FROM musicians_translate WHERE musicianId=${req.body.id};\
-      DELETE FROM musicians WHERE id=${req.body.id};\
+      DELETE FROM musicians_translate WHERE musicianId=${id};\
+      DELETE FROM musicians WHERE id=${id};\
       COMMIT;`
     );
-    await DeleteImageById(req.body.id, "/static/img/about/musicians/");
+    await DeleteImageById(id, "/static/img/about/musicians/");
     res.render("admin/musicians");
   } catch (error) {
     next(error);
@@ -682,7 +696,7 @@ router.post(
   urlencodedParser,
   async (req, res, next) => {
     let currentLang = globals.languages[req.getLocale()];
-    var id = req.body.id;
+    var id = Number.parseInt(req.body.id);
     var sourceLang = req.getLocale();
     try {
       let [musician] = await db.query(
@@ -743,13 +757,14 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `START TRANSACTION;\
       UPDATE musicians_translate SET name = '${req.body.name}',  \
       bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
-        req.body.id
+        id
       }=musicianId AND ${langId}=languageId;\
-      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${req.body.id}=id;\
+      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -760,10 +775,11 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/musicians/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/about/musicians/",
-      req.body.id,
+      id,
       imageProcessor.smallImage
     );
     res.sendStatus(200);
@@ -841,8 +857,9 @@ router.get("/archive", async (req, res, next) => {
 
 router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
   try {
-    await db.query(`DELETE FROM concerts WHERE id=${req.body.id}`);
-    await DeleteImageById(req.body.id, "/static/img/posters/");
+    let id = Number.parseInt(req.body.id);
+    await db.query(`DELETE FROM concerts WHERE id=${id}`);
+    await DeleteImageById(id, "/static/img/posters/");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -866,11 +883,12 @@ router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
+    let id = Number.parseInt(req.body.id);
     await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${req.body.id}=id;`
+      description = '${description}' WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -880,10 +898,11 @@ router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
   try {
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/posters/",
-      req.body.id,
+      id,
       imageProcessor.posterImage
     );
     res.sendStatus(200);
