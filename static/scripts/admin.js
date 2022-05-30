@@ -76,6 +76,8 @@ function initTinyEditor(selector='textarea[name="description"]'){
   ],
     toolbar_mode: 'floating',
     menubar: false,
+    remove_linebreaks : true,
+    apply_source_formatting : false,
     
     content_style: 'p { margin: 0;}',
     toolbar: 'insertfile undo redo | styleselect link | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | forecolor'
