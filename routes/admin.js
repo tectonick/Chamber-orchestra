@@ -244,11 +244,14 @@ router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
-  var date = req.body.date.slice(0, 19).replace("T", " ");
+
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
-  let id=Number.parseInt(req.body.id);
+
   try {
+    if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
+    var date = req.body.date.slice(0, 19).replace("T", " ");
+    let id=Number.parseInt(req.body.id);
     await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
@@ -328,9 +331,11 @@ router.post("/news/add", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/news/edit", urlencodedParser, async (req, res, next) => {
-  var date = req.body.date.slice(0, 19).replace("T", " ");
+
   var text = viewhelpers.EscapeQuotes(req.body.text);
   try {
+    if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
+    var date = req.body.date.slice(0, 19).replace("T", " ");
     let id=Number.parseInt(req.body.id);
     await db.query(
       `UPDATE news SET title = '${req.body.title}', \
@@ -879,10 +884,12 @@ router.post("/archive/add", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
-  var date = req.body.date.slice(0, 19).replace("T", " ");
+
   var description = viewhelpers.EscapeQuotes(req.body.description);
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
+    if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
+    var date = req.body.date.slice(0, 19).replace("T", " ");
     let id = Number.parseInt(req.body.id);
     await db.query(
       `UPDATE concerts SET title = '${req.body.title}', \

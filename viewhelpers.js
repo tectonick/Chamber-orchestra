@@ -37,6 +37,9 @@ const path = require("path");
     return pages;
   }
 
+    function isDate(date){
+      return !isNaN(Date.parse(date));
+    }
 
   function EscapeQuotes(str){
     return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;");
@@ -121,6 +124,7 @@ function DateToISOLocal(date) {
 }
 
 module.exports = {
+  isDate,
   OrganizeConcertsInMonths,
   OrganizeConcertsInTriplets,
   NamesOfDirFilesWOExtension,
