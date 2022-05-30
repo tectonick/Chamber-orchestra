@@ -26,13 +26,16 @@ router.get("/archive", async (req, res, next) => {
   var title = res.__("layout.navbar.archive") + " | " + res.__("title");
 
   try {
-    if (req.query.id){
+    let id=Number.parseInt(req.query.id);
+    if (!isNaN(id)){
       let [results] = await db.query(
-        `SELECT * FROM concerts WHERE id=${Number(req.query.id)}`
+        `SELECT * FROM concerts WHERE id=${id}`
       );
-      let months = viewhelpers.OrganizeConcertsInMonths(results);
-      res.render("events/archive.hbs", { pages:[], months, title, description });
-      return;
+      if (results.length>0){
+        let months = viewhelpers.OrganizeConcertsInMonths(results);
+        res.render("events/archive.hbs", { pages:[], months, title, description });
+        return;
+      }
     }
     let itemCount = config.get("paginationSize").archive;
     let currentPage = Number(req.query.page)||1;
