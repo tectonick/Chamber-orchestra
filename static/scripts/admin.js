@@ -8,10 +8,20 @@ function evalAllScripts(){
   }        
 }
 
+function leaveUnsavedChanges(){
+  let unsaved=document.querySelectorAll('.unsaved');
+  if (unsaved.length>0){
+    return confirm("You have unsaved changes. Are you sure you want to leave?");
+  }
+  return true;  
+}
 
 document.querySelectorAll('.menu-link').forEach((link)=>{
     link.addEventListener('click',async (e)=>{
         e.preventDefault();
+        if (!leaveUnsavedChanges()){
+          return;
+        }
         editor?.destroy(); //DO NOT DELETE IT. It`s destroying editor described in contenttools/editor.js
         document.querySelector('#logo').style.visibility="visible";
         let response = await fetch(link.href);
@@ -23,8 +33,6 @@ document.querySelectorAll('.menu-link').forEach((link)=>{
         document.querySelector(`a.menu-link[href="${link.pathname}"]`).classList.add('menu-link-active');
     })
 });
-
-
 
 
 window.addEventListener('load', async ()=>{
@@ -69,6 +77,11 @@ function staticHtmlLoadPageSetup(path, rootid="text-container"){
 function initTinyEditor(selector='textarea[name="description"]'){
   tinymce.init({
     selector: selector,
+    setup: function(editor) {
+      editor.on('input', function(e) {
+        document.querySelector(selector).parentElement.classList.add('unsaved');
+      });
+    },
     height: 300,
   plugins: [
     'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'anchor',
@@ -159,6 +172,21 @@ function deleteWithModalSetEvent(path) {
 
 
 function saveSetEvent(path){
+  window.removeEventListener('beforeunload', opacityUnload);
+  window.addEventListener('beforeunload',(e)=>{
+    let unsaved=document.querySelectorAll('.unsaved');
+    if (unsaved.length>0){
+      e.preventDefault();
+      e.returnValue="";
+    }
+  });
+
+  document.querySelectorAll('.saveable').forEach((saveable)=>{
+    saveable.addEventListener('input',(e)=>{
+      saveable.classList.add('unsaved');
+    })
+  })
+
   $(".save-button").click(function (ev) {
     var target = ev.target;
     target.setAttribute('disabled', 'disabled');
@@ -166,15 +194,19 @@ function saveSetEvent(path){
     var formName = $(this).attr('name');
     var form=$('#' + formName);
     var formData = form.serialize();
-   
+
 
     $.post(path, formData, (data, status) => {
+      form[0].querySelectorAll('.unsaved').forEach((input)=>{
+        input.classList.remove('unsaved');
+      })
         form.closest('.form-container').find('.translate-button').removeAttr('disabled');
         target.removeAttribute('disabled');
         var oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
             $(this).animate({ backgroundColor: oldColor });
         });
+
     }).fail(() => {
         target.removeAttribute('disabled');
         var oldColor = $(this).css('backgroundColor');

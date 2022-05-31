@@ -15,23 +15,22 @@
 
                     <form class='form-group' action="/admin/musicians/edit" id="edit-form-{{musician.id}}" method="POST">
                         <input type="hidden" name="id" value="{{musician.id}}">
-                        <textarea name="name" class="form-control w-100" placeholder="Имя" rows="1">{{musician.name}}</textarea>
+                        <textarea name="name" class="saveable form-control w-100" placeholder="Имя" rows="1">{{musician.name}}</textarea>
                         
 
-                    <div class="form-group">
-                        <textarea name="bio" class="form-control w-100" placeholder="Биография" rows="10">{{musician.bio}}</textarea>
+                    <div class="saveable form-group">
+                        <textarea name="bio" class="saveable form-control w-100" placeholder="Биография" rows="10">{{musician.bio}}</textarea>
                         <div class="d-flex">
-<input type="button" class="form-control editor-toggle"
-                            onclick="extendedEditorToggle('edit-form-{{event.id}}','bio')"
+                        <input type="button" class="form-control editor-toggle" onclick="extendedEditorToggle('edit-form-{{musician.id}}','bio')"
                             value="Расширенный редактор" />
-                        <input name='translate-form-{{musician.id}}' class='translate-button form-control' type="submit"
+                        <input name='translate-form-{{musician.id}}' class='translate-button form-control' type="button"
                         value="Перевести на остальные языки"></input>
                         </div>
                         
                     </div>
 
 
-                        <select class="form-control w-100" name="groupId">
+                        <select class="saveable form-control w-100" name="groupId">
                             <option value="{{musician.groupId}}" selected hidden>Изменить группу</option>
                             <option value="1">Первые скрипки</option>
                             <option value="2">Вторые скрипки</option>
@@ -40,7 +39,7 @@
                             <option value="5">Контрабасы</option>
                             <option value="6">Клавишные</option>
                         </select>
-                        <div class="form-check">
+                        <div class="saveable form-check">
                             <input type="checkbox" name="hidden" value='1'  id="hidden" {{#if musician.hidden}} checked{{/if}}>
                             <label class="form-check-label">Скрыть музыканта из списка</label>
                         </div>

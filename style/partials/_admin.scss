@@ -1,4 +1,7 @@
 /*Admin*/
+.unsaved, .unsaved *:not([type='button']){
+  background-color: ivory !important;
+}
 
 .menu-link span {
   float: right;

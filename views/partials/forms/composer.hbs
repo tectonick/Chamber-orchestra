@@ -15,11 +15,11 @@
 
                     <form class='form-group' action="/admin/composers/edit" id="edit-form-{{composer.id}}" method="POST">
                         <input type="hidden" name="id" value="{{composer.id}}">
-                        <textarea name="name" class="form-control w-100" placeholder="Имя"
+                        <textarea name="name" class="saveable form-control w-100" placeholder="Имя"
                             rows="1">{{composer.name}}</textarea>
-                        <textarea name="country" class="form-control w-100" placeholder="Страна"
+                        <textarea name="country" class="saveable form-control w-100" placeholder="Страна"
                             rows="1">{{composer.country}}</textarea>
-                        <div class="form-check">
+                        <div class="saveable form-check">
                             <input type="checkbox" name="isInResidence" value='1' {{#if composer.isInResidence}}
                                 checked{{else}}{{/if}}>
                             <label class="form-check-label" for="isInResidence">Композитор-inresidence</label>

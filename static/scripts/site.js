@@ -6,15 +6,13 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.log(`Service Worker: Error: ${err}`));
   });
 }
-      window.addEventListener('beforeunload', () => {
-        // Cancel the event as stated by the standard.
-        //event.preventDefault();
-        document.getElementById('page-container').style.opacity=0;
+
+  function opacityUnload(){
+    document.getElementById('page-container').style.opacity=0;
+  }
+      window.addEventListener('beforeunload', opacityUnload);
       
-      
-      });
-      
-            window.addEventListener('load', (event) => {
+      window.addEventListener('load', (event) => {
         // Cancel the event as stated by the standard.
         event.preventDefault();
         document.getElementById('page-container').style.opacity=1;

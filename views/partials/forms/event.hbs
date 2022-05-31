@@ -15,13 +15,13 @@
 
                     <form class='form-group' action="/admin/news/edit" id="edit-form-{{event.id}}" method="POST">
                         <input type="hidden" name="id" value="{{event.id}}">
-                        <textarea name="title" class="form-control w-100" placeholder="Название"
+                        <textarea name="title" class="saveable form-control w-100" placeholder="Название"
                             rows="1">{{event.title}}</textarea>
                         
 
 
-                    <div class="form-group">
-                        <textarea name="text" class="form-control w-100" placeholder="Текст"
+                    <div class="saveable description-container form-group">
+                        <textarea name="text" class="saveable form-control w-100" placeholder="Текст"
                             rows="10">{{event.text}}</textarea>
                         <input type="button" class="form-control editor-toggle"
                             onclick="extendedEditorToggle('edit-form-{{event.id}}','text')"
