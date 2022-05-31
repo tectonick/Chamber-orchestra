@@ -24,13 +24,13 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   e.respondWith(
     fetch(e.request)
-      .then(res => {
+      .then(async (res) => {
         // Make copy/clone of response
         const resClone = res.clone();
         // Open cahce
-        caches.open(cacheName).then(cache => {
+        caches.open(cacheName).then(async cache => {
           // Add response to cache
-          cache.put(e.request, resClone);
+            cache.put(e.request, resClone).catch(err => {err});
         });
         return res;
       })
