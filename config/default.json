@@ -15,8 +15,8 @@
     },
     "paginationSize":{
         "news":5,
-        "archive":10,
-        "admin":10
+        "archive":17,
+        "admin":17
     }
 
 }

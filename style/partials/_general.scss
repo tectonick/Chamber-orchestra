@@ -20,6 +20,12 @@ body {
   flex-direction: column;
 }
 
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+}
+
 #page-container {
   position: relative;
   min-height: 100vh;
