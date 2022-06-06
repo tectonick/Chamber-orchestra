@@ -16,11 +16,14 @@
     let localePosInCookie = document.cookie.indexOf('locale=') + 7;
     var pageLocale = document.cookie.slice(localePosInCookie, localePosInCookie + 2);
     var calendar;
+    let newMonthElement;
+    let monthElement;
     document.addEventListener('DOMContentLoaded', async function () {
         var calendarEl = document.getElementById('calendar');
         calendar = new FullCalendar.Calendar(calendarEl, {
 
-            locale: pageLocale,
+            locale: 'en',
+            lazyFetching: false,
             views: {
                 dayGridMonth: { 
                     fixedWeekCount:false                
@@ -43,14 +46,29 @@
 
         });
         await initCalend();
+        monthElement=document.querySelector('.fc-header-toolbar .fc-toolbar-title');
+        monthElement.style.display='none';
+
+        newMonthElement=document.createElement('input');
+        newMonthElement.id='month-picker';
+        newMonthElement.type='month';
+        newMonthElement.style.width='100%';
+        newMonthElement.value=new Date().toISOString().substring(0,7);
+
+        monthElement.parentElement.insertBefore(newMonthElement,monthElement);
+        newMonthElement.addEventListener('change',function(){
+            console.log(newMonthElement.value);
+            calendar.changeView('dayGridMonth',newMonthElement.value);
+            setPosters();
+        });
+
         document.querySelectorAll('.fc-button').forEach((element)=>{
             element.addEventListener('click', ()=>{
+                newMonthElement.value=new Date("2 "+monthElement.innerText).toISOString().substring(0,7);
                 setPosters();
             })
         });
         setPosters();
-
-
     });
 
     function DateToISOLocal(date) {
