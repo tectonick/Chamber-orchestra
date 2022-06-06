@@ -1,10 +1,11 @@
 <div>
 {{> placeslist}}
 
-    <div class="ml-auto my-3">
-        <form action="/admin/archive/add" method="post">
+    <div class="d-flex ml-auto my-3">
+        <form action="/admin/archive/add" method="post" style="display:contents">
             <input class='form-control' type="submit" value="Добавить концерт" name="submit">
         </form>
+        <a class='form-control' href="/admin/concerts/export" style="flex-basis: content;">Экспорт</a>
 
     </div>
 
