@@ -119,3 +119,16 @@
   box-shadow: inset 0px 0px 5px 1px darkgrey !important;
   border: none !important;
 }
+
+.blink {
+  animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+  50% { 
+    background-color: lemonchiffon;
+  }
+  100% {
+    background-color: #e9ecef;
+  }
+}

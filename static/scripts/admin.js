@@ -43,21 +43,69 @@ window.addEventListener('load', async ()=>{
     container.innerHTML=pageData;
     evalAllScripts()
 });
-document.getElementById("search-input").addEventListener("input",function(){
-var searchables=document.querySelectorAll('.searchable');
-if (this.value===""){
-    searchables.forEach((element)=>{element.style.display=(element.classList.contains("card"))?"inline-block":"block";})
-} else{
-     searchables.forEach((element)=>{
-        var regex = new RegExp( this.value, 'i' );
-         if (element.innerHTML.match(regex)){
-             element.style.display=(element.classList.contains("card"))?"inline-block":"block";
-         } else{
-             element.style.display="none";
-         }             
-    });
+
+let searchAddon=document.getElementById('basic-addon1');
+
+function delay(fn, ms, cb=()=>{}) {
+  let timer = 0
+  return function(...args) {
+    cb();
+    clearTimeout(timer)
+    timer = setTimeout(fn.bind(this, ...args), ms || 0)
+  }
 }
-})
+
+async function searchHandler() {
+  //If a page has pagination
+  if (document.querySelector(".pagination") != null) {
+    let currentPage = sessionStorage.getItem("current-admin-page");
+    let response = await fetch(currentPage + "?search=" + this.value);
+    let pageData = await response.text();
+    container.innerHTML = pageData;
+    evalAllScripts();
+  } else {
+    //if page doesn't have pagination
+    var searchables = document.querySelectorAll(".searchable");
+    if (this.value === "") {
+      searchables.forEach((element) => {
+        element.style.display = element.classList.contains("card")
+          ? "inline-block"
+          : "block";
+      });
+    } else {
+      searchables.forEach((element) => {
+        var regex = new RegExp(this.value, "i");
+        if (element.innerHTML.match(regex)) {
+          element.style.display = element.classList.contains("card")
+            ? "inline-block"
+            : "block";
+        } else {
+          element.style.display = "none";
+        }
+      });
+    }
+  }
+  searchAddon.classList.remove("blink");
+}
+
+
+// document
+//   .getElementById("search-input")
+//   .addEventListener("input", ()=>{
+//     if (!searchAddon.classList.contains("blink")){
+//       searchAddon.classList.add("blink");
+//     }
+
+//     delay(searchHandler, 1000)();
+//   });
+
+  document
+  .getElementById("search-input")
+  .addEventListener("input", delay(searchHandler, 1000, ()=>{
+    if (!searchAddon.classList.contains("blink")){
+      searchAddon.classList.add("blink");
+    }
+  }));
 
 
 

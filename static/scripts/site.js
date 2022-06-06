@@ -27,7 +27,13 @@ function setPaginationEvents(selector) {
   document.querySelectorAll(".page-link").forEach((link) => {
     link.addEventListener("click", async (e) => {
       e.preventDefault();
-      let response = await fetch(link.href);
+      let search = (document.getElementById("search-input")?.value);
+      if (search) {
+        search = "&search=" + search;
+      } else {
+        search = "";
+      }
+      let response = await fetch(link.href+search);
       let pageData = await response.text();
       container.innerHTML = pageData;
       let scripts = container.querySelectorAll("script");

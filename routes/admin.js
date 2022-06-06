@@ -179,8 +179,15 @@ router.get("/concerts", async (req, res, next) => {
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
+    let search=req.query.search;
+    if (search) {
+      search=` AND (title LIKE '%${search}%' OR description LIKE '%${search}%' \
+      OR date LIKE '%${search}%' OR ticket LIKE '%${search}%' OR place LIKE '%${search}%')`;
+    } else {
+      search="";
+    }
 
-    let sqlSelectDateCondition=`date>=NOW()`;
+    let sqlSelectDateCondition=`date>=NOW()`+search;
     let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
     SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
     SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset};\
@@ -285,12 +292,19 @@ router.get("/news", async (req, res, next) => {
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
+    let search=req.query.search;
+    if (search) {
+      search=`WHERE title LIKE '%${search}%' OR text LIKE '%${search}%' \
+      OR date LIKE '%${search}%'`;
+    } else {
+      search="";
+    }
 
-    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
+    let [countAndNewsDbResult] = await db.query(`START TRANSACTION;\
     SELECT COUNT(id) as count FROM news;\
-    SELECT * FROM news ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
+    SELECT * FROM news ${search} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
     COMMIT;`);
-    let [, countDbResult, events]=countAndConcertsDbResult;
+    let [, countDbResult, events]=countAndNewsDbResult;
     let maxCount=countDbResult[0].count;
     let pages=viewhelpers.usePagination("/admin/news",currentPage,maxCount,itemCount);
 
@@ -836,8 +850,15 @@ router.get("/archive", async (req, res, next) => {
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
+    let search=req.query.search;
+    if (search) {
+      search=` AND (title LIKE '%${search}%' OR description LIKE '%${search}%' \
+      OR date LIKE '%${search}%' OR ticket LIKE '%${search}%' OR place LIKE '%${search}%')`;
+    } else {
+      search="";
+    }
 
-    let sqlSelectDateCondition=`date<NOW()`;
+    let sqlSelectDateCondition=`date<NOW()`+search;
     let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
     SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
     SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
