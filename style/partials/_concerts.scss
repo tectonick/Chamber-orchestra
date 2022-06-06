@@ -72,6 +72,10 @@ label {
   padding-top: 10px !important;
 }
 
+#month-picker {
+  width: 100%;
+}
+
 .fc-daygrid-event-harness {
   visibility: hidden;
   width: 1200%;
@@ -200,6 +204,7 @@ label {
 pre {
   font-family: Cambria, serif;
   white-space: pre-wrap;
+  overflow-x: hidden;
 
   /* Since CSS 2.1 */
   white-space: -moz-pre-wrap;

@@ -52,7 +52,6 @@
         newMonthElement=document.createElement('input');
         newMonthElement.id='month-picker';
         newMonthElement.type='month';
-        newMonthElement.style.width='100%';
         newMonthElement.value=new Date().toISOString().substring(0,7);
 
         monthElement.parentElement.insertBefore(newMonthElement,monthElement);
