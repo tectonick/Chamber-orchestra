@@ -10,6 +10,6 @@ const languages = {
         return Object.keys(this).find(key => this[key] === value);
     }
 }
+const locales = ["en", "ru", "by", "de", "fr"];
 
-
-module.exports={languages}
+module.exports={languages, locales}

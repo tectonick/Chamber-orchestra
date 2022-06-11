@@ -1,4 +1,5 @@
 //basic modules
+const {locales} = require("./globals");
 const config = require("config");
 const logger = require("./logger");
 const fs = require("fs");
@@ -32,7 +33,7 @@ var isDevelopment = environment === "development";
 
 i18n.configure({
   // setup some locales - other locales default to en silently
-  locales: ["en", "ru", "by", "de", "fr"],
+  locales: locales,
   defaultLocale: "en",
   queryParameter: "lang",
   // sets a custom cookie name to parse locale settings from
@@ -111,6 +112,12 @@ app.use(
 app.use(fileUpload());
 
 app.use(express.static(path.join(__dirname, "static")));
+app.use(function(req,res,next){
+  res.locals.fullUrl=`${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  res.locals.locales=locales;
+  next();
+})
+
 app.use(mainRouter);
 app.use("/about", aboutRouter);
 app.use("/media", mediaRouter);

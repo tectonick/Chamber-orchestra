@@ -23,6 +23,12 @@
 <meta name="yandex-verification" content="efbdd5f2407e2eb4" />
 <meta name='wmail-verification' content='92fbf99020fee1ddb77c48bbe427f152' />
 
+<link rel="alternate" hreflang="x-default"
+       href="{{fullUrl}}" />
+{{#each locales}}
+  <link rel="alternate" hreflang="{{this}}" 
+       href="{{../fullUrl}}?lang={{this}}" />
+{{/each}}
 
   <link rel="stylesheet" href="/css/site.css">
   <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet">
@@ -52,12 +58,13 @@
 
 <body class="">
      
-  <div id="page-container">
+  <div id="page-container">   
  {{> navbar}}
     <div id="content-wrap" class="">
       {{{body}}}
     </div>
     <br>
+          
     {{> footer}}
   </div>
   {{> scripts}}

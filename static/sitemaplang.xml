@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xhtml="http://www.w3.org/1999/xhtml"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://belsco.net/</loc>
+      <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://belsco.net/events/</loc>
+        <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/events/"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/events/calendar</loc>
+          <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/events/calendar"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/events/calendar/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/events/calendar/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/events/calendar/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/events/calendar/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/events/archive</loc>
+            <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/events/archive"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/events/archive/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/events/archive/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/events/archive/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/events/archive/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/about</loc>
+              <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/about"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/about/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/about/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/about/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/about/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/about/conductor</loc>
+                <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/about/conductor"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/about/conductor/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/about/conductor/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/about/conductor/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/about/conductor/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/about/musicians</loc>
+                  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/about/musicians"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/about/musicians/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/about/musicians/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/about/musicians/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/about/musicians/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/about/artists</loc>
+                    <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/about/artists"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/about/artists/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/about/artists/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/about/artists/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/about/artists/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/about/composers</loc>
+  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/about/composers"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/about/composers/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/about/composers/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/about/composers/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/about/composers/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/media/photos</loc>
+    <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/media/photos"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/media/photos/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/media/photos/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/media/photos/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/media/photos/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/media/videos</loc>
+  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/media/videos"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/media/videos/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/media/videos/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/media/videos/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/media/videos/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/media/disks</loc>
+  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/media/disks"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/media/disks/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/media/disks/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/media/disks/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/media/disks/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/press</loc>
+  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/media/press"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/press/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/press/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/press/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/press/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://belsco.net/contacts</loc>
+  <xhtml:link
+               rel="alternate"
+               hreflang="en"
+               href="https://belsco.net/contacts"/>
+      <xhtml:link
+               rel="alternate"
+               hreflang="ru"
+               href="https://belsco.net/contacts/?lang=ru"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="de"
+               href="https://belsco.net/contacts/?lang=de"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="fr"
+               href="https://belsco.net/contacts/?lang=fr"/>
+    <xhtml:link
+               rel="alternate"
+               hreflang="by"
+               href="https://belsco.net/contacts/?lang=by "/>
+  <lastmod>2022-06-11T07:00:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
