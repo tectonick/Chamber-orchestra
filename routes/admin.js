@@ -16,8 +16,8 @@ var xl = require('excel4node');
 function translate(text, source, dest) {
   //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return new Promise((resolve, reject) => {
-    if (source == "by") source = "ru";
-    if (dest == "by") dest = "ru";
+    if (source == "be") source = "ru";
+    if (dest == "be") dest = "ru";
     var req = unirest(
       "POST",
       "https://microsoft-translator-text.p.rapidapi.com/translate"

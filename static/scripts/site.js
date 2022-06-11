@@ -59,22 +59,6 @@ function scrollFunction() {
   }
 }
 
-document.getElementById("en").onclick = () => {
-  document.cookie = "locale=en; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
-};
-document.getElementById("ru").onclick = () => {
-  document.cookie = "locale=ru; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
-};
-document.getElementById("by").onclick = () => {
-  document.cookie = "locale=by; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
-};
-document.getElementById("fr").onclick = () => {
-  document.cookie = "locale=fr; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
-};
-document.getElementById("de").onclick = () => {
-  document.cookie = "locale=de; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/";
-};
-
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -84,3 +68,12 @@ function getCookie(name) {
     return "en";
   }
 }
+
+
+
+document.querySelectorAll('.locale-change').forEach((link) => {
+  link.addEventListener("click", (e) => {
+    document.cookie = `locale=${e.target.id}; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/`;
+  }
+  )
+})

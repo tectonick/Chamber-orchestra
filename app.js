@@ -98,6 +98,7 @@ app.use(function (req, res, next) {
   if (req.cookies["locale"] == undefined) {
     res.cookie("locale", req.getLocale(), { maxAge: 900000 });
   }
+  res.locals.lang=req.getLocale();
   next();
 });
 var sessionStore = new MySQLStore({} /* session store options */, db.promise());
