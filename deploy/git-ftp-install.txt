@@ -1,0 +1,9 @@
+Windows:
+Open git-bash and launch these 2 commands
+
+curl https://raw.githubusercontent.com/git-ftp/git-ftp/master/git-ftp > /bin/git-ftp
+chmod 755 /bin/git-ftp
+
+Usage:
+git ftp catchup - sync repos
+git ftp push - push commit
