@@ -99,7 +99,12 @@ router.get("/press", async (req, res) => {
   var description = res.__("press.description");
   var title = res.__("layout.navbar.press") + " | " + res.__("title");
   var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
-  res.render("press.hbs", { names, title, description });
+  var photos = names.map((name) => {return {
+    name:name,
+    url:`/img/press/${encodeURIComponent(name)}.jpg`,
+    thumbnail:`/thumbnails/img/press/${encodeURIComponent(name)}.jpg`
+  }});
+  res.render("press.hbs", { photos, title, description });
 });
 
 module.exports = router;
