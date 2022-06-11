@@ -115,7 +115,7 @@ app.use(fileUpload());
 
 app.use(express.static(path.join(__dirname, "static")));
 app.use(function(req,res,next){
-  res.locals.fullUrl=`${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  res.locals.fullUrl=`${req.protocol}://${req.get('host')}${req.path}`;
   res.locals.locales=locales;
   next();
 })
