@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
@@ -58,6 +60,7 @@ function scrollFunction() {
     }
   }
 }
+
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;

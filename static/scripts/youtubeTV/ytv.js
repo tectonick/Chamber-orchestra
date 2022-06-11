@@ -9,8 +9,10 @@
  * Version: 3.0.5
  */
 /*jslint browser: true, undef:true, unused:true, laxbreak:true, loopfunc:true*/
+// eslint-disable-next-line no-redeclare
 /*global define, module, ender */
-
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 (function (win, doc) {
   "use strict";
   var apiKey = "AIzaSyBqfR0d7_3XPwoVVn9SQ2xnP0nxQfSVSok";
@@ -60,6 +62,7 @@
             delete cache.data[url];
           },
           exist: function (url) {
+            // eslint-disable-next-line no-prototype-builtins
             return cache.data.hasOwnProperty(url) && cache.data[url] !== null;
           },
           get: function (url) {

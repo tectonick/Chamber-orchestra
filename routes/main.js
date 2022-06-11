@@ -1,6 +1,6 @@
 const express = require("express");
 const viewhelpers = require("../viewhelpers");
-const db = require("../db").promise();
+const db = require("../db").db().promise();
 const router = express.Router();
 const config = require("config");
 

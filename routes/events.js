@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const viewhelpers = require("../viewhelpers");
-const db = require("../db").promise();
+const db = require("../db").db().promise();
 const config = require("config");
 
 router.get("/", async (req, res, next) => {

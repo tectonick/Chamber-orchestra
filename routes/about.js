@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db").promise();
+const db = require("../db").db().promise();
 const globals = require("../globals.js");
 
 router.get("/", (req, res) => {
