@@ -8,7 +8,12 @@ router.get("/photos", async (req, res) => {
   var names = await viewhelpers.NamesOfDirFilesWOExtension(
     "/static/img/gallery"
   );
-  res.render("media/photos.hbs", { names, title, description });
+  var photos = names.map((name) => {return {
+    name:name,
+    url:`/img/gallery/${encodeURIComponent(name)}.jpg`,
+    thumbnail:`/thumbnails/img/gallery/${encodeURIComponent(name)}.jpg`
+  }});
+  res.render("media/photos.hbs", { photos, title, description });
 });
 router.get("/videos", (req, res) => {
   var description = res.__("videos.description");
@@ -19,7 +24,8 @@ router.get("/disks", async (req, res) => {
   var description = res.__("disks.description");
   var title = res.__("layout.navbar.disks") + " | " + res.__("title");
   var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/disks");
-  res.render("media/disks.hbs", { names, title, description });
+  var photos = names.map((name) => {return {name:name,url:`/img/disks/${encodeURIComponent(name)}.jpg`}});
+  res.render("media/disks.hbs", { photos, title, description });
 });
 
 module.exports = router;
