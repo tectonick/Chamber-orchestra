@@ -104,10 +104,11 @@ function CreateApp() {
 
   app.use(i18n.init);
   app.use(function (req, res, next) {
-    if (req.cookies["locale"] == undefined) {
-      res.cookie("locale", req.getLocale(), { maxAge: 900000 });
+    let locale=req.getLocale();
+    if (req.cookies["locale"] == undefined || req.cookies["locale"] !==locale) {
+      res.cookie("locale", locale, { maxAge: 900000 });
     }
-    res.locals.lang = req.getLocale();
+    res.locals.lang = locale;
     next();
   });
   var sessionStore = new MySQLStore(
