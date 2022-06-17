@@ -4,9 +4,7 @@ const viewhelpers = require("../viewhelpers");
 const db = require("../db").db().promise();
 const config = require("config");
 
-router.get("/", async (req, res, next) => {
-  var description = res.__("events.description");
-  var title = res.__("layout.navbar.events") + " | " + res.__("title");
+router.get("/", async (_req, res, next) => {
   try {
     let [results] = await db.query(
       "SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date"
@@ -14,17 +12,14 @@ router.get("/", async (req, res, next) => {
     results.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
     });
-    var months = viewhelpers.OrganizeConcertsInMonths(results);
-    res.render("events/events.hbs", { months, title, description });
+    let months = viewhelpers.OrganizeConcertsInMonths(results);
+    res.render("events/events.hbs", { months });
   } catch (error) {
     next(error);
   }
 });
 
 router.get("/archive", async (req, res, next) => {
-  var description = res.__("archive.description");
-  var title = res.__("layout.navbar.archive") + " | " + res.__("title");
-
   try {
     let id=Number.parseInt(req.query.id);
     if (!isNaN(id)){
@@ -33,7 +28,7 @@ router.get("/archive", async (req, res, next) => {
       );
       if (results.length>0){
         let months = viewhelpers.OrganizeConcertsInMonths(results);
-        res.render("events/archive.hbs", { pages:[], months, title, description });
+        res.render("events/archive.hbs", { pages:[], months });
         return;
       }
     }
@@ -53,20 +48,14 @@ router.get("/archive", async (req, res, next) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
     });
     let months = viewhelpers.OrganizeConcertsInMonths(results);
-    res.render("events/archive.hbs", { pages, months, title, description });
+    res.render("events/archive.hbs", { pages, months });
   } catch (error) {
     next(error);
   }
 });
 
-
-
-
-
-router.get("/calendar", (req, res) => {
-  var description = res.__("calendar.description");
-  var title = res.__("layout.navbar.calendar") + " | " + res.__("title");
-  res.render("events/calendar.hbs", { title, description });
+router.get("/calendar", (_req, res) => {
+  res.render("events/calendar.hbs");
 });
 
 module.exports = router;

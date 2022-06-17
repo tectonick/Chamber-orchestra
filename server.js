@@ -17,7 +17,7 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 //session
 const session = require("express-session");
-var MySQLStore = require("express-mysql-session")(session);
+let MySQLStore = require("express-mysql-session")(session);
 //other
 const i18n = require("i18n");
 const {db} = require("./db");
@@ -36,7 +36,7 @@ iconv.encodings = encodings;
 
 let environment = process.env.NODE_ENV || "production";
 const PORT = process.env.PORT || 80;
-var isDevelopment = environment === "development";
+let isDevelopment = environment === "development";
 
 function CreateApp() {
     const pool =db();
@@ -47,6 +47,7 @@ function CreateApp() {
     locales: locales,
     defaultLocale: "en",
     queryParameter: "lang",
+    updateFiles: false,
     // sets a custom cookie name to parse locale settings from
     cookie: "locale",
     // where to store json files - defaults to './locales'
@@ -101,8 +102,9 @@ function CreateApp() {
   app.enable("trust proxy");
 
   app.use(cookieParser());
-
   app.use(i18n.init);
+
+  //Cuttrny locale setting middleware
   app.use(function (req, res, next) {
     let locale=req.getLocale();
     if (req.cookies["locale"] == undefined || req.cookies["locale"] !==locale) {
@@ -111,7 +113,8 @@ function CreateApp() {
     res.locals.lang = locale;
     next();
   });
-  var sessionStore = new MySQLStore(
+
+  let sessionStore = new MySQLStore(
     {} /* session store options */,
     pool.promise()
   );
@@ -123,16 +126,37 @@ function CreateApp() {
       saveUninitialized: false,
     })
   );
-
   app.use(fileUpload());
+  app.use(express.static(path.join(__dirname, "static"),{}));
 
-  app.use(express.static(path.join(__dirname, "static")));
+  // Full url and available locales setting for layout middleware
   app.use(function (req, res, next) {
     res.locals.fullUrl = `${req.protocol}://${req.get("host")}${req.path}`;
     res.locals.locales = locales;
     next();
   });
 
+  //Title and description setting for layout middleware
+  app.use(function (req, res, next) {
+    //get last part of path
+    let path = req.path.split("/");
+    if (path[path.length - 1]==="") path.pop();    
+    let pageName = path[path.length - 1];
+
+    if (pageName.indexOf(".")===-1) {
+      if (pageName === "") {
+        pageName = "index";
+        res.locals.title = res.__("title");
+      } else{
+        res.locals.title = res.__(`layout.navbar.${pageName}`) + " | " + res.__("title");
+      }
+      res.locals.description = res.__(`${pageName}.description`);
+    }
+    next();
+  }
+  );
+
+  //Connecting routers
   app.use(mainRouter);
   app.use("/about", aboutRouter);
   app.use("/media", mediaRouter);

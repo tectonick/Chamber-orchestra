@@ -67,7 +67,7 @@ async function searchHandler() {
     evalAllScripts();
   } else {
     //if page doesn't have pagination
-    var searchables = document.querySelectorAll(".searchable");
+    let searchables = document.querySelectorAll(".searchable");
     if (this.value === "") {
       searchables.forEach((element) => {
         element.style.display = element.classList.contains("card")
@@ -76,7 +76,7 @@ async function searchHandler() {
       });
     } else {
       searchables.forEach((element) => {
-        var regex = new RegExp(this.value, "i");
+        let regex = new RegExp(this.value, "i");
         if (element.innerHTML.match(regex)) {
           element.style.display = element.classList.contains("card")
             ? "inline-block"
@@ -206,7 +206,7 @@ function copyConcertSetEvent() {
 function deleteWithModalSetEvent(path) {
 
   $(".delete-button").click(function () {
-    var modal = $("#deleteModal");
+    let modal = $("#deleteModal");
     modal.attr("name", $(this).attr("name"));
     modal.modal();
   });
@@ -238,12 +238,12 @@ function saveSetEvent(path){
   })
 
   $(".save-button").click(function (ev) {
-    var target = ev.target;
+    let target = ev.target;
     target.setAttribute('disabled', 'disabled');
     tinymce?.activeEditor?.save();
-    var formName = $(this).attr('name');
-    var form=$('#' + formName);
-    var formData = form.serialize();
+    let formName = $(this).attr('name');
+    let form=$('#' + formName);
+    let formData = form.serialize();
 
 
     $.post(path, formData, (data, status) => {
@@ -252,14 +252,14 @@ function saveSetEvent(path){
       })
         form.closest('.form-container').find('.translate-button').removeAttr('disabled');
         target.removeAttribute('disabled');
-        var oldColor = $(this).css('backgroundColor');
+        let oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
             $(this).animate({ backgroundColor: oldColor });
         });
 
     }).fail(() => {
         target.removeAttribute('disabled');
-        var oldColor = $(this).css('backgroundColor');
+        let oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
             $(this).animate({ backgroundColor: oldColor });
         });
@@ -269,20 +269,20 @@ function saveSetEvent(path){
 
 function translateSetEvent(path){
   $(".translate-button").click(function (ev) {
-    var target=ev.target;
+    let target=ev.target;
     target.setAttribute('disabled','disabled');
-    var formName = $(this).attr('name');
-    var formData = $('#' + formName).serialize();
+    let formName = $(this).attr('name');
+    let formData = $('#' + formName).serialize();
     $.post(path, formData, (data, status) => {
         target.removeAttribute('disabled');
-        var oldColor = $(this).css('backgroundColor');
+        let oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#32CD32' }, 1000, function () {
             $(this).animate({ backgroundColor: oldColor });
         });
 
     }).fail(() => {
         target.removeAttribute('disabled');
-        var oldColor = $(this).css('backgroundColor');
+        let oldColor = $(this).css('backgroundColor');
         $(this).animate({ backgroundColor: '#8B0000' }, 1000, function () {
             $(this).animate({ backgroundColor: oldColor });
         });

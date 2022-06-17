@@ -4,15 +4,13 @@ const db = require("../db").db().promise();
 const router = express.Router();
 const config = require("config");
 
-router.get("/", async (req, res, next) => {
-  var title = res.__("title");
-  var description = res.__("index.description");
+router.get("/", async (_req, res, next) => {
   try {
     let [results] = await db.query(
       "SELECT * FROM concerts WHERE hidden=FALSE AND date>=NOW() ORDER BY date LIMIT 6"
     );
-    var triplets = viewhelpers.OrganizeConcertsInTriplets(results);
-    res.render("index.hbs", { triplets, title, description });
+    let triplets = viewhelpers.OrganizeConcertsInTriplets(results);
+    res.render("index.hbs", { triplets });
   } catch (error) {
     next(error);
   }
@@ -78,9 +76,7 @@ router.get("/concerts", async (req, res, next) => {
 });
 
 router.get("/contacts", (req, res) => {
-  var description = res.__("contacts.description");
-  var title = res.__("layout.navbar.contacts") + " | " + res.__("title");
-  res.render("contacts.hbs", { title, description });
+  res.render("contacts.hbs");
 });
 
 router.get("/api/concerts", async (req, res, next) => {
@@ -96,15 +92,13 @@ router.get("/api/concerts", async (req, res, next) => {
 });
 
 router.get("/press", async (req, res) => {
-  var description = res.__("press.description");
-  var title = res.__("layout.navbar.press") + " | " + res.__("title");
-  var names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
-  var photos = names.map((name) => {return {
+  let names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
+  let photos = names.map((name) => {return {
     name:name,
     url:`/img/press/${encodeURIComponent(name)}.jpg`,
     thumbnail:`/thumbnails/img/press/${encodeURIComponent(name)}.jpg`
   }});
-  res.render("press.hbs", { photos, title, description });
+  res.render("press.hbs", { photos });
 });
 
 module.exports = router;

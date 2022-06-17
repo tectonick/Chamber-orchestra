@@ -103,5 +103,9 @@
 	"events.noevents": "Пока нет ближайших событий",
 	"error.ops": "Упс",
 	"error.message": "Что-то пошло не так",
-	"error.message404": "Вы, кажется, заблудились. Мы не нашли такой странички."
+	"error.message404": "Вы, кажется, заблудились. Мы не нашли такой странички.",
+	"layout.navbar.login": "Login",
+	"login.description": "login",
+	"layout.navbar.admin": "Admin",
+	"admin.description": "Admin"
 }

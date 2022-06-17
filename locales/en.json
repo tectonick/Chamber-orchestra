@@ -85,7 +85,7 @@
 	"composers.description": "Composers had written for belarusian state chamber orchestra",
 	"photos.description": "Photos of belarusian state chamber orchestra",
 	"videos.description": "Videos of belarusian state chamber orchestra",
-	"disks.description": "Discography and streamong of belarusian state chamber orchestra",
+	"disks.description": "Discography and streaming of belarusian state chamber orchestra",
 	"press.description": "Press about belarusian state chamber orchestra",
 	"contacts.description": "Contacts of belarusian state chamber orchestra",
 	"month.january": "January",
@@ -103,5 +103,9 @@
 	"events.noevents": "There is no concerts soon",
 	"error.ops": "Oops",
 	"error.message": "Something went completely wrong on our side",
-	"error.message404": "You seem to be lost. We did not find such a page."
+	"error.message404": "You seem to be lost. We did not find such a page.",
+	"layout.navbar.admin": "Admin",
+	"admin.description": "Admin",
+	"layout.navbar.login": "Login",
+	"login.description": "Login"
 }

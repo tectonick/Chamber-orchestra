@@ -50,14 +50,14 @@ const path = require("path");
   }
 
 function OrganizeConcertsInMonths(concerts) {
-  var months = [];
+  let months = [];
   if (typeof concerts == "undefined") {
     return months;
   }
   concerts.forEach((element) => {
-    var nameMonth =
+    let nameMonth =
       MonthNames[element.date.getMonth()];
-    var year=element.date.getFullYear();
+    let year=element.date.getFullYear();
     element.day = element.date.getDate();
     element.month=element.date.getMonth()+1;
     if (element.day<10) element.day='0'+element.day;
@@ -81,8 +81,8 @@ function OrganizeConcertsInMonths(concerts) {
 }
 
 function OrganizeConcertsInTriplets(concerts) {
-  var triplets = [];
-  var triplet = [];
+  let triplets = [];
+  let triplet = [];
 
   if (typeof concerts == "undefined") {
     return triplets;
@@ -106,10 +106,10 @@ function OrganizeConcertsInTriplets(concerts) {
 }
 
 async function NamesOfDirFilesWOExtension(basepath) {
-  var names = [];
-  var realpath = path.join(__dirname, basepath);
+  let names = [];
+  let realpath = path.join(__dirname, basepath);
 
-  var files = await fs.readdir(realpath);
+  let files = await fs.readdir(realpath);
   files.forEach((file) => {
     names.push(path.basename(file, ".jpg"));
   });
@@ -119,7 +119,7 @@ async function NamesOfDirFilesWOExtension(basepath) {
 
 function DateToISOLocal(date) {
   // JS interprets db date as local and converts to UTC
-  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
+  let localDate = date - date.getTimezoneOffset() * 60 * 1000;
   return new Date(localDate).toISOString().slice(0, 19);
 }
 
