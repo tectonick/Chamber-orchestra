@@ -62,7 +62,7 @@ router.get("/api/concerts", async (_req, res, next) => {
       dates: QueryOptions.DATES.ALL,
     });
     res.statusCode = 200;
-    res.json([concerts]);
+    res.json(concerts);
   } catch (error) {
     next(error);
   }
