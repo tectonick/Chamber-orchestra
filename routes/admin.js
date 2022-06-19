@@ -13,8 +13,9 @@ const config = require("config");
 const logger = require("../logger");
 let xl = require('excel4node');
 
-const UPDATED_DATE_FORMAT='%Y-%m-%d %H:%i:%s';
-const DATE_FORMAT='%Y-%m-%d %H:%i:00';
+const QueryOptions = require("../repositories/options");
+const ConcertsRepository = require("../repositories/concerts");
+const NewsRepository = require("../repositories/news");
 
 function translate(text, source, dest) {
   //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -174,54 +175,48 @@ router.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
-router.get("/concerts", async (req, res, next) => {
+//#region ConcertsHandlers
+
+async function concertsHandler(req, res, next, pageName) {
   try {
+    let paginationAddress=(pageName==="concerts")?"/admin/concerts":"/admin/archive";
+    let viewAddress = (pageName === "concerts") ? "admin/concerts.hbs" : "admin/archive.hbs";
+    let dates=(pageName==="concerts")?QueryOptions.DATES.FUTURE:QueryOptions.DATES.PAST;
+
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
     let search=req.query.search;
-    if (search) {
-      search=` AND (title LIKE '%${search}%' OR description LIKE '%${search}%' \
-      OR date LIKE '%${search}%' OR ticket LIKE '%${search}%' OR place LIKE '%${search}%')`;
-    } else {
-      search="";
-    }
 
-    let sqlSelectDateCondition=`date>=NOW()`+search;
-    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
-    SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
-    SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date ASC LIMIT ${itemCount} OFFSET ${offset};\
-    COMMIT;`);
-    let [, countDbResult, events]=countAndConcertsDbResult;
-    let maxCount=countDbResult[0].count;
-    let pages=viewhelpers.usePagination("/admin/concerts",currentPage,maxCount,itemCount);
+    let events = await ConcertsRepository.getAll({hidden:true,dates, offset,itemCount,search});
+    let maxCount = await ConcertsRepository.getCount({hidden:true, dates});
+    let pages=viewhelpers.usePagination(paginationAddress,currentPage,maxCount,itemCount);
 
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render("admin/concerts.hbs", { pages, events, layout: false });
+    res.render(viewAddress, { pages, events, layout: false });
   } catch (error) {
     next(error);
   }
-});
+}
 
-router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
+async function concertsDeleteHandler(req, res, next) {
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(`DELETE FROM concerts WHERE id=${id}`);
+    await ConcertsRepository.delete(id);
     DeleteImageById(id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
   } catch (error) {
     next(error);
   }
-});
+}
 
-router.get("/concerts/export", urlencodedParser, async (req, res, next) => {
+async function concertsExportHandler(req, res, next) {
   try {
-    let [concerts] = await db.query(`SELECT * FROM concerts`);
-    // Create a new instance of a Workbook class
+    let concerts = await ConcertsRepository.getAll({hidden:true});
     let wb = new xl.Workbook(); 
     // Add Worksheets to the workbook
     let ws = wb.addWorksheet('Concerts');
@@ -267,56 +262,77 @@ router.get("/concerts/export", urlencodedParser, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+}
 
-router.post("/concerts/add", urlencodedParser, async (_req, res, next) => {
-  try {
-    let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '${DATE_FORMAT}'),'', '','',1, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
-    );
-    await MakeDefaultImage(results.insertId, "/static/img/posters/");
-    res.redirect("/admin/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
-  try {
-    let id =Number.parseInt(req.body.id);
-    let [concertToCopy]=await db.query(`SELECT * FROM concerts WHERE id=${id}`);
-    concertToCopy=concertToCopy[0];
-    let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '${DATE_FORMAT}'),\
-      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',1 , DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
-    );
-    await fs.copyFile(`static/img/posters/${id}.jpg`,`static/img/posters/${results.insertId}.jpg`);
-    res.redirect("/admin/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
+async function concertsEditHandler(req, res, next) {
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   let description = viewhelpers.EscapeQuotes(req.body.description);
   try {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `UPDATE concerts SET title = '${req.body.title}', \
-      date = '${date}', place = '${req.body.place}',\
-      hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
-    );
+    await ConcertsRepository.update({
+      id,
+      title: req.body.title,
+      description,
+      date,
+      place: req.body.place,
+      ticket: req.body.ticket,
+      hidden,
+    });
     res.sendStatus(200);
   } catch (error) {
     next(error);
   }
-});
+}
 
-router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
+async function concertsAddHandler(req, res, next, pageName) {
+  try {
+    let nextDateShift=(pageName==="concerts")?(1000 * 60 * 60 * 24):(-1000 * 60 * 60 * 24);
+
+    let nextDate = new Date(Date.now() + nextDateShift);
+    nextDate.setSeconds(0);
+    let sqlDate=nextDate.toISOString().slice(0, 19).replace("T", " ");
+    
+    let insertId = await ConcertsRepository.add({
+      title: "",
+      description: "",
+      date: sqlDate,
+      place: "",
+      ticket: "",
+      hidden: 1,
+    });
+    await MakeDefaultImage(insertId, "/static/img/posters/");
+    res.redirect("/admin/");
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function concertsCopyHandler(req, res, next) {
+  try {
+    let id =Number.parseInt(req.body.id);
+    let concertToCopy=await ConcertsRepository.getById(id);
+    let tomorrowDate = new Date(Date.now() + 1000 * 60 * 60 * 24);
+    tomorrowDate.setSeconds(0);
+    let sqlDate=tomorrowDate.toISOString().slice(0, 19).replace("T", " ");
+
+    let insertId = await ConcertsRepository.add({
+      title: concertToCopy.title,
+      description: concertToCopy.description,
+      date: sqlDate,
+      place: concertToCopy.place,
+      ticket: concertToCopy.ticket,
+      hidden: concertToCopy.hidden,
+    });
+    await fs.copyFile(`static/img/posters/${id}.jpg`,`static/img/posters/${insertId}.jpg`);
+    res.redirect("/admin/");
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function concertsPosterUploadHandler(req, res) {
   try {
     let id = Number.parseInt(req.body.id);
     await PosterUpload(
@@ -330,7 +346,59 @@ router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
     res.statusCode = 400;
     res.json({ error: error.message });
   }
+}
+
+//#endregion
+
+//#region ConcertsAndArchiveRoutes
+router.get("/concerts", async function (req, res, next) {
+  await concertsHandler(req, res, next, "concerts");
 });
+
+router.post("/concerts/delete", urlencodedParser, async (req, res, next) => {
+  await concertsDeleteHandler(req, res, next);
+});
+
+router.get("/concerts/export", urlencodedParser, async (req, res, next) => {
+  await concertsExportHandler(req, res, next);
+});
+
+router.post("/concerts/add", urlencodedParser, async (_req, res, next) => {
+  await concertsAddHandler(_req, res, next, "concerts");
+});
+
+router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
+  await concertsCopyHandler(req, res, next);
+});
+
+router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
+  await concertsEditHandler(req, res, next);
+});
+
+router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
+  await concertsPosterUploadHandler(req, res);
+});
+
+router.get("/archive", async (req, res, next) => {
+  await concertsHandler(req, res, next, "archive");
+});
+
+router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
+  await concertsDeleteHandler(req, res, next);
+});
+
+router.post("/archive/add", urlencodedParser, async (_req, res, next) => {
+  await concertsAddHandler(_req, res, next, "archive");
+});
+
+router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
+  await concertsEditHandler(req, res, next);
+});
+
+router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
+  await concertsPosterUploadHandler(req, res);
+});
+//#endregion
 
 router.get("/news", async (req, res, next) => {
   try {
@@ -338,19 +406,9 @@ router.get("/news", async (req, res, next) => {
     let currentPage = Number(req.query.page)||1;
     let offset=(currentPage-1)*itemCount;
     let search=req.query.search;
-    if (search) {
-      search=`WHERE title LIKE '%${search}%' OR text LIKE '%${search}%' \
-      OR date LIKE '%${search}%'`;
-    } else {
-      search="";
-    }
 
-    let [countAndNewsDbResult] = await db.query(`START TRANSACTION;\
-    SELECT COUNT(id) as count FROM news;\
-    SELECT * FROM news ${search} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
-    COMMIT;`);
-    let [, countDbResult, events]=countAndNewsDbResult;
-    let maxCount=countDbResult[0].count;
+    let events = await NewsRepository.getAll({search,offset,itemCount}); 
+    let maxCount=await NewsRepository.getCount();
     let pages=viewhelpers.usePagination("/admin/news",currentPage,maxCount,itemCount);
 
     events.forEach((element) => {
@@ -366,7 +424,7 @@ router.get("/news", async (req, res, next) => {
 router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(`DELETE FROM news WHERE id=${id}`);
+    await NewsRepository.delete(id);
     await DeleteImageById(id, "/static/img/news/");
     res.redirect("/admin/");
   } catch (error) {
@@ -376,10 +434,12 @@ router.post("/news/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/news/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let [results] = await db.query(
-      `INSERT INTO news VALUES (0,'','2999-01-01 00:00','', DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
-    );
-    await MakeDefaultImage(results.insertId, "/static/img/news/");
+    let insertId = await NewsRepository.add({
+      title: "",
+      text: "",
+      date: '2999-01-01 00:00'
+    });
+    await MakeDefaultImage(insertId, "/static/img/news/");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -387,16 +447,16 @@ router.post("/news/add", urlencodedParser, async (_req, res, next) => {
 });
 
 router.post("/news/edit", urlencodedParser, async (req, res, next) => {
-  let text = viewhelpers.EscapeQuotes(req.body.text);
   try {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `UPDATE news SET title = '${req.body.title}', \
-      date = '${date}',\
-      text = '${text}', updated = DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
-    );
+    await NewsRepository.update({
+      id,
+      title: req.body.title,
+      text:req.body.text,
+      date,
+    });
     res.sendStatus(200);
   } catch (error) {
     next(error);
@@ -886,97 +946,6 @@ router.post("/press/upload", urlencodedParser, (req, res) => {
     });
   });
   res.redirect("/admin/");
-});
-
-router.get("/archive", async (req, res, next) => {
-  try {
-    let itemCount = config.get("paginationSize").admin;
-    let currentPage = Number(req.query.page)||1;
-    let offset=(currentPage-1)*itemCount;
-    let search=req.query.search;
-    if (search) {
-      search=` AND (title LIKE '%${search}%' OR description LIKE '%${search}%' \
-      OR date LIKE '%${search}%' OR ticket LIKE '%${search}%' OR place LIKE '%${search}%')`;
-    } else {
-      search="";
-    }
-
-    let sqlSelectDateCondition=`date<NOW()`+search;
-    let [countAndConcertsDbResult] = await db.query(`START TRANSACTION;\
-    SELECT COUNT(id) as count FROM concerts WHERE ${sqlSelectDateCondition};\
-    SELECT * FROM concerts WHERE ${sqlSelectDateCondition} ORDER BY date DESC LIMIT ${itemCount} OFFSET ${offset};\
-    COMMIT;`);
-    let [, countDbResult, events]=countAndConcertsDbResult;
-    let maxCount=countDbResult[0].count;
-    
-    let pages=viewhelpers.usePagination("/admin/archive",currentPage,maxCount,itemCount);
-
-    events.forEach((element) => {
-      element.description = viewhelpers.UnescapeQuotes(element.description);
-      element.date = viewhelpers.DateToISOLocal(element.date);
-    });
-    res.render("admin/archive.hbs", { events, pages, layout: false });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
-  try {
-    let id = Number.parseInt(req.body.id);
-    await db.query(`DELETE FROM concerts WHERE id=${id}`);
-    await DeleteImageById(id, "/static/img/posters/");
-    res.redirect("/admin/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/archive/add", urlencodedParser, async (_req, res, next) => {
-  try {
-    let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '${DATE_FORMAT}'),'', '','',1, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
-    );
-    await MakeDefaultImage(results.insertId, "/static/img/posters/");
-    res.redirect("/admin/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
-  let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
-  let description = viewhelpers.EscapeQuotes(req.body.description);
-  try {
-    if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
-    let date = req.body.date.slice(0, 19).replace("T", " ");
-    let id = Number.parseInt(req.body.id);
-    await db.query(
-      `UPDATE concerts SET title = '${req.body.title}', \
-      date = '${date}', place = '${req.body.place}',\
-      hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
-    );
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
-  try {
-    let id = Number.parseInt(req.body.id);
-    await PosterUpload(
-      req.files.fileToUpload,
-      "/static/img/posters/",
-      id,
-      imageProcessor.posterImage
-    );
-    res.sendStatus(200);
-  } catch (error) {
-    res.statusCode = 400;
-    res.json({ error: error.message });
-  }
 });
 
 router.get("/disks", async (_req, res) => {

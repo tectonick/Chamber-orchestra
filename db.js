@@ -21,6 +21,7 @@ function db() {
     logger.info(
       `Connected to db on ${dbConfig.host}:${dbConfig.database} as ${dbConfig.user}`
     );
+
     return pool;
   } catch (error) {
     logger.error(error);

@@ -42,11 +42,11 @@ const path = require("path");
     }
 
   function EscapeQuotes(str){
-    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;");
+    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;").replace(/\\/g,"\\\\");
     
   }
   function UnescapeQuotes(str){
-   return str.replace(/&quot;/g,"\"").replace(/&rsquo;/g,"'").replace(/&grave;/g,"`");
+   return str.replace(/&quot;/g,"\"").replace(/&rsquo;/g,"'").replace(/&grave;/g,"`").replace(/\\\\/g,"\\");
   }
 
 function OrganizeConcertsInMonths(concerts) {
