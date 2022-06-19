@@ -1,27 +1,24 @@
 /* footer */
 
-@media (min-width: 768px) {
-  #content-wrap {
-    padding-bottom: 10rem;
-
-    /* Footer height */
-  }
-}
-
-@media (min-width: 992px) {
-  #content-wrap {
+/* Footer height */
+#content-wrap {
+  @media (min-width: 576px) {
     padding-bottom: 8rem;
-
-    /* Footer height */
   }
-}
 
-@media (min-width: 1200px) {
-  #content-wrap {
+  @media (min-width: 768px) {
     padding-bottom: 7rem;
-
-    /* Footer height */
   }
+
+  @media (min-width: 992px) {
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 1200px) {
+    padding-bottom: 4rem;
+  }
+
+  padding-bottom: 40vh;
 }
 
 footer {
@@ -32,10 +29,22 @@ footer {
   font-size: 1.2em;
   position: absolute;
   bottom: 0;
+  padding-bottom: 10px;
 
   .container-fluid {
     padding: 0;
     word-wrap: break-word;
+
+    .row {
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 595px) {
+      .row {
+        justify-content: start;
+      }
+    }
   }
 
   .row div {

@@ -1,23 +1,33 @@
 <div rowId="{{event.id}}" class="row searchable event-row">
 
 
-        <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
-            <div class="row">
-                <div class="col-12 col-md-4 p-0">
-                    <img class="poster" loading="lazy" src="/img/news/{{event.id}}.jpg" alt="">
-                    <form class="form-group" action="/admin/news/posterupload" method="post"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{event.id}}">
-                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                    </form>
+    <div class="card col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+        <div class="row card-header text-muted">
+            Новость {{event.id}}
+        </div>
+        <div class="row card-body">
+            <div class="col-12 col-md-4 p-0">
+                <img class="poster" loading="lazy" src="/img/news/{{event.id}}.jpg" alt="">
+                <form class="form-group" action="/admin/news/posterupload" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{{event.id}}">
+                    <input class='form-control fileToUpload d-none' type="file" id="file-{{event.id}}"
+                        name="fileToUpload">
+                    <label class="form-control text-center" for="file-{{event.id}}">Загрузить изображение</label>
+                </form>
+                <div class="form-group">
+                    <input name='{{event.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                        type="submit" value="Удалить новость"></input>
+                    <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
+                        value="Сохранить новость"></input>
                 </div>
-                <div class="col-12 col-md-8 p-4">
+            </div>
+            <div class="col-12 col-md-8 p-0">
 
-                    <form class='form-group' action="/admin/news/edit" id="edit-form-{{event.id}}" method="POST">
-                        <input type="hidden" name="id" value="{{event.id}}">
-                        <textarea name="title" class="saveable form-control w-100" placeholder="Название"
-                            rows="1">{{event.title}}</textarea>
-                        
+                <form class='form-group' action="/admin/news/edit" id="edit-form-{{event.id}}" method="POST">
+                    <input type="hidden" name="id" value="{{event.id}}">
+                    <textarea name="title" class="saveable form-control w-100" placeholder="Название"
+                        rows="1">{{event.title}}</textarea>
+
 
 
                     <div class="saveable description-container form-group">
@@ -29,24 +39,17 @@
                     </div>
 
 
-                        {{!-- <textarea name="date" class="form-control w-100" rows="1">{{event.date}}</textarea> --}}
-                        <input type="datetime-local" max="9999-12-31T23:59" class="form-control" name="date" value="{{event.date}}">
-                    </form>
+                    {{!-- <textarea name="date" class="form-control w-100" rows="1">{{event.date}}</textarea> --}}
+                    <input type="datetime-local" max="9999-12-31T23:59" class="form-control" name="date"
+                        value="{{event.date}}">
+                </form>
 
-                </div>
-
-                <div class="col-12">
-                    <div class="form-group">
-                        <input name='{{event.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
-                            type="submit" value="Удалить новость"></input>
-                        <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
-                            value="Сохранить новость"></input>
-
-                    </div>
-
-                </div>
             </div>
         </div>
-
-
+        <div class="row card-footer text-muted">
+            Обновлено {{event.updated}}
+        </div>
     </div>
+
+
+</div>

@@ -13,6 +13,9 @@ const config = require("config");
 const logger = require("../logger");
 let xl = require('excel4node');
 
+const UPDATED_DATE_FORMAT='%Y-%m-%d %H:%i:%s';
+const DATE_FORMAT='%Y-%m-%d %H:%i:00';
+
 function translate(text, source, dest) {
   //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   return new Promise((resolve, reject) => {
@@ -269,7 +272,7 @@ router.get("/concerts/export", urlencodedParser, async (req, res, next) => {
 router.post("/concerts/add", urlencodedParser, async (_req, res, next) => {
   try {
     let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),'', '','',1)`
+      `INSERT INTO concerts VALUES (0,'',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '${DATE_FORMAT}'),'', '','',1, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
     );
     await MakeDefaultImage(results.insertId, "/static/img/posters/");
     res.redirect("/admin/");
@@ -284,8 +287,8 @@ router.post("/concerts/copy", urlencodedParser, async (req, res, next) => {
     let [concertToCopy]=await db.query(`SELECT * FROM concerts WHERE id=${id}`);
     concertToCopy=concertToCopy[0];
     let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '%Y-%m-%d %H:%i:00'),\
-      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',1)`
+      `INSERT INTO concerts VALUES (0,'${concertToCopy.title}',DATE_FORMAT(NOW() + INTERVAL 1 DAY, '${DATE_FORMAT}'),\
+      '${concertToCopy.description}', '${concertToCopy.place}','${concertToCopy.ticket}',1 , DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
     );
     await fs.copyFile(`static/img/posters/${id}.jpg`,`static/img/posters/${results.insertId}.jpg`);
     res.redirect("/admin/");
@@ -305,7 +308,7 @@ router.post("/concerts/edit", urlencodedParser, async (req, res, next) => {
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${id}=id;`
+      description = '${description}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -374,7 +377,7 @@ router.post("/news/delete", urlencodedParser, async (req, res, next) => {
 router.post("/news/add", urlencodedParser, async (_req, res, next) => {
   try {
     let [results] = await db.query(
-      `INSERT INTO news VALUES (0,'','2999-01-01 00:00','')`
+      `INSERT INTO news VALUES (0,'','2999-01-01 00:00','', DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
     );
     await MakeDefaultImage(results.insertId, "/static/img/news/");
     res.redirect("/admin/");
@@ -392,7 +395,7 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
     await db.query(
       `UPDATE news SET title = '${req.body.title}', \
       date = '${date}',\
-      text = '${text}' WHERE ${id}=id;`
+      text = '${text}', updated = DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {
@@ -460,7 +463,7 @@ router.get("/artists", async (req, res, next) => {
   try {
     let langId = globals.languages[req.getLocale()];
     let [artists] = await db.query(
-      `SELECT artists.id, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `
+      `SELECT artists.id, artists.updated, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `
     );
     artists.reverse();
     res.render("admin/artists.hbs", { layout: false, artists });
@@ -532,7 +535,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
 router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
   try {
     let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO artists VALUES (0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    insertQuery+=`INSERT INTO artists VALUES (0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
     let languagesCount=Object.keys(globals.languages).length-1;
     if (languagesCount>0) insertQuery+=`INSERT INTO artists_translate VALUES `;
     for (
@@ -561,7 +564,7 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
       UPDATE artists_translate SET name = '${req.body.name}', \
       country = '${req.body.country}',\
       instrument = '${req.body.instrument}' WHERE ${id}=artistId AND ${langId}=languageId;\
-      UPDATE artists SET groupId = '${req.body.group}' WHERE ${id}=id;\
+      UPDATE artists SET groupId = '${req.body.group}', updated = DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -590,7 +593,7 @@ router.get("/composers", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
     let [composers] = await db.query(
-      `SELECT composers.id, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `
+      `SELECT composers.id, composers.updated, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `
     );
     composers.reverse();
     res.render("admin/composers.hbs", { layout: false, composers });
@@ -662,7 +665,7 @@ router.post(
 router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
   try {
     let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO composers VALUES (0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    insertQuery+=`INSERT INTO composers VALUES (0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
     let languagesCount=Object.keys(globals.languages).length-1;
     if (languagesCount>0) insertQuery+=`INSERT INTO composers_translate VALUES `;
 
@@ -692,7 +695,7 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
       `START TRANSACTION;\
       UPDATE composers_translate SET name = '${req.body.name}', \
       country = '${req.body.country}' WHERE ${id}=composerId AND ${langId}=languageId;\
-      UPDATE composers SET isInResidence = '${isInResidence}' WHERE ${id}=id;\
+      UPDATE composers SET isInResidence = '${isInResidence}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -790,7 +793,7 @@ router.post(
 router.post("/musicians/add", urlencodedParser, async (_req, res, next) => {
   try {
     let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO musicians VALUES (0,0,0); SELECT LAST_INSERT_ID() INTO @ID;`;
+    insertQuery+=`INSERT INTO musicians VALUES (0,0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
     let languagesCount=Object.keys(globals.languages).length-1;
     if (languagesCount>0) insertQuery+=`INSERT INTO musicians_translate VALUES `;
     for (
@@ -821,7 +824,7 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
       bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
         id
       }=musicianId AND ${langId}=languageId;\
-      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}' WHERE ${id}=id;\
+      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
       COMMIT;`
     );
     res.sendStatus(200);
@@ -932,7 +935,7 @@ router.post("/archive/delete", urlencodedParser, async (req, res, next) => {
 router.post("/archive/add", urlencodedParser, async (_req, res, next) => {
   try {
     let [results] = await db.query(
-      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '%Y-%m-%d %H:%i:00'),'', '','',1)`
+      `INSERT INTO concerts VALUES (0,'', DATE_FORMAT(NOW() - INTERVAL 1 MINUTE, '${DATE_FORMAT}'),'', '','',1, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}'))`
     );
     await MakeDefaultImage(results.insertId, "/static/img/posters/");
     res.redirect("/admin/");
@@ -952,7 +955,7 @@ router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
       `UPDATE concerts SET title = '${req.body.title}', \
       date = '${date}', place = '${req.body.place}',\
       hidden = '${hidden}', ticket = '${req.body.ticket}',\
-      description = '${description}' WHERE ${id}=id;`
+      description = '${description}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;`
     );
     res.sendStatus(200);
   } catch (error) {

@@ -1,16 +1,31 @@
 <div rowId="{{event.id}}" class="row searchable event-row">
-    <div class="concert  col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
-        <div class="row">
+    <div class="card col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+        <div class="row card-header text-muted">
+            Концерт {{event.id}}
+        </div>
+        <div class="row card-body">
             <div class="col-12 col-md-4 p-0">
                 <img class="poster" loading="lazy" src="/img/posters/{{event.id}}.jpg" alt="">
                 <form class="form-group" action="/admin/concerts/posterupload" method="post"
                     enctype="multipart/form-data">
                     <input type="hidden" name="id" value="{{event.id}}">
-                    <input class='form-control fileToUpload' type="file" name="fileToUpload">
+                    <input class='form-control fileToUpload d-none' type="file" id="file-{{event.id}}"
+                        name="fileToUpload">
+                    <label class="form-control text-center" for="file-{{event.id}}">Загрузить изображение</label>
                 </form>
+                <div class="form-group">
+                    <form class="form-group" action="/admin/concerts/copy" method="post">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <input name='copy-{{event.id}}' class='copy-button form-control' type="submit"
+                            value="Повторить концерт"></input>
+                    </form>
+                    <input name='{{event.id}}' class='delete-button form-control' type="submit"
+                        value="Удалить концерт"></input>
+                    <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
+                        value="Сохранить концерт"></input>
+                </div>
             </div>
-            <div class="col-12 col-md-8 p-4">
-
+            <div class="col-12 col-md-8 p-0">
                 <form class='form-group' action="/admin/concerts/edit" id="edit-form-{{event.id}}" method="POST">
                     <input type="hidden" name="id" value="{{event.id}}">
                     <textarea name="title" class="form-control w-100 saveable" placeholder="Название"
@@ -28,29 +43,21 @@
                     <textarea name="ticket" class="saveable form-control w-100" rows="2"
                         placeholder="Ссылка на сайт с билетами">{{event.ticket}}</textarea>
 
-                    <input type="datetime-local" max="9999-12-31T23:59" class="saveable form-control" name="date" value="{{event.date}}">
-                    <input type="text" list="places" name="place" class="saveable form-control w-100" value="{{event.place}}"  placeholder="Зал"
-                        ></input>
-                    <div class="saveable form-check">
-                        <input type="checkbox" name="hidden" value='1' id="hidden" {{#if event.hidden}} checked{{/if}}>
-                        <label class="form-check-label">Скрыть концерт из афиши</label>
+                    <input type="datetime-local" max="9999-12-31T23:59" class="saveable form-control" name="date"
+                        value="{{event.date}}">
+                    <input type="text" list="places" name="place" class="saveable form-control w-100"
+                        value="{{event.place}}" placeholder="Зал"></input>
+                    <div class="saveable form-control form-check">
+                        <input type="checkbox" name="hidden" value='1' id="hidden-{{event.id}}" {{#if event.hidden}} checked{{/if}}>
+                        <label for="hidden-{{event.id}}" class="form-check-label">Скрыть концерт из афиши</label>
                     </div>
 
                 </form>
             </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <input name='{{event.id}}' class='delete-button form-control'
-                        type="submit" value="Удалить концерт"></input>
-                    <form class="form-group" action="/admin/concerts/copy" method="post">
-                        <input type="hidden" name="id" value="{{event.id}}">
-                        <input name='copy-{{event.id}}' class='copy-button form-control'
-                        type="submit" value="Повторить концерт"></input>
-                    </form>
-                    <input name='edit-form-{{event.id}}' class='save-button form-control' type="submit"
-                        value="Сохранить концерт"></input>
-                </div>
-            </div>
+        </div>
+        <div class="row card-footer text-muted">
+            Обновлено {{event.updated}}
         </div>
     </div>
+
 </div>

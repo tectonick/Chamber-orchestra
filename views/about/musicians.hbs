@@ -7,46 +7,4 @@
     {{> groups/musicians group=musicians.[5] name='musicians.keyboards'}}
 </div>
 
-<!-- Bio Modal -->
-<div class="modal fade" id="bioModal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-xlg" role="document">
-        <div class="modal-content">
-            <div id='modal-body' class="modal-body container-fluid">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class='row'>
-                    <div class="col-12 col-md-5 img-col">
-                        <img class='w-100' id="bio-pic" src="" alt="">
-                    </div>
-                    <div class="col-12 col-md-7 bio-col">
-                        <h5 id="modal-label"></h5>
-                        <pre id="bio">
-                            </pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<script>
-    $(document).ready(async function () {
-        $(".bio-button").click(async function (event) {
-            event.preventDefault();
-            var modal = $('#bioModal');
-            modal.attr('name', $(this).attr('name'));
-            var id = $(this).attr('id');
-            var response = await fetch('/about/musicians/getById?id=' + id);
-            var musician = await response.json();
-            var modalBody = document.getElementById('modal-body');
-            document.getElementById('bio').innerHTML = musician[0].bio;
-            document.getElementById('bio-pic').src = '/img/about/musicians/' + id + '.jpg';
-            document.getElementById('modal-label').innerHTML = musician[0].name;
-            modal.modal();
-        });
-    })
-</script>
+{{> modals/bio}}

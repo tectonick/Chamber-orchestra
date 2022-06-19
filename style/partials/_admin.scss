@@ -1,29 +1,23 @@
-/*Admin*/
-.unsaved, .unsaved *:not([type='button']){
+/* Admin */
+.unsaved {
   background-color: ivory !important;
+
+  *:not([type="button"]) {
+    background-color: ivory !important;
+  }
 }
 
 .menu-link span {
   float: right;
-  color: #aaaaaa;
+  color: #aaa;
 }
 
 .menu-link-active {
   background-color: #e9ecef !important;
 }
 
-.invalid-date{
+.invalid-date {
   background: palevioletred !important;
-}
-
-#sidebar-wrapper {
-  min-height: 100%;
-  margin-left: -15rem;
-  -webkit-transition: margin 0.25s ease-out;
-  -moz-transition: margin 0.25s ease-out;
-  -o-transition: margin 0.25s ease-out;
-  transition: margin 0.25s ease-out;
-  overflow-wrap: break-word;
 }
 
 .sidebar-wrapper .sidebar-heading {
@@ -42,7 +36,7 @@
 
 .save-block {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
 }
 
 .form-control {
@@ -65,58 +59,54 @@
   }
 }
 
-/* Alignment styles for images, videos and iframes in editable regions */
-
-/* Center (default) */
-[data-editable] iframe,
-[data-editable] image,
-[data-editable] [data-ce-tag=img],
-[data-editable] img,
-[data-editable] video {
+[data-editable] {
+  iframe,
+  image,
+  [data-ce-tag="img"],
+  img,
+  video {
     clear: both;
     display: block;
     margin-left: auto;
     margin-right: auto;
     max-width: 100%;
-}
+  }
 
-/* Left align */
-[data-editable] .align-left {
+  .align-left {
     clear: initial;
     float: left;
     margin-right: 0.5em;
-}
+  }
 
-/* Right align */
-[data-editable] .align-right {
+  .align-right {
     clear: initial;
     float: right;
     margin-left: 0.5em;
-}
+  }
 
-/* Alignment styles for text in editable regions */
-[data-editable] .text-center {
+  .text-center {
     text-align: center;
-}
+  }
 
-[data-editable] .text-left {
+  .text-left {
     text-align: left;
-}
+  }
 
-[data-editable] .text-right {
+  .text-right {
     text-align: right;
+  }
 }
 
 @media (max-width: 992px) {
-  .ct-widget.ct-ignition{
+  .ct-widget.ct-ignition {
     left: 1px !important;
     top: 1px !important;
   }
 }
 
-.editor-toggled{
+.editor-toggled {
   background: lightgray !important;
-  box-shadow: inset 0px 0px 5px 1px darkgrey !important;
+  box-shadow: inset 0 0 5px 1px darkgrey !important;
   border: none !important;
 }
 
@@ -125,10 +115,26 @@
 }
 
 @keyframes blink-animation {
-  50% { 
+  50% {
     background-color: lemonchiffon;
   }
+
   100% {
     background-color: #e9ecef;
+  }
+}
+
+.form-group {
+  margin-bottom: 0 !important;
+}
+
+#update-container {
+  .card-footer,
+  .card-header {
+    padding: 5px;
+  }
+
+  .card-body {
+    background-color: rgba(230 230 230 / 30%);
   }
 }

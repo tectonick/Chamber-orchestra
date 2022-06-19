@@ -13,13 +13,7 @@
     <div>
         <div class="card-columns">
             {{#each names}}
-            <div class="card searchable "> <img class="card-img-top" loading=lazy src="/img/disks/{{this}}.jpg" alt="Card image cap">
-                <div class="card-footer">
-                    <p>{{this}}</p>                 
-                        <input id="/img/disks/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
-                    
-                </div>
-            </div>
+                {{> forms/image name=this imageFolder="/img/disks/" thumbnailFolder="/img/disks/"}}
             {{/each}}
         </div>
 

@@ -1,59 +1,68 @@
- <div rowId="{{artist.id}}" class="row col-lg-6 col-xl-4 col-12 searchable event-row">
+<div rowId="{{artist.id}}" class="row card-columns col-lg-6 col-12 searchable event-row">
 
 
-        <div class="concert  col-11 offset-1">
-            <div class="row">
-                <div class="col-12 col-md-4 p-0">
-                    <img class="poster" loading="lazy" src="/img/about/artists/{{artist.id}}.jpg" alt="">
-                    <form class="form-group" action="/admin/artists/posterupload" method="post"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="{{artist.id}}">
-                        <input class='form-control fileToUpload' type="file" name="fileToUpload">
-                    </form>
-                </div>
-                <div class="col-12 col-md-8 p-4 form-container">
-
-                    <form class='form-group' action="/admin/artists/edit" id="edit-form-{{artist.id}}" method="POST">
-                        <input type="hidden" name="id" value="{{artist.id}}">
-                        <textarea name="name" class="saveable form-control w-100" placeholder="Имя"  rows="1">{{artist.name}}</textarea>
-                        <textarea name="instrument" class="saveable form-control w-100" placeholder="Инструмент"  rows="1">{{artist.instrument}}</textarea>
-                        <textarea name="country" class="saveable form-control w-100" placeholder="Страна"  rows="1">{{artist.country}}</textarea>
-                        <select class="saveable form-control w-100" name="group" >
-                            <option value="{{artist.groupId}}" selected hidden>Изменить группу</option>
-                            <option value="1">Дирижеры</option>
-                            <option value="2">Скрипачи</option>
-                            <option value="3">Альтисты</option>
-                            <option value="4">Виолончелисты</option>
-                            <option value="5">Контрабасисты</option>
-                            <option value="6">Пианисты</option>
-                            <option value="7">Духовые и ударные</option>
-                            <option value="8">Народные и другие</option>
-                            <option value="9">Вокалисты</option>
-                            <option value="10">Чтецы</option>
-                        </select>
-                    </form>
-                    <input name='translate-form-{{artist.id}}'  class='translate-button form-control' type="submit"
-                            value="Перевести на остальные языки"></input>
-                    <form action="/admin/artists/translate" method="post" id="translate-form-{{artist.id}}" >
-                        <div class="form-group">
-                            <input type="hidden" name="id" value="{{artist.id}}">                       
-                        </div>
-                    </form>
-                    
-
-                </div>
-
-                <div class="col-12 ">
-                    <div class="form-group">
-                        <input name='{{artist.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
-                            type="submit" value="Удалить артиста"></input>
-                        <input name='edit-form-{{artist.id}}' class='save-button form-control' type="submit"
-                            value="Сохранить артиста"></input>
-                    </div>
-
-                </div>
-            </div>
+    <div class="card col-11 offset-1">
+        <div class="row card-header text-muted">
+            Артист {{artist.id}}
         </div>
+        <div class="row card-body">
+            <div class="col-12 col-md-4 p-0">
+                <img class="poster" loading="lazy" src="/img/about/artists/{{artist.id}}.jpg" alt="">
+                <form class="form-group" action="/admin/artists/posterupload" method="post"
+                    enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{{artist.id}}">
+                    <input class='form-control fileToUpload d-none' type="file" id="file-{{artist.id}}"
+                        name="fileToUpload">
+                    <label class="form-control text-center" for="file-{{artist.id}}">Загрузить изображение</label>
+                </form>
+
+            </div>
+            <div class="col-12 col-md-8 p-0 form-container">
+
+                <form class='form-group' action="/admin/artists/edit" id="edit-form-{{artist.id}}" method="POST">
+                    <input type="hidden" name="id" value="{{artist.id}}">
+                    <textarea name="name" class="saveable form-control w-100" placeholder="Имя"
+                        rows="1">{{artist.name}}</textarea>
+                    <textarea name="instrument" class="saveable form-control w-100" placeholder="Инструмент"
+                        rows="1">{{artist.instrument}}</textarea>
+                    <textarea name="country" class="saveable form-control w-100" placeholder="Страна"
+                        rows="1">{{artist.country}}</textarea>
+                    <select class="saveable form-control w-100" name="group">
+                        <option value="{{artist.groupId}}" selected hidden>Изменить группу</option>
+                        <option value="1">Дирижеры</option>
+                        <option value="2">Скрипачи</option>
+                        <option value="3">Альтисты</option>
+                        <option value="4">Виолончелисты</option>
+                        <option value="5">Контрабасисты</option>
+                        <option value="6">Пианисты</option>
+                        <option value="7">Духовые и ударные</option>
+                        <option value="8">Народные и другие</option>
+                        <option value="9">Вокалисты</option>
+                        <option value="10">Чтецы</option>
+                    </select>
+                </form>
+                <input name='translate-form-{{artist.id}}' class='translate-button form-control' type="submit"
+                    value="Перевести на остальные языки"></input>
+                <form action="/admin/artists/translate" method="post" id="translate-form-{{artist.id}}">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="{{artist.id}}">
+                    </div>
+                </form>
 
 
+            </div>
+            <div class="form-group d-flex w-100">
+                <input name='{{artist.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                    type="submit" value="Удалить артиста"></input>
+                <input name='edit-form-{{artist.id}}' class='save-button form-control' type="submit"
+                    value="Сохранить артиста"></input>
+            </div>
+
+        </div>
+        <div class="row card-footer text-muted">
+            Обновлено {{artist.updated}}
+        </div>
     </div>
+
+
+</div>

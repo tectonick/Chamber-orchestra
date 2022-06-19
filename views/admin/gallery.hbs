@@ -1,47 +1,42 @@
 <div class="container-fluid">
 
-    <div class="ml-auto my-3" >
+    <div class="ml-auto my-3">
         <form action="/admin/gallery/upload" method="post" enctype="multipart/form-data">
             <input class='form-control' type="file" name="files" id="files" multiple>
             <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
         </form>
 
     </div>
-    
+
 
     <div>
         <div class="card-columns">
             {{#each names}}
-            <div class="card searchable"> <img class="card-img-top" loading=lazy src="/thumbnails/img/gallery/{{this}}.jpg" alt="Card image cap">
-                <div class="card-footer">
-                    <p>{{this}}</p>                 
-                        <input id="/img/gallery/{{this}}.jpg" class='delete-button form-control' type="submit" value="Удалить"></input>
-                </div>
-            </div>
+                {{> forms/image name=this imageFolder="/img/gallery/" thumbnailFolder="/thumbnails/img/gallery/"}}
             {{/each}}
         </div>
 
     </div>
 
 
-<script>
+    <script>
 
-$(document).ready(function(){
-  $(".delete-button").click(function(){
-    this.parentNode.parentNode.style.display='none';
-    $.post("/admin/gallery/delete", {filename:$(this).attr('id')});
-  });
-  $("#files").change(function(){
-      if ($(this).val().length>0){
-            $(this).siblings('.form-control').prop('disabled', false);
-      }
-  });
-});
-
-
+        $(document).ready(function () {
+            $(".delete-button").click(function () {
+                this.parentNode.parentNode.style.display = 'none';
+                $.post("/admin/gallery/delete", { filename: $(this).attr('id') });
+            });
+            $("#files").change(function () {
+                if ($(this).val().length > 0) {
+                    $(this).siblings('.form-control').prop('disabled', false);
+                }
+            });
+        });
 
 
-</script>
+
+
+    </script>
 
 
 </div>
