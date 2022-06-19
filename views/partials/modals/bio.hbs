@@ -1,4 +1,3 @@
-
 <!-- Bio Modal -->
 <div class="modal fade" id="bio-modal" name='' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -33,9 +32,9 @@
             var response = await fetch('/about/musicians/getById?id=' + id);
             var musician = await response.json();
             var modalBody = document.getElementById('modal-body');
-            document.getElementById('bio').innerHTML = musician[0].bio;
+            document.getElementById('bio').innerHTML = musician.bio;
             document.getElementById('bio-pic').src = '/img/about/musicians/' + id + '.jpg';
-            document.getElementById('modal-label').innerHTML = musician[0].name;
+            document.getElementById('modal-label').innerHTML = musician.name;
             modal.modal();
         });
     })

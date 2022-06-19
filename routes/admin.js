@@ -2,13 +2,11 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const viewhelpers = require("../viewhelpers");
-const db = require("../db").db().promise();
 const fs = require("fs").promises;
 const path = require("path");
 const imageProcessor = require("../image-processing");
 const bcrypt = require("bcrypt");
 const globals = require("../globals.js");
-let unirest = require("unirest");
 const config = require("config");
 const logger = require("../logger");
 let xl = require('excel4node');
@@ -16,50 +14,10 @@ let xl = require('excel4node');
 const QueryOptions = require("../repositories/options");
 const ConcertsRepository = require("../repositories/concerts");
 const NewsRepository = require("../repositories/news");
-
-function translate(text, source, dest) {
-  //500000 requests a month !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  return new Promise((resolve, reject) => {
-    if (source == "be") source = "ru";
-    if (dest == "be") dest = "ru";
-    let req = unirest(
-      "POST",
-      "https://microsoft-translator-text.p.rapidapi.com/translate"
-    );
-
-    req.query({
-      from: source,
-      profanityAction: "NoAction",
-      textType: "plain",
-      to: dest,
-      "api-version": "3.0",
-    });
-
-    req.headers({
-      "x-rapidapi-host": "microsoft-translator-text.p.rapidapi.com",
-      "x-rapidapi-key": config.get("rapidapikey"),
-      "content-type": "application/json",
-      accept: "application/json",
-      useQueryString: true,
-    });
-
-    req.type("json");
-    req.send([
-      {
-        Text: text,
-      },
-    ]);
-
-    req.end(function (res) {
-      if (res.error) {
-        reject(res.error);
-      } else {
-        resolve(res.body[0].translations[0].text);
-      }
-    });
-    // resolve(text);
-  });
-}
+const ComposersRepository = require("../repositories/composers");
+const ArtistsRepository = require("../repositories/artists");
+const MusiciansRepository = require("../repositories/musicians");
+const StatRepository = require("../repositories/stat");
 
 const admin = config.get("adminUser");
 //look new password hash with this command
@@ -140,8 +98,7 @@ router.use(function (req, res, next) {
 //Routes
 router.get("/", async function (_req, res, next) {
   try {
-    let [results] = await db.query("CALL STAT()");
-    let stat = results[0][0];
+    let stat = await StatRepository.getAll();
     let galleryFiles = await fs.readdir("./static/img/gallery");
     let disksFiles = await fs.readdir("./static/img/disks");
     let pressFiles = await fs.readdir("./static/img/press");
@@ -522,9 +479,7 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 router.get("/artists", async (req, res, next) => {
   try {
     let langId = globals.languages[req.getLocale()];
-    let [artists] = await db.query(
-      `SELECT artists.id, artists.updated, groupId, name, instrument, country FROM artists JOIN artists_translate ON artists.id=artists_translate.artistId WHERE languageId=${langId} `
-    );
+    let artists = await ArtistsRepository.getAll({ langId });
     artists.reverse();
     res.render("admin/artists.hbs", { layout: false, artists });
   } catch (error) {
@@ -535,12 +490,7 @@ router.get("/artists", async (req, res, next) => {
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      DELETE FROM artists_translate WHERE artistId=${id};\
-      DELETE FROM artists WHERE id=${id};\
-      COMMIT;`
-    );
+    await ArtistsRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/artists/");
     res.redirect("/admin/");
   } catch (error) {
@@ -551,64 +501,24 @@ router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
 router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
   let currentLang = globals.languages[req.getLocale()];
   let id = Number.parseInt(req.body.id);
-  let sourceLang = req.getLocale();
   try {
-    let [artist] = await db.query(
-      `SELECT name, instrument, country FROM artists_translate WHERE languageId=${currentLang} AND artistId=${id}`
-    );
-
-    try {
-      let updateQuery="START TRANSACTION; ";
-      for (
-        let langId = 1;
-        langId < Object.keys(globals.languages).length;
-        langId++
-      ) {
-        if (currentLang == langId) {
-          continue;
-        }
-        let destLang = globals.languages.getNameById(langId);
-        let name = await translate(artist[0].name, sourceLang, destLang);
-        let country = await translate(artist[0].country, sourceLang, destLang);
-        let instrument = await translate(
-          artist[0].instrument,
-          sourceLang,
-          destLang
-        );
-        updateQuery+=`UPDATE artists_translate SET name = '${name}', \
-          country = '${country}',\
-          instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`;
-      }
-      updateQuery+="COMMIT;";
-      await db.query(updateQuery);
-
-    } catch (error) {
-      logger.error(error);
-      res.sendStatus(500);
-    }
-    res.sendStatus(200);
+    await ArtistsRepository.translate(id, currentLang);
   } catch (error) {
+    logger.error(error);
     next(error);
   }
+  res.sendStatus(200);
 });
 
 router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO artists VALUES (0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
-    let languagesCount=Object.keys(globals.languages).length-1;
-    if (languagesCount>0) insertQuery+=`INSERT INTO artists_translate VALUES `;
-    for (
-      let langId = 1;
-      langId <= languagesCount;
-      langId++
-    ) {
-      insertQuery+=`(0,@ID,${langId},'','','')`;
-      insertQuery+=(langId < languagesCount)? `, `:`;`;
-    }    
-    insertQuery+='COMMIT;';
-    let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[1].insertId, "/static/img/about/artists");
+    let insertId = await ArtistsRepository.add({
+      name: "",
+      country: "",
+      instrument: "",
+      groupId: 0
+    });
+    await MakeDefaultImage(insertId, "/static/img/about/artists");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -619,14 +529,13 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      UPDATE artists_translate SET name = '${req.body.name}', \
-      country = '${req.body.country}',\
-      instrument = '${req.body.instrument}' WHERE ${id}=artistId AND ${langId}=languageId;\
-      UPDATE artists SET groupId = '${req.body.group}', updated = DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
-      COMMIT;`
-    );
+    await ArtistsRepository.update({
+      id,
+      name: req.body.name,
+      country: req.body.country,
+      instrument: req.body.instrument,
+      groupId: req.body.group
+    }, { langId });
     res.sendStatus(200);
   } catch (error) {
     next(error);
@@ -652,9 +561,7 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
 router.get("/composers", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let [composers] = await db.query(
-      `SELECT composers.id, composers.updated, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${langId} `
-    );
+    let composers = await ComposersRepository.getAll({langId});
     composers.reverse();
     res.render("admin/composers.hbs", { layout: false, composers });
   } catch (error) {
@@ -665,12 +572,7 @@ router.get("/composers", async (req, res, next) => {
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      DELETE FROM composers_translate WHERE composerId=${id};\
-      DELETE FROM composers WHERE id=${id};\
-      COMMIT;`
-    );
+    await ComposersRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/composers/");
     res.redirect("/admin/");
   } catch (error) {
@@ -678,68 +580,26 @@ router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   }
 });
 
-router.post(
-  "/composers/translate",
-  urlencodedParser,
-  async (req, res, next) => {
-    let currentLang = globals.languages[req.getLocale()];
-    let id = Number.parseInt(req.body.id);
-    let sourceLang = req.getLocale();
-    try {
-      let [composer] = await db.query(
-        `SELECT name, country FROM composers_translate WHERE languageId=${currentLang} AND composerId=${id}`
-      );
-      try {
-        let updateQuery="START TRANSACTION; ";
-        for (
-          let langId = 1;
-          langId < Object.keys(globals.languages).length;
-          langId++
-        ) {
-          if (currentLang == langId) {
-            continue;
-          }
-          let destLang = globals.languages.getNameById(langId);
-          let name = await translate(composer[0].name, sourceLang, destLang);
-          let country = await translate(
-            composer[0].country,
-            sourceLang,
-            destLang
-          );
-          updateQuery+=`UPDATE composers_translate SET name = '${name}', \
-          country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`;
-        }
-        updateQuery+="COMMIT;";
-        await db.query(updateQuery)
-      } catch (error) {
-        logger.error(error);
-        res.sendStatus(500);
-      }
-      res.sendStatus(200);
-    } catch (error) {
-      next(error);
-    }
+router.post("/composers/translate", urlencodedParser, async (req, res) => {
+  let currentLang = globals.languages[req.getLocale()];
+  let id = Number.parseInt(req.body.id);
+  try {
+    await ComposersRepository.translate(id, currentLang);
+  } catch (error) {
+    logger.error(error);
+    res.sendStatus(500);
   }
-);
+  res.sendStatus(200);
+});
 
 router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO composers VALUES (0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
-    let languagesCount=Object.keys(globals.languages).length-1;
-    if (languagesCount>0) insertQuery+=`INSERT INTO composers_translate VALUES `;
-
-    for (
-      let langId = 1;
-      langId <= languagesCount;
-      langId++
-    ) {
-      insertQuery+=`(0,@ID,${langId},'','')`;
-      insertQuery+=(langId < languagesCount)? `, `:`;`;
-    }
-    insertQuery+='COMMIT';
-    let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[1].insertId, "/static/img/about/composers");
+    let insertId = await ComposersRepository.add({
+      name: "",
+      country: "",
+      isInResidence: 0
+    });
+    await MakeDefaultImage(insertId, "/static/img/about/composers");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -751,12 +611,12 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
   let isInResidence=req.body.isInResidence??0;
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      UPDATE composers_translate SET name = '${req.body.name}', \
-      country = '${req.body.country}' WHERE ${id}=composerId AND ${langId}=languageId;\
-      UPDATE composers SET isInResidence = '${isInResidence}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
-      COMMIT;`
+    await ComposersRepository.update({
+      id,
+      name: req.body.name,
+      country: req.body.country,
+      isInResidence
+    }, {langId}
     );
     res.sendStatus(200);
   } catch (error) {
@@ -783,13 +643,7 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
 router.get("/musicians", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let [musicians] = await db.query(
-      `SELECT musicians.id, groupId, name, bio, hidden FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${langId} ORDER BY groupId`
-    );
-    musicians = musicians.map((musician) => {
-      musician.bio = viewhelpers.UnescapeQuotes(musician.bio);
-      return musician;
-    });
+    let musicians = await MusiciansRepository.getAll({langId, hidden:true});
     res.render("admin/musicians.hbs", { layout: false, musicians });
   } catch (error) {
     next(error);
@@ -799,12 +653,7 @@ router.get("/musicians", async (req, res, next) => {
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      DELETE FROM musicians_translate WHERE musicianId=${id};\
-      DELETE FROM musicians WHERE id=${id};\
-      COMMIT;`
-    );
+    await MusiciansRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/musicians/");
     res.render("admin/musicians");
   } catch (error) {
@@ -818,31 +667,8 @@ router.post(
   async (req, res, next) => {
     let currentLang = globals.languages[req.getLocale()];
     let id = Number.parseInt(req.body.id);
-    let sourceLang = req.getLocale();
     try {
-      let [musician] = await db.query(
-        `SELECT name, bio FROM musicians_translate WHERE languageId=${currentLang} AND musicianId=${id}`
-      );
-      let updateQuery="START TRANSACTION; ";
-      for (
-        let langId = 1;
-        langId < Object.keys(globals.languages).length;
-        langId++
-      ) {
-        if (currentLang == langId) {
-          continue;
-        }
-        let destLang = globals.languages.getNameById(langId);
-        let name = await translate(musician[0].name, sourceLang, destLang);
-        let bio = await translate(musician[0].bio, sourceLang, destLang);
-
-        bio = viewhelpers.EscapeQuotes(bio);
-        updateQuery+=
-          `UPDATE musicians_translate SET name = '${name}', \
-        bio = '${bio}' WHERE musicianId=${id} AND languageId=${langId};`;
-      }
-      updateQuery+="COMMIT;";
-      db.query(updateQuery);
+      await MusiciansRepository.translate(id, currentLang);
       res.sendStatus(200);
     } catch (error) {
       next(error);
@@ -852,21 +678,13 @@ router.post(
 
 router.post("/musicians/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertQuery="START TRANSACTION; ";
-    insertQuery+=`INSERT INTO musicians VALUES (0,0,0, DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
-    let languagesCount=Object.keys(globals.languages).length-1;
-    if (languagesCount>0) insertQuery+=`INSERT INTO musicians_translate VALUES `;
-    for (
-      let langId = 1;
-      langId <= languagesCount;
-      langId++
-    ) {
-      insertQuery+=`(0,@ID,${langId},'','')`;
-      insertQuery+=(langId < languagesCount)? `, `:`;`;
-    }
-    insertQuery+="COMMIT;"
-    let [results]=await db.query(insertQuery);
-    await MakeDefaultImage(results[1].insertId, "/static/img/about/musicians");
+    let insertId = await MusiciansRepository.add({
+      name: "",
+      bio: "",
+      groupId: 0,
+      hidden: 1
+    });
+    await MakeDefaultImage(insertId, "/static/img/about/musicians");
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -878,14 +696,13 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
     let id=Number.parseInt(req.body.id);
-    await db.query(
-      `START TRANSACTION;\
-      UPDATE musicians_translate SET name = '${req.body.name}',  \
-      bio = '${viewhelpers.EscapeQuotes(req.body.bio)}' WHERE ${
-        id
-      }=musicianId AND ${langId}=languageId;\
-      UPDATE musicians SET groupId = '${req.body.groupId}', hidden='${hidden}', updated=DATE_FORMAT(NOW(), '${UPDATED_DATE_FORMAT}') WHERE ${id}=id;\
-      COMMIT;`
+    await MusiciansRepository.update({
+      id,
+      name: req.body.name,
+      bio: req.body.bio,
+      groupId: req.body.groupId,
+      hidden
+    }, {langId}
     );
     res.sendStatus(200);
   } catch (error) {
