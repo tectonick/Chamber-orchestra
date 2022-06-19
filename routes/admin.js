@@ -154,7 +154,7 @@ async function concertsHandler(req, res, next, pageName) {
       hidden: true,
       dates,
       offset,
-      itemCount,
+      limit: itemCount,
       search,
     });
     let maxCount = await ConcertsRepository.getCount({ hidden: true, dates });
