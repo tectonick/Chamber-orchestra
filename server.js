@@ -139,9 +139,9 @@ function CreateApp() {
   //Title and description setting for layout middleware
   app.use(function (req, res, next) {
     //get last part of path
-    let path = req.path.split("/");
-    if (path[path.length - 1]==="") path.pop();    
-    let pageName = path[path.length - 1];
+    let urlpath = req.path.split("/");
+    if (urlpath[urlpath.length - 1]==="") urlpath.pop();    
+    let pageName = urlpath[urlpath.length - 1];
 
     if (pageName.indexOf(".")===-1) {
       if (pageName === "") {
@@ -165,7 +165,7 @@ function CreateApp() {
   app.use(errorHandler);
 
   //404 handling
-  app.get("*", function (req, res) {
+  app.get("*", function (_req, res) {
     res.status(404).render("404", { layout: false });
   });
   return app;

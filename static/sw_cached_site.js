@@ -1,8 +1,7 @@
 const cacheName = 'v1';
 
 // Call Install Event
-self.addEventListener('install', () => {
-});
+self.addEventListener('install');
 
 // Call Activate Event
 self.addEventListener('activate', e => {

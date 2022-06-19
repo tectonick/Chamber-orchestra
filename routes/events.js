@@ -22,10 +22,12 @@ router.get("/", async (_req, res, next) => {
 router.get("/archive", async (req, res, next) => {
   try {
     let id = Number.parseInt(req.query.id);
+    let results;
+    let months;
     if (!isNaN(id)) {
-      let results = [await ConcertsRepository.getById(id)];
+      results = [await ConcertsRepository.getById(id)];
       if (results.length > 0) {
-        let months = viewhelpers.OrganizeConcertsInMonths(results);
+        months = viewhelpers.OrganizeConcertsInMonths(results);
         res.render("events/archive.hbs", { pages: [], months });
         return;
       }
@@ -34,7 +36,7 @@ router.get("/archive", async (req, res, next) => {
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
 
-    let results = await ConcertsRepository.getAll({
+    results = await ConcertsRepository.getAll({
       hidden: false,
       dates: QueryOptions.DATES.PAST,
       offset,
@@ -51,7 +53,7 @@ router.get("/archive", async (req, res, next) => {
       maxCount,
       itemCount
     );
-    let months = viewhelpers.OrganizeConcertsInMonths(results);
+    months = viewhelpers.OrganizeConcertsInMonths(results);
     res.render("events/archive.hbs", { pages, months });
   } catch (error) {
     next(error);

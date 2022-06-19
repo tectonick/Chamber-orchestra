@@ -10,7 +10,7 @@ describe("Server starting", () => {
     let app;
     beforeAll(async () => {
         app=CreateApp();
-        server= await StartServer(app);
+        server= StartServer(app);
     }
     );
 
@@ -18,7 +18,6 @@ describe("Server starting", () => {
         console.log = jest.fn();
         console.error=jest.fn();
                 
-        //console.dir(server);
         expect(server.httpServer).toBeTruthy();
         expect(server.httpsServer).toBeTruthy();
     })

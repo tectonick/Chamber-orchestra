@@ -51,24 +51,24 @@ router.get("/news", async (req, res, next) => {
   }
 });
 
-router.get("/contacts", (req, res) => {
+router.get("/contacts", (_req, res) => {
   res.render("contacts.hbs");
 });
 
-router.get("/api/concerts", async (req, res, next) => {
+router.get("/api/concerts", async (_req, res, next) => {
   try {
     let concerts = await ConcertsRepository.getAll({
       hidden: false,
       dates: QueryOptions.DATES.ALL,
     });
     res.statusCode = 200;
-    res.json(concerts);
+    res.json([concerts]);
   } catch (error) {
     next(error);
   }
 });
 
-router.get("/press", async (req, res) => {
+router.get("/press", async (_req, res) => {
   let names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/press");
   let photos = names.map((name) => {
     return {

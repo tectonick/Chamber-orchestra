@@ -64,7 +64,6 @@ function OrganizeConcertsInMonths(concerts) {
     if (element.month<10) element.month='0'+element.month;
     element.time = element.date.toTimeString().slice(0, 5);
     let index = months.findIndex((val) => {
-            //return val.name == nameMonth;
       return (val.name == nameMonth && val.year==year);
     });
     if (index === -1) {

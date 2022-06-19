@@ -16,13 +16,23 @@ let NewsRepository = {
     options = Object.assign({}, defaultOptions, options);
     let sqlOrderCondition = queryOptions.sqlOrderCondition(options.order);
 
+    let whereClause = "WHERE";
+    if (options.search) {
+        let searchclause = `(title LIKE '%${options.search}%' OR text LIKE '%${options.search}%' \
+              OR date LIKE '%${options.search}%')`;
+        if (whereClause === "WHERE") whereClause += ` ${searchclause}`;
+        else whereClause += ` AND ${searchclause}`;
+    }
+    if (whereClause === "WHERE") whereClause = "";
+
+
     let limitClause = "";
     if (options.limit > 0) {
       limitClause = `LIMIT ${options.limit} OFFSET ${options.offset}`;
     }
 
     let [results] = await db.query(
-      `SELECT * FROM news ORDER BY date ${sqlOrderCondition} ${limitClause}`
+      `SELECT * FROM news ${whereClause} ORDER BY date ${sqlOrderCondition} ${limitClause}`
     );
     return results;
   },

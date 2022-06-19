@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const globals = require("../globals.js");
 const config = require("config");
 const logger = require("../logger");
-let xl = require('excel4node');
+let xl = require("excel4node");
 
 const QueryOptions = require("../repositories/options");
 const ConcertsRepository = require("../repositories/concerts");
@@ -136,18 +136,34 @@ router.get("/logout", function (req, res) {
 
 async function concertsHandler(req, res, next, pageName) {
   try {
-    let paginationAddress=(pageName==="concerts")?"/admin/concerts":"/admin/archive";
-    let viewAddress = (pageName === "concerts") ? "admin/concerts.hbs" : "admin/archive.hbs";
-    let dates=(pageName==="concerts")?QueryOptions.DATES.FUTURE:QueryOptions.DATES.PAST;
+    let paginationAddress =
+      pageName === "concerts" ? "/admin/concerts" : "/admin/archive";
+    let viewAddress =
+      pageName === "concerts" ? "admin/concerts.hbs" : "admin/archive.hbs";
+    let dates =
+      pageName === "concerts"
+        ? QueryOptions.DATES.FUTURE
+        : QueryOptions.DATES.PAST;
 
     let itemCount = config.get("paginationSize").admin;
-    let currentPage = Number(req.query.page)||1;
-    let offset=(currentPage-1)*itemCount;
-    let search=req.query.search;
+    let currentPage = Number(req.query.page) || 1;
+    let offset = (currentPage - 1) * itemCount;
+    let search = req.query.search;
 
-    let events = await ConcertsRepository.getAll({hidden:true,dates, offset,itemCount,search});
-    let maxCount = await ConcertsRepository.getCount({hidden:true, dates});
-    let pages=viewhelpers.usePagination(paginationAddress,currentPage,maxCount,itemCount);
+    let events = await ConcertsRepository.getAll({
+      hidden: true,
+      dates,
+      offset,
+      itemCount,
+      search,
+    });
+    let maxCount = await ConcertsRepository.getCount({ hidden: true, dates });
+    let pages = viewhelpers.usePagination(
+      paginationAddress,
+      currentPage,
+      maxCount,
+      itemCount
+    );
 
     events.forEach((element) => {
       element.description = viewhelpers.UnescapeQuotes(element.description);
@@ -161,7 +177,7 @@ async function concertsHandler(req, res, next, pageName) {
 
 async function concertsDeleteHandler(req, res, next) {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await ConcertsRepository.delete(id);
     DeleteImageById(id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
@@ -173,30 +189,30 @@ async function concertsDeleteHandler(req, res, next) {
 
 async function concertsExportHandler(req, res, next) {
   try {
-    let concerts = await ConcertsRepository.getAll({hidden:true});
-    let wb = new xl.Workbook(); 
+    let concerts = await ConcertsRepository.getAll({ hidden: true });
+    let wb = new xl.Workbook();
     // Add Worksheets to the workbook
-    let ws = wb.addWorksheet('Concerts');
+    let ws = wb.addWorksheet("Concerts");
     // Create a reusable style
     let headerStyle = wb.createStyle({
       font: {
-        color: '#fca103',
-        bold: true
-      }
+        color: "#fca103",
+        bold: true,
+      },
     });
     let rowStyle = wb.createStyle({
       alignment: {
-        wrapText: true
-      }
+        wrapText: true,
+      },
     });
     //Write headers
-    ws.cell(1, 1).string('ID').style(headerStyle);
-    ws.cell(1, 2).string('Title').style(headerStyle);
-    ws.cell(1, 3).string('Description').style(headerStyle);
-    ws.cell(1, 4).string('Date').style(headerStyle);
-    ws.cell(1, 5).string('Place').style(headerStyle);
-    ws.cell(1, 6).string('Ticket').style(headerStyle);
-    ws.cell(1, 7).string('Poster').style(headerStyle);
+    ws.cell(1, 1).string("ID").style(headerStyle);
+    ws.cell(1, 2).string("Title").style(headerStyle);
+    ws.cell(1, 3).string("Description").style(headerStyle);
+    ws.cell(1, 4).string("Date").style(headerStyle);
+    ws.cell(1, 5).string("Place").style(headerStyle);
+    ws.cell(1, 6).string("Ticket").style(headerStyle);
+    ws.cell(1, 7).string("Poster").style(headerStyle);
 
     ws.column(1).setWidth(5);
     ws.column(2).setWidth(20);
@@ -205,17 +221,30 @@ async function concertsExportHandler(req, res, next) {
     //Write data
     for (let i = 0; i < concerts.length; i++) {
       ws.row(i + 2).setHeight(30);
-      ws.cell(i + 2, 1).number(concerts[i].id).style(rowStyle);
-      ws.cell(i + 2, 2).string(concerts[i].title).style(rowStyle);
-      ws.cell(i + 2, 3).string(concerts[i].description).style(rowStyle);
-      ws.cell(i + 2, 4).date(concerts[i].date).style({...rowStyle, numberFormat: 'yyyy-mm-dd'});
-      ws.cell(i + 2, 5).string(concerts[i].place).style(rowStyle);
-      ws.cell(i + 2, 6).link(concerts[i].ticket).style(rowStyle);
-      ws.cell(i + 2, 7).link(req.hostname+"/img/posters/"+concerts[i].id+".jpg").style(rowStyle);
+      ws.cell(i + 2, 1)
+        .number(concerts[i].id)
+        .style(rowStyle);
+      ws.cell(i + 2, 2)
+        .string(concerts[i].title)
+        .style(rowStyle);
+      ws.cell(i + 2, 3)
+        .string(concerts[i].description)
+        .style(rowStyle);
+      ws.cell(i + 2, 4)
+        .date(concerts[i].date)
+        .style({ ...rowStyle, numberFormat: "yyyy-mm-dd" });
+      ws.cell(i + 2, 5)
+        .string(concerts[i].place)
+        .style(rowStyle);
+      ws.cell(i + 2, 6)
+        .link(concerts[i].ticket)
+        .style(rowStyle);
+      ws.cell(i + 2, 7)
+        .link(req.hostname + "/img/posters/" + concerts[i].id + ".jpg")
+        .style(rowStyle);
     }
     //write file
-    wb.write('concerts.xlsx', res);
-    
+    wb.write("concerts.xlsx", res);
   } catch (error) {
     next(error);
   }
@@ -227,7 +256,7 @@ async function concertsEditHandler(req, res, next) {
   try {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await ConcertsRepository.update({
       id,
       title: req.body.title,
@@ -243,14 +272,15 @@ async function concertsEditHandler(req, res, next) {
   }
 }
 
-async function concertsAddHandler(req, res, next, pageName) {
+async function concertsAddHandler(_req, res, next, pageName) {
   try {
-    let nextDateShift=(pageName==="concerts")?(1000 * 60 * 60 * 24):(-1000 * 60 * 60 * 24);
+    let nextDateShift =
+      pageName === "concerts" ? 1000 * 60 * 60 * 24 : -1000 * 60 * 60 * 24;
 
     let nextDate = new Date(Date.now() + nextDateShift);
     nextDate.setSeconds(0);
-    let sqlDate=nextDate.toISOString().slice(0, 19).replace("T", " ");
-    
+    let sqlDate = nextDate.toISOString().slice(0, 19).replace("T", " ");
+
     let insertId = await ConcertsRepository.add({
       title: "",
       description: "",
@@ -268,11 +298,11 @@ async function concertsAddHandler(req, res, next, pageName) {
 
 async function concertsCopyHandler(req, res, next) {
   try {
-    let id =Number.parseInt(req.body.id);
-    let concertToCopy=await ConcertsRepository.getById(id);
+    let id = Number.parseInt(req.body.id);
+    let concertToCopy = await ConcertsRepository.getById(id);
     let tomorrowDate = new Date(Date.now() + 1000 * 60 * 60 * 24);
     tomorrowDate.setSeconds(0);
-    let sqlDate=tomorrowDate.toISOString().slice(0, 19).replace("T", " ");
+    let sqlDate = tomorrowDate.toISOString().slice(0, 19).replace("T", " ");
 
     let insertId = await ConcertsRepository.add({
       title: concertToCopy.title,
@@ -282,7 +312,10 @@ async function concertsCopyHandler(req, res, next) {
       ticket: concertToCopy.ticket,
       hidden: concertToCopy.hidden,
     });
-    await fs.copyFile(`static/img/posters/${id}.jpg`,`static/img/posters/${insertId}.jpg`);
+    await fs.copyFile(
+      `static/img/posters/${id}.jpg`,
+      `static/img/posters/${insertId}.jpg`
+    );
     res.redirect("/admin/");
   } catch (error) {
     next(error);
@@ -360,13 +393,18 @@ router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
 router.get("/news", async (req, res, next) => {
   try {
     let itemCount = config.get("paginationSize").admin;
-    let currentPage = Number(req.query.page)||1;
-    let offset=(currentPage-1)*itemCount;
-    let search=req.query.search;
+    let currentPage = Number(req.query.page) || 1;
+    let offset = (currentPage - 1) * itemCount;
+    let search = req.query.search;
 
-    let events = await NewsRepository.getAll({search,offset,itemCount}); 
-    let maxCount=await NewsRepository.getCount();
-    let pages=viewhelpers.usePagination("/admin/news",currentPage,maxCount,itemCount);
+    let events = await NewsRepository.getAll({ search, offset, itemCount });
+    let maxCount = await NewsRepository.getCount();
+    let pages = viewhelpers.usePagination(
+      "/admin/news",
+      currentPage,
+      maxCount,
+      itemCount
+    );
 
     events.forEach((element) => {
       element.text = viewhelpers.UnescapeQuotes(element.text);
@@ -380,7 +418,7 @@ router.get("/news", async (req, res, next) => {
 
 router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await NewsRepository.delete(id);
     await DeleteImageById(id, "/static/img/news/");
     res.redirect("/admin/");
@@ -394,7 +432,7 @@ router.post("/news/add", urlencodedParser, async (_req, res, next) => {
     let insertId = await NewsRepository.add({
       title: "",
       text: "",
-      date: '2999-01-01 00:00'
+      date: "2999-01-01 00:00",
     });
     await MakeDefaultImage(insertId, "/static/img/news/");
     res.redirect("/admin/");
@@ -407,11 +445,11 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
   try {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await NewsRepository.update({
       id,
       title: req.body.title,
-      text:req.body.text,
+      text: req.body.text,
       date,
     });
     res.sendStatus(200);
@@ -422,7 +460,7 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/news/posterupload", urlencodedParser, async (req, res) => {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await PosterUpload(
       req.files.fileToUpload,
       "/static/img/news/",
@@ -444,15 +482,19 @@ router.get("/gallery", async (_req, res) => {
 });
 
 router.post("/gallery/delete", urlencodedParser, (req) => {
-  //check if filename doesn't contain ../
-  if (req.body.filename.indexOf("../") !== -1) return;
-
-  let filename = req.body.filename;
-  fs.unlink(path.join(__dirname, "../", "/static/", filename));
-  fs.unlink(
-    path.join(__dirname, "../", "/static/thumbnails/", filename)
-  );
+  deleteImageHandler(req, {withThumbnail: true});
 });
+
+function deleteImageHandler(req, options){
+    //check if filename doesn't contain ../
+    if (req.body.filename.indexOf("../") !== -1) return;
+
+    let filename = req.body.filename;
+    fs.unlink(path.join(__dirname, "../", "/static/", filename));
+    if (options.withThumbnail) {
+      fs.unlink(path.join(__dirname, "../", "/static/thumbnails/", filename));
+    }      
+}
 
 router.post("/gallery/upload", urlencodedParser, (req, res) => {
   if (!req.files) {
@@ -489,7 +531,7 @@ router.get("/artists", async (req, res, next) => {
 
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await ArtistsRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/artists/");
     res.redirect("/admin/");
@@ -516,7 +558,7 @@ router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
       name: "",
       country: "",
       instrument: "",
-      groupId: 0
+      groupId: 0,
     });
     await MakeDefaultImage(insertId, "/static/img/about/artists");
     res.redirect("/admin/");
@@ -528,14 +570,17 @@ router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
 router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let id=Number.parseInt(req.body.id);
-    await ArtistsRepository.update({
-      id,
-      name: req.body.name,
-      country: req.body.country,
-      instrument: req.body.instrument,
-      groupId: req.body.group
-    }, { langId });
+    let id = Number.parseInt(req.body.id);
+    await ArtistsRepository.update(
+      {
+        id,
+        name: req.body.name,
+        country: req.body.country,
+        instrument: req.body.instrument,
+        groupId: req.body.group,
+      },
+      { langId }
+    );
     res.sendStatus(200);
   } catch (error) {
     next(error);
@@ -561,7 +606,7 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
 router.get("/composers", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let composers = await ComposersRepository.getAll({langId});
+    let composers = await ComposersRepository.getAll({ langId });
     composers.reverse();
     res.render("admin/composers.hbs", { layout: false, composers });
   } catch (error) {
@@ -571,7 +616,7 @@ router.get("/composers", async (req, res, next) => {
 
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await ComposersRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/composers/");
     res.redirect("/admin/");
@@ -597,7 +642,7 @@ router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
     let insertId = await ComposersRepository.add({
       name: "",
       country: "",
-      isInResidence: 0
+      isInResidence: 0,
     });
     await MakeDefaultImage(insertId, "/static/img/about/composers");
     res.redirect("/admin/");
@@ -608,15 +653,17 @@ router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
 
 router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
-  let isInResidence=req.body.isInResidence??0;
+  let isInResidence = req.body.isInResidence ?? 0;
   try {
-    let id=Number.parseInt(req.body.id);
-    await ComposersRepository.update({
-      id,
-      name: req.body.name,
-      country: req.body.country,
-      isInResidence
-    }, {langId}
+    let id = Number.parseInt(req.body.id);
+    await ComposersRepository.update(
+      {
+        id,
+        name: req.body.name,
+        country: req.body.country,
+        isInResidence,
+      },
+      { langId }
     );
     res.sendStatus(200);
   } catch (error) {
@@ -643,7 +690,7 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
 router.get("/musicians", async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   try {
-    let musicians = await MusiciansRepository.getAll({langId, hidden:true});
+    let musicians = await MusiciansRepository.getAll({ langId, hidden: true });
     res.render("admin/musicians.hbs", { layout: false, musicians });
   } catch (error) {
     next(error);
@@ -652,7 +699,7 @@ router.get("/musicians", async (req, res, next) => {
 
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
-    let id=Number.parseInt(req.body.id);
+    let id = Number.parseInt(req.body.id);
     await MusiciansRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/musicians/");
     res.render("admin/musicians");
@@ -682,7 +729,7 @@ router.post("/musicians/add", urlencodedParser, async (_req, res, next) => {
       name: "",
       bio: "",
       groupId: 0,
-      hidden: 1
+      hidden: 1,
     });
     await MakeDefaultImage(insertId, "/static/img/about/musicians");
     res.redirect("/admin/");
@@ -695,14 +742,16 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let langId = globals.languages[req.getLocale()];
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
-    let id=Number.parseInt(req.body.id);
-    await MusiciansRepository.update({
-      id,
-      name: req.body.name,
-      bio: req.body.bio,
-      groupId: req.body.groupId,
-      hidden
-    }, {langId}
+    let id = Number.parseInt(req.body.id);
+    await MusiciansRepository.update(
+      {
+        id,
+        name: req.body.name,
+        bio: req.body.bio,
+        groupId: req.body.groupId,
+        hidden,
+      },
+      { langId }
     );
     res.sendStatus(200);
   } catch (error) {
@@ -732,14 +781,7 @@ router.get("/press", async (_req, res) => {
 });
 
 router.post("/press/delete", urlencodedParser, (req) => {
-    //check if filename doesn't contain ../
-  if (req.body.filename.indexOf("../") !== -1) return;
-  
-  let filename = req.body.filename;
-  fs.unlink(path.join(__dirname, "../", "/static/", filename));
-  fs.unlink(
-    path.join(__dirname, "../", "/static/thumbnails/", filename)
-  );
+  deleteImageHandler(req, {withThumbnail: true});
 });
 
 router.post("/press/upload", urlencodedParser, (req, res) => {
@@ -771,11 +813,7 @@ router.get("/disks", async (_req, res) => {
 });
 
 router.post("/disks/delete", urlencodedParser, (req) => {
-  //check if filename doesn't contain ../
-  if (req.body.filename.indexOf("../") !== -1) return;
-  
-  let filename = req.body.filename;
-  fs.unlink(path.join(__dirname, "../", "/static/", filename));
+  deleteImageHandler(req, {withThumbnail: false});
 });
 
 router.post("/disks/upload", urlencodedParser, (req, res) => {
@@ -801,25 +839,25 @@ router.get("/about", (_req, res) => {
 });
 
 router.get("/conductor", (_req, res) => {
-  res.render("admin/conductor.hbs", {layout: false });
+  res.render("admin/conductor.hbs", { layout: false });
 });
 
 router.get("/pastmusicians", (_req, res) => {
-  res.render("admin/pastmusicians.hbs", {layout: false });
+  res.render("admin/pastmusicians.hbs", { layout: false });
 });
 
 router.get("/contacts", (_req, res) => {
-  res.render("admin/contacts.hbs", {layout: false });
+  res.render("admin/contacts.hbs", { layout: false });
 });
 
 router.post("/updatestatichtml", async (req, res) => {
   try {
-      //check if filename doesn't contain ../
+    //check if filename doesn't contain ../
     if (req.body.file.indexOf("../") !== -1) return;
 
     let file = req.body.file;
-    let html= req.body.content;
-    await fs.writeFile(path.join("static",file),html);
+    let html = req.body.content;
+    await fs.writeFile(path.join("static", file), html);
     res.sendStatus(200);
   } catch (error) {
     res.sendStatus(400);
