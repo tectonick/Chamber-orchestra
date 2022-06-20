@@ -44,7 +44,7 @@ let ArtistsRepository = {
     let [results] = await db.query(
       `START TRANSACTION;\
             UPDATE artists_translate SET name = '${artist.name}', \
-            country = '${artist.country}', instrument = ${artist.instrument} WHERE ${artist.id}=artistId AND ${options.langId}=languageId;\
+            country = '${artist.country}', instrument = '${artist.instrument}' WHERE ${artist.id}=artistId AND ${options.langId}=languageId;\
             UPDATE artists SET groupId = '${artist.groupId}', updated=DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}') WHERE ${artist.id}=id;\
             COMMIT;`
     );
@@ -76,7 +76,7 @@ let ArtistsRepository = {
       let country = await translate(artist.country, sourceLang, destLang);
       let instrument = await translate(artist.instrument, sourceLang, destLang);
       updateQuery += `UPDATE artists_translate SET name = '${name}', \
-              country = '${country}', instrument = ${instrument} WHERE ${id}=artistId AND ${langId}=languageId;`;
+              country = '${country}', instrument = '${instrument}' WHERE ${id}=artistId AND ${langId}=languageId;`;
     }
     updateQuery += "COMMIT;";
     await db.query(updateQuery);
