@@ -75,7 +75,7 @@ async function searchHandler() {
     searchables.forEach((element) => {
       element.style.display = element.classList.contains("card")
         ? "inline-block"
-        : "block";
+        : "flex";
       if (this.value !== "") {
         let regex = new RegExp(this.value, "i");
         if (!element.innerHTML.match(regex)) {
