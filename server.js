@@ -171,7 +171,16 @@ function CreateApp() {
   return app;
 }
 
+
+function CleanTmpFolder(){
+  if (fs.existsSync("./tmp")){
+    fs.rmdirSync("./tmp", { recursive: true });
+    fs.mkdirSync("./tmp");
+  }
+}
+
 function StartServer(app){
+  if (!isDevelopment) CleanTmpFolder();
 // eslint-disable-next-line no-unused-vars
   let httpServer=app.listen(PORT, () => {
     logger.info(`Server started on ${environment} mode`);
