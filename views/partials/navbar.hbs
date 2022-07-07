@@ -17,9 +17,9 @@
           {{__ 'layout.navbar.events'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdownEvents">
-          <a class="dropdown-item" href="/events/">{{__ 'layout.navbar.nextEvents'}}</a>
-          <a class="dropdown-item" href="/events/calendar">{{__ 'layout.navbar.calendar'}}</a>
-          <a class="dropdown-item" href="/events/archive">{{__ 'layout.navbar.archive'}}</a>
+          <a class="dropdown-item" href="/events/"><i class="fa-solid fa-calendar-plus"></i> {{__ 'layout.navbar.nextEvents'}}</a>
+          <a class="dropdown-item" href="/events/calendar"><i class="fa-solid fa-calendar"></i> {{__ 'layout.navbar.calendar'}}</a>
+          <a class="dropdown-item" href="/events/archive"><i class="fa-solid fa-calendar-check"></i> {{__ 'layout.navbar.archive'}}</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -27,12 +27,12 @@
           {{__ 'layout.navbar.about'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdownAbout">
-          <a class="dropdown-item" href="/about">{{__ 'layout.navbar.history'}}</a>
+          <a class="dropdown-item" href="/about"><i class="fa-solid fa-book"></i> {{__ 'layout.navbar.history'}}</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/about/conductor">{{__ 'layout.navbar.conductor'}}</a>
-          <a class="dropdown-item" href="/about/musicians">{{__ 'layout.navbar.musicians'}}</a>
-          <a class="dropdown-item" href="/about/artists">{{__ 'layout.navbar.artists'}}</a>
-          <a class="dropdown-item" href="/about/composers">{{__ 'layout.navbar.composers'}}</a>                 
+          <a class="dropdown-item" href="/about/conductor"><i class="fa-solid fa-podcast"></i> {{__ 'layout.navbar.conductor'}}</a>
+          <a class="dropdown-item" href="/about/musicians"><i class="fa-solid fa-guitar"></i> {{__ 'layout.navbar.musicians'}}</a>
+          <a class="dropdown-item" href="/about/artists"><i class="fa-solid fa-drum"></i> {{__ 'layout.navbar.artists'}}</a>
+          <a class="dropdown-item" href="/about/composers"><i class="fa-solid fa-file-audio"></i> {{__ 'layout.navbar.composers'}}</a>                 
         </div>
       </li>
         <li class="nav-item dropdown ">
@@ -40,9 +40,9 @@
           {{__ 'layout.navbar.media'}}
         </a>
         <div class="dropdown-menu animate slideIn" aria-labelledby="navbarDropdownMedia">
-          <a class="dropdown-item" href="/media/photos">{{__ 'layout.navbar.photos'}}</a>
-          <a class="dropdown-item" href="/media/videos">{{__ 'layout.navbar.videos'}}</a>
-          <a class="dropdown-item" href="/media/disks">{{__ 'layout.navbar.disks'}}</a>
+          <a class="dropdown-item" href="/media/photos"><i class="fa-solid fa-images"></i> {{__ 'layout.navbar.photos'}}</a>
+          <a class="dropdown-item" href="/media/videos"><i class="fa-solid fa-film"></i> {{__ 'layout.navbar.videos'}}</a>
+          <a class="dropdown-item" href="/media/disks"><i class="fa-solid fa-compact-disc"></i> {{__ 'layout.navbar.disks'}}</a>
         </div>
       </li>
       <li class="nav-item">
@@ -58,12 +58,11 @@
           <img src="/img/icons/language-icon.png" alt="Язык">
         </a>
         <div class="dropdown-menu dropdown-menu-lang animate slideIn" aria-labelledby="navbarDropdownLanguage">
-          <a class='dropdown-item locale-change' href="" id='ru'>Русский</a>
-          <a class='dropdown-item locale-change' href="" id='be'>Беларуская</a>
-          <a class='dropdown-item locale-change' href="" id='en'>English</a>
-          <a class='dropdown-item locale-change' href="" id='de'>Deutsch</a>
-          <a class='dropdown-item locale-change' href="" id='fr'>Français</a>
-          
+          <a class='dropdown-item locale-change' href="" id='ru'><i class="fa-solid fa-earth-asia"></i> Русский</a>
+          <a class='dropdown-item locale-change' href="" id='be'><i class="fa-solid fa-earth-europe"></i> Беларуская</a>
+          <a class='dropdown-item locale-change' href="" id='en'><i class="fa-solid fa-earth-americas"></i> English</a>
+          <a class='dropdown-item locale-change' href="" id='de'><i class="fa-solid fa-earth-africa"></i> Deutsch</a>
+          <a class='dropdown-item locale-change' href="" id='fr'><i class="fa-solid fa-earth-oceania"></i> Français</a>    
         </div>        
     </div>
 

@@ -1,7 +1,7 @@
 //basic modules
 const { locales } = require("./globals");
 const config = require("config");
-const logger = require("./logger");
+const logger = require("./services/logger");
 const fs = require("fs");
 const path = require("path");
 //check for configuration
@@ -12,7 +12,6 @@ if (!fs.existsSync(path.join("config", "local.json"))) {
 //express
 const express = require("express");
 const handlebars = require("express-handlebars");
-
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 //session
@@ -22,21 +21,19 @@ let MySQLStore = require("express-mysql-session")(session);
 const i18n = require("i18n");
 const {db} = require("./db");
 const https = require("https");
-
+const iconv = require('iconv-lite');
+const encodings = require('iconv-lite/encodings');
+iconv.encodings = encodings;
+//routers
 const mainRouter = require("./routes/main");
 const aboutRouter = require("./routes/about");
 const mediaRouter = require("./routes/media");
 const adminRouter = require("./routes/admin");
 const eventsRouter = require("./routes/events");
 
-
-const iconv = require('iconv-lite');
-const encodings = require('iconv-lite/encodings');
-iconv.encodings = encodings;
-
-let environment = process.env.NODE_ENV || "production";
+const environment = process.env.NODE_ENV || "production";
 const PORT = process.env.PORT || 80;
-let isDevelopment = environment === "development";
+const isDevelopment = environment === "development";
 
 function CreateApp() {
     const pool =db();
@@ -104,7 +101,7 @@ function CreateApp() {
   app.use(cookieParser());
   app.use(i18n.init);
 
-  //Cuttrny locale setting middleware
+  //locale setting middleware
   app.use(function (req, res, next) {
     let locale=req.getLocale();
     if (req.cookies["locale"] == undefined || req.cookies["locale"] !==locale) {
@@ -168,6 +165,7 @@ function CreateApp() {
   app.get("*", function (_req, res) {
     res.status(404).render("404", { layout: false });
   });
+
   return app;
 }
 

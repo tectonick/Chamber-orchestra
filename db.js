@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const config = require("config");
-const logger = require("./logger");
+const logger = require("./services/logger");
 
 //db connection
 let pool = null;
@@ -27,6 +27,5 @@ function db() {
     logger.error(error);
   }
 }
-
 
 module.exports = {db};

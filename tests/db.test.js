@@ -1,6 +1,6 @@
 const {db}=require("../db");
+jest.mock("../services/logger");
 
-jest.mock("../logger");
 test("DB connection successful", async () => {
     expect(db()).toBeTruthy();
     }

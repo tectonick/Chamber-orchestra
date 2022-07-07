@@ -1,6 +1,6 @@
 const supertest = require('supertest')
 const {CreateApp}=require("../server");
-jest.mock("../logger");
+jest.mock("../services/logger");
 
 let request;
   beforeAll(() => {
@@ -38,7 +38,6 @@ test("GET 404", async () => {
 })
 test("GET /admin Redirects", async () => {
     const response = await request.get("/admin")
-
     expect(response.statusCode).toBe(302)
 })
 

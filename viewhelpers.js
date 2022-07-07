@@ -1,53 +1,53 @@
 const fs = require("fs").promises;
 const path = require("path");
+const MonthNames = require("./globals").MonthNames;
 
-  const MonthNames = [
-    "month.january",
-    "month.february",
-    "month.march",
-    "month.april",
-    "month.may",
-    "month.june",
-    "month.july",
-    "month.august",
-    "month.september",
-    "month.october",
-    "month.november",
-    "month.december",
-  ];
+function usePagination(baseUrl, currentPage, maxCount, itemCount = 10) {
+  let maxPages = Math.ceil(maxCount / itemCount);
+  let pages = [];
 
+  if (maxPages > 1) {
+    let previousPageNumber = currentPage - 1 || 1;
+    let nextPageNumber =
+      currentPage + 1 > maxPages ? maxPages : currentPage + 1;
+    let previousPage = {
+      number: "←",
+      href: `${baseUrl}?page=${previousPageNumber}`,
+    };
+    let nextPage = { number: "→", href: `${baseUrl}?page=${nextPageNumber}` };
 
-  function usePagination(baseUrl,currentPage,maxCount, itemCount=10){
-    let maxPages=Math.ceil(maxCount/itemCount);
-    let pages=[];
-  
-    if (maxPages>1){
-      let previousPageNumber=(currentPage-1)||1;
-      let nextPageNumber=(currentPage+1>maxPages)?maxPages:currentPage+1;
-      let previousPage={number:"←", href:`${baseUrl}?page=${previousPageNumber}` };
-      let nextPage={number:"→", href:`${baseUrl}?page=${nextPageNumber}` };
-    
-      pages.push(previousPage);
-      for (let index = 1; index <= maxPages; index++) {
-        let isActive=(currentPage==index);
-        pages.push({number:index, href:`${baseUrl}?page=${index}`, activeClass:(isActive?'active':'')});
-      }
-      pages.push(nextPage)
+    pages.push(previousPage);
+    for (let index = 1; index <= maxPages; index++) {
+      let isActive = currentPage == index;
+      pages.push({
+        number: index,
+        href: `${baseUrl}?page=${index}`,
+        activeClass: isActive ? "active" : "",
+      });
     }
-    return pages;
+    pages.push(nextPage);
   }
+  return pages;
+}
 
-    function isDate(date){
-      return !isNaN(Date.parse(date));
-    }
+function isDate(date) {
+  return !isNaN(Date.parse(date));
+}
 
-  function EscapeQuotes(str){
-    return str.replace(/"/g,"&quot;").replace(/'/g,"&rsquo;").replace(/`/g,"&grave;").replace(/\\/g,"\\\\");
-    
-  }
-  function UnescapeQuotes(str){
-   return str.replace(/&quot;/g,"\"").replace(/&rsquo;/g,"'").replace(/&grave;/g,"`").replace(/\\\\/g,"\\");
-  }
+function EscapeQuotes(str) {
+  return str
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&rsquo;")
+    .replace(/`/g, "&grave;")
+    .replace(/\\/g, "\\\\");
+}
+function UnescapeQuotes(str) {
+  return str
+    .replace(/&quot;/g, '"')
+    .replace(/&rsquo;/g, "'")
+    .replace(/&grave;/g, "`")
+    .replace(/\\\\/g, "\\");
+}
 
 function OrganizeConcertsInMonths(concerts) {
   let months = [];
@@ -55,21 +55,20 @@ function OrganizeConcertsInMonths(concerts) {
     return months;
   }
   concerts.forEach((element) => {
-    let nameMonth =
-      MonthNames[element.date.getMonth()];
-    let year=element.date.getFullYear();
+    let nameMonth = MonthNames[element.date.getMonth()];
+    let year = element.date.getFullYear();
     element.day = element.date.getDate();
-    element.month=element.date.getMonth()+1;
-    if (element.day<10) element.day='0'+element.day;
-    if (element.month<10) element.month='0'+element.month;
+    element.month = element.date.getMonth() + 1;
+    if (element.day < 10) element.day = "0" + element.day;
+    if (element.month < 10) element.month = "0" + element.month;
     element.time = element.date.toTimeString().slice(0, 5);
     let index = months.findIndex((val) => {
-      return (val.name == nameMonth && val.year==year);
+      return val.name == nameMonth && val.year == year;
     });
     if (index === -1) {
       months.push({
         name: nameMonth,
-        year:year,
+        year: year,
         concerts: [element],
       });
     } else {
@@ -130,5 +129,5 @@ module.exports = {
   EscapeQuotes,
   UnescapeQuotes,
   usePagination,
-  DateToISOLocal
+  DateToISOLocal,
 };

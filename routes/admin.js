@@ -4,11 +4,11 @@ const bodyParser = require("body-parser");
 const viewhelpers = require("../viewhelpers");
 const fs = require("fs").promises;
 const path = require("path");
-const imageProcessor = require("../image-processing");
+const imageProcessor = require("../services/image-processing");
 const bcrypt = require("bcrypt");
 const globals = require("../globals.js");
 const config = require("config");
-const logger = require("../logger");
+const logger = require("../services/logger");
 let xl = require("excel4node");
 
 const QueryOptions = require("../repositories/options");

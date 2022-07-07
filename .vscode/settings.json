@@ -13,5 +13,6 @@
             "username": "belscone_root",
             "password": "M51cT4n5qb"
         }
-    ]
+    ],
+    "typescript.workspaceSymbols.scope": "currentProject"
 }
