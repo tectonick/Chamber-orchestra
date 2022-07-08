@@ -7,8 +7,8 @@
 
 .navbar {
   padding: 0;
-  background-color: rgb(253 253 253 / 100%);
-  transition: 0.2s;
+  background-color: config.$background-color-opaque;
+  transition: background-color 1s;
 
   a:hover {
     color: config.$link-hover-color !important;
@@ -21,7 +21,7 @@
 
 #logo {
   width: 180px;
-  transition: 0.2s width;
+  transition: width 0.5s;
 }
 
 @media (max-width: 992px) {
@@ -53,10 +53,8 @@
 .dropdown-menu-lang {
   right: 0;
   left: auto;
-}
 
-@media (max-width: 992px) {
-  .dropdown-menu-lang {
+  @media (max-width: 992px) {
     left: 0;
     right: auto;
   }
@@ -69,7 +67,7 @@
   }
 }
 
-@keyframes slideIn {
+@keyframes slide-in {
   0% {
     transform: translateY(1rem);
     opacity: 0;
@@ -86,28 +84,14 @@
   }
 }
 
-@keyframes slideIn {
-  0% {
-    transform: transform;
-    -webkit-opacity: 0;
-  }
-
-  100% {
-    transform: translateY(0);
-    -webkit-opacity: 1;
-  }
-
-  0% {
-    transform: translateY(1rem);
-    -webkit-opacity: 0;
-  }
-}
-
-.slideIn {
-  animation-name: slideIn;
-  animation-name: slideIn;
+.slide-in {
+  animation-name: slide-in;
 }
 
 .dropdown-toggle::after {
   display: none;
+}
+
+.dropdown-menu.show {
+  background-color: config.$background-color-transparent;
 }

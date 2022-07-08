@@ -3,7 +3,7 @@
     <script src="https://yastatic.net/share2/share.js" async="async"></script>
 
     {{#unless months}}
-        <div class="text-center">{{__ 'events.noevents'}}</div>
+        {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
     {{/unless}}
     
     {{#each months}}
@@ -17,20 +17,7 @@
 
     {{/each}}
 
-    <div class="container">
-        <div class="block row my-1">
-            <div class="col-1 p-0 mb-3 mt-0">
-                <img class="musicians-pic"
-                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAADB0lEQVR4nO2az08TQRTHP1SDtP+AhAN/AFKaIPFg8B/Rkxf/FEFjIv4IVv8F491o1AjoCU9qPIvFA0cbkIO0HuYNXZad7cyyndmS+SSbXbbvzbx5nTfz3S0QiUQikUgkYs8kcA/4DfTH9NgFVmUszqxWYABlHStFErArzteLOFeEZWQmTBRw7su5iG+V6APUPHT0icGU20zd38z08MhFD330DdeVKKGQJRC6lLyVQKWJCSjgcyDnGUt70yIYklk5d2u4K7uGOH8B7gNXhnRmWgRD0AKeANvy92s4u7I7Ah4AU47BaH8f1IEXqFiTs/EyFFN2E8ASsAb8Ff+3wCWHNnwloAFsSF8HwENgscxAmsCOtPHUwc9XAp5LPz8xlGsZgcwDh8A/VEKSmBZBU79Je9vDtLi2gB5qlmYOvqxt8BvQBi4At1OfuS6CRb4Mk88dVLmuA9/znMuYitekna+W9j5K4If0seQjkIa088fS3kcC9qWPusmgTCWo26riY7IxphrQletZk5Elc3LeSd0PqQR1LHMmgxrwRq63gcfAQsHObsn5feq+6yKYtQuk3yPYJvSdnG/mGU0DW4lGj1B7p7FuMmiitsEep7dBE6Y1IBmLPjYMn2+c8j7JAoNtcH5YQIucVHYfGej+PFpAR3yeWdhrfAmhtvTzC8vZnVR27Ry7q6iSORTbD7jNGl8JqKNi66O+3EekpHAWWtllTelp4DMnS2Yd88OQqxIcBVOo2Zl8GNpCHoZMrJGt71/J/T1UNofVvKlmfSZA00TN2j3p+2WesVZ2aQnZlftn3TZDJEAzi4Vo08puP3W/rMBDJuC4/zwlqD/reQgmGHkJMCk7V6r4TvCYvASYlJ0rVXonaE2esiurdrcYruRGiXEcw5Rd6MWrLE6Nw1bZ6ZeoyyMOcJTcQI2hA+7KbiVhO+7HXXBXdpOSBD0TxvHoyOAnoTxlF5IZskWbFed2UbMh/jocOoDQxASEDiA0MQGof4yA8Vd2oLSJM+dO2bly7pRdJBKJRCKRSCQynP8Suk95Im3+FgAAAABJRU5ErkJggg==" alt=""/>
-            </div>
-            <div class="col-11 px-4 py-1">
-                <p>
-                    {{__ 'contacts.tickets'}}
-                </p>
-            </div>
-
-        </div>
-    </div>
+    {{> banner text='contacts.tickets' icon='fa-solid fa-ticket'}}
 
 
 </div>

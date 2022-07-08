@@ -5,17 +5,19 @@
 
 <div class="container  mt-3">
 
-    <div class=" text-center my-3">
+    <div class="my-3">
 
         <div class="separator container"><h3>{{__ 'layout.index.nextevents'}}</h3></div>
 
         <div class="row mx-auto my-auto">
+            {{#unless triplets}}
+                {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
+            {{/unless}}
+            {{#if triplets}}
             <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel" data-interval="5000">
                 <div class="carousel-inner w-100" role="listbox">
 
-                    {{#unless triplets}}
-                        {{__ 'events.noevents'}}
-                    {{/unless}}
+
 
                     {{#each triplets}}
                     <div class="carousel-item">
@@ -48,6 +50,7 @@
                     <span class="sr-only">Next</span>
                 </a>
             </div>
+            {{/if}}
         </div>
     </div>
 

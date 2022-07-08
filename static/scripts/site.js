@@ -53,10 +53,12 @@ function scrollFunction() {
       document.documentElement.scrollTop > 40
     ) {
       document.getElementById("logo").style.width = "100px";
+      document.querySelector(".navbar").style.backgroundColor = "rgb(253 253 253 / 92%)";
     } else {
       $(document.body).trigger("sticky_kit:recalc");
 
       document.getElementById("logo").style.width = "180px";
+      document.querySelector(".navbar").style.backgroundColor = "rgb(253 253 253 / 100%)";
     }
   }
 }
