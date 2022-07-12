@@ -4,13 +4,15 @@ const bodyParser = require("body-parser");
 const viewhelpers = require("../viewhelpers");
 const fs = require("fs").promises;
 const path = require("path");
+const fetch = require("node-fetch");
 const imageProcessor = require("../services/image-processing");
 const bcrypt = require("bcrypt");
 const globals = require("../globals.js");
 const config = require("config");
 const logger = require("../services/logger");
-let xl = require("excel4node");
+const exportService = require("../services/export-service");
 
+//Repositories
 const QueryOptions = require("../repositories/options");
 const ConcertsRepository = require("../repositories/concerts");
 const NewsRepository = require("../repositories/news");
@@ -22,13 +24,24 @@ const StatRepository = require("../repositories/stat");
 const admin = config.get("adminUser");
 //look new password hash with this command
 //logger.info(bcrypt.hashSync("your_new_password", 12));
-
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //Helpers
 async function DeleteImageById(nameId, folder) {
   let imgToDel = path.join(__dirname, "..", folder, nameId + ".jpg");
   return fs.unlink(imgToDel);
+}
+
+async function IsReachableLink(link) {
+  let isValidLink = /^(http|https):\/\/[^ "]+$/.test(link);
+  if (!isValidLink) {
+    return false;
+  }
+  try {
+    return (await fetch(link)).status === 200;
+  } catch (error) {
+    return false;
+  }
 }
 
 async function MakeDefaultImage(newId, folder) {
@@ -190,61 +203,8 @@ async function concertsDeleteHandler(req, res, next) {
 async function concertsExportHandler(req, res, next) {
   try {
     let concerts = await ConcertsRepository.getAll({ hidden: true });
-    let wb = new xl.Workbook();
-    // Add Worksheets to the workbook
-    let ws = wb.addWorksheet("Concerts");
-    // Create a reusable style
-    let headerStyle = wb.createStyle({
-      font: {
-        color: "#fca103",
-        bold: true,
-      },
-    });
-    let rowStyle = wb.createStyle({
-      alignment: {
-        wrapText: true,
-      },
-    });
-    //Write headers
-    ws.cell(1, 1).string("ID").style(headerStyle);
-    ws.cell(1, 2).string("Title").style(headerStyle);
-    ws.cell(1, 3).string("Description").style(headerStyle);
-    ws.cell(1, 4).string("Date").style(headerStyle);
-    ws.cell(1, 5).string("Place").style(headerStyle);
-    ws.cell(1, 6).string("Ticket").style(headerStyle);
-    ws.cell(1, 7).string("Poster").style(headerStyle);
-
-    ws.column(1).setWidth(5);
-    ws.column(2).setWidth(20);
-    ws.column(3).setWidth(70);
-    ws.column(5).setWidth(20);
-    //Write data
-    for (let i = 0; i < concerts.length; i++) {
-      ws.row(i + 2).setHeight(30);
-      ws.cell(i + 2, 1)
-        .number(concerts[i].id)
-        .style(rowStyle);
-      ws.cell(i + 2, 2)
-        .string(concerts[i].title)
-        .style(rowStyle);
-      ws.cell(i + 2, 3)
-        .string(concerts[i].description)
-        .style(rowStyle);
-      ws.cell(i + 2, 4)
-        .date(concerts[i].date)
-        .style({ ...rowStyle, numberFormat: "yyyy-mm-dd" });
-      ws.cell(i + 2, 5)
-        .string(concerts[i].place)
-        .style(rowStyle);
-      ws.cell(i + 2, 6)
-        .link(concerts[i].ticket)
-        .style(rowStyle);
-      ws.cell(i + 2, 7)
-        .link(req.hostname + "/img/posters/" + concerts[i].id + ".jpg")
-        .style(rowStyle);
-    }
-    //write file
-    wb.write("concerts.xlsx", res);
+    let file = exportService.ExportConcerts(concerts, req.hostname);
+    file.write("concerts.xlsx", res);
   } catch (error) {
     next(error);
   }
@@ -257,16 +217,20 @@ async function concertsEditHandler(req, res, next) {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
     let id = Number.parseInt(req.body.id);
+    let ticket = req.body.ticket;
+
+    let wrongLink = ticket !== "" && !(await IsReachableLink(ticket));
+
     await ConcertsRepository.update({
       id,
       title: req.body.title,
       description,
       date,
       place: req.body.place,
-      ticket: req.body.ticket,
+      ticket: ticket,
       hidden,
     });
-    res.sendStatus(200);
+    res.json({ success: true, wrongLink });
   } catch (error) {
     next(error);
   }
@@ -310,7 +274,7 @@ async function concertsCopyHandler(req, res, next) {
       date: sqlDate,
       place: concertToCopy.place,
       ticket: concertToCopy.ticket,
-      hidden: concertToCopy.hidden,
+      hidden: 1,
     });
     await fs.copyFile(
       `static/img/posters/${id}.jpg`,
@@ -331,7 +295,7 @@ async function concertsPosterUploadHandler(req, res) {
       id,
       imageProcessor.posterImage
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.statusCode = 400;
     res.json({ error: error.message });
@@ -452,7 +416,7 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
       text: req.body.text,
       date,
     });
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -467,7 +431,7 @@ router.post("/news/posterupload", urlencodedParser, async (req, res) => {
       id,
       imageProcessor.posterImage
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.statusCode = 400;
     res.json({ error: error.message });
@@ -482,18 +446,18 @@ router.get("/gallery", async (_req, res) => {
 });
 
 router.post("/gallery/delete", urlencodedParser, (req) => {
-  deleteImageHandler(req, {withThumbnail: true});
+  deleteImageHandler(req, { withThumbnail: true });
 });
 
-function deleteImageHandler(req, options){
-    //check if filename doesn't contain ../
-    if (req.body.filename.indexOf("../") !== -1) return;
+function deleteImageHandler(req, options) {
+  //check if filename doesn't contain ../
+  if (req.body.filename.indexOf("../") !== -1) return;
 
-    let filename = req.body.filename;
-    fs.unlink(path.join(__dirname, "../", "/static/", filename));
-    if (options.withThumbnail) {
-      fs.unlink(path.join(__dirname, "../", "/static/thumbnails/", filename));
-    }      
+  let filename = req.body.filename;
+  fs.unlink(path.join(__dirname, "../", "/static/", filename));
+  if (options.withThumbnail) {
+    fs.unlink(path.join(__dirname, "../", "/static/thumbnails/", filename));
+  }
 }
 
 router.post("/gallery/upload", urlencodedParser, (req, res) => {
@@ -549,7 +513,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
     logger.error(error);
     next(error);
   }
-  res.sendStatus(200);
+  res.json({ success: true });
 });
 
 router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
@@ -581,7 +545,7 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
       },
       { langId }
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -596,7 +560,7 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
       id,
       imageProcessor.smallImage
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.statusCode = 400;
     res.json({ error: error.message });
@@ -634,7 +598,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
     logger.error(error);
     res.sendStatus(500);
   }
-  res.sendStatus(200);
+  res.json({ success: true });
 });
 
 router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
@@ -665,7 +629,7 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
       },
       { langId }
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -680,7 +644,7 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
       id,
       imageProcessor.smallImage
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.statusCode = 400;
     res.json({ error: error.message });
@@ -716,7 +680,7 @@ router.post(
     let id = Number.parseInt(req.body.id);
     try {
       await MusiciansRepository.translate(id, currentLang);
-      res.sendStatus(200);
+      res.json({ success: true });
     } catch (error) {
       next(error);
     }
@@ -753,7 +717,7 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
       },
       { langId }
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -768,7 +732,7 @@ router.post("/musicians/posterupload", urlencodedParser, async (req, res) => {
       id,
       imageProcessor.smallImage
     );
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.statusCode = 400;
     res.json({ error: error.message });
@@ -781,7 +745,7 @@ router.get("/press", async (_req, res) => {
 });
 
 router.post("/press/delete", urlencodedParser, (req) => {
-  deleteImageHandler(req, {withThumbnail: true});
+  deleteImageHandler(req, { withThumbnail: true });
 });
 
 router.post("/press/upload", urlencodedParser, (req, res) => {
@@ -813,7 +777,7 @@ router.get("/disks", async (_req, res) => {
 });
 
 router.post("/disks/delete", urlencodedParser, (req) => {
-  deleteImageHandler(req, {withThumbnail: false});
+  deleteImageHandler(req, { withThumbnail: false });
 });
 
 router.post("/disks/upload", urlencodedParser, (req, res) => {
@@ -858,7 +822,7 @@ router.post("/updatestatichtml", async (req, res) => {
     let file = req.body.file;
     let html = req.body.content;
     await fs.writeFile(path.join("static", file), html);
-    res.sendStatus(200);
+    res.json({ success: true });
   } catch (error) {
     res.sendStatus(400);
   }

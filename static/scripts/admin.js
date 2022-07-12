@@ -242,26 +242,46 @@ function saveSetEvent(path) {
     });
   });
 
-  $(".save-button").click(function (ev) {
+  $(".save-button").click(async function (ev) {
     let target = ev.target;
     target.setAttribute("disabled", "disabled");
     tinymce?.activeEditor?.save();
-    let formName = $(this).attr("name");
-    let form = $("#" + formName);
-    let formData = form.serialize();
+    let formName = ev.target.name;
+    let form = document.querySelector(`form#${formName}`);
+    let formData = new FormData(form);
+    let infoTarget = document.querySelector(
+      `#info-target-${formData.get("id")}`
+    );
+    let ticketElement = form.querySelector("[name='ticket']");
+    let result = await fetch(path, { method: "POST", body: formData });
 
-    $.post(path, formData, () => {
-      form[0].querySelectorAll(".unsaved").forEach((input) => {
+    if (result.ok) {
+      form.querySelectorAll(".unsaved").forEach((input) => {
         input.classList.remove("unsaved");
       });
       form
         .closest(".form-container")
-        .find(".translate-button")
-        .removeAttr("disabled");
+        ?.querySelector(".translate-button")
+        ?.removeAttribute("disabled");
       blinkButton(target, this, "#32CD32");
-    }).fail(() => {
+
+      let status = await result.json();
+      if (status?.wrongLink) {
+        ticketElement?.classList?.add("wrong");
+        ticketElement &&
+          (infoTarget.innerText =
+            "Данные сохранены, но не получается открыть ссылку. Вы уверены, что она правильная?");
+        infoTarget.classList.add("wrong");
+        return;
+      }
+      ticketElement?.classList?.remove("wrong");
+      infoTarget.classList.remove("wrong");
+      infoTarget.innerText = "Данные сохранены";
+    } else {
+      infoTarget.classList.add("wrong");
+      infoTarget.innerText = "Ошибка сохранения данных";
       blinkButton(target, this, "#8B0000");
-    });
+    }
   });
 }
 
@@ -271,7 +291,8 @@ function translateSetEvent(path) {
     target.setAttribute("disabled", "disabled");
     let formName = $(this).attr("name");
     let formData = $("#" + formName).serialize();
-    $.post(path, formData, () => {
+
+    $.post(path, formData, (_data) => {
       blinkButton(target, this, "#32CD32");
     }).fail(() => {
       blinkButton(target, this, "#8B0000");

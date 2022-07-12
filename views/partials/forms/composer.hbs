@@ -25,9 +25,10 @@
                     <textarea name="country" class="saveable form-control w-100" placeholder="Страна"
                         rows="1">{{composer.country}}</textarea>
                     <div class="saveable form-control form-check">
-                        <input type="checkbox" name="isInResidence" id="isInResidence-{{composer.id}}" value='1' {{#if composer.isInResidence}}
-                            checked{{else}}{{/if}}>
-                        <label class="form-check-label" for="isInResidence-{{composer.id}}">Композитор-inresidence</label>
+                        <input type="checkbox" name="isInResidence" id="isInResidence-{{composer.id}}" value='1' {{#if
+                            composer.isInResidence}} checked{{else}}{{/if}}>
+                        <label class="form-check-label"
+                            for="isInResidence-{{composer.id}}">Композитор-inresidence</label>
                     </div>
                 </form>
 
@@ -40,14 +41,14 @@
                     value="Перевести на остальные языки"></input>
 
             </div>
-                <div class="form-group d-flex w-100">
-                    <input name='{{composer.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
-                        type="submit" value="Удалить композитора"></input>
-                    <input name='edit-form-{{composer.id}}' class='save-button form-control' type="submit"
-                        value="Сохранить композитора"></input>
-                </div>
+            <div class="form-group d-flex w-100">
+                <input name='{{composer.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
+                    type="submit" value="Удалить композитора"></input>
+                <input name='edit-form-{{composer.id}}' class='save-button form-control' type="submit"
+                    value="Сохранить композитора"></input>
+            </div>
         </div>
-        <div class="row card-footer text-muted">
+        <div id="info-target-{{composer.id}}" class="row card-footer text-muted">
             Обновлено {{composer.updated}}
         </div>
     </div>

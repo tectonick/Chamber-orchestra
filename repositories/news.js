@@ -18,13 +18,12 @@ let NewsRepository = {
 
     let whereClause = "WHERE";
     if (options.search) {
-        let searchclause = `(title LIKE '%${options.search}%' OR text LIKE '%${options.search}%' \
+      let searchclause = `(title LIKE '%${options.search}%' OR text LIKE '%${options.search}%' \
               OR date LIKE '%${options.search}%')`;
-        if (whereClause === "WHERE") whereClause += ` ${searchclause}`;
-        else whereClause += ` AND ${searchclause}`;
+      if (whereClause === "WHERE") whereClause += ` ${searchclause}`;
+      else whereClause += ` AND ${searchclause}`;
     }
     if (whereClause === "WHERE") whereClause = "";
-
 
     let limitClause = "";
     if (options.limit > 0) {

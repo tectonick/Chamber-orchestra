@@ -48,14 +48,15 @@
                     <input type="text" list="places" name="place" class="saveable form-control w-100"
                         value="{{event.place}}" placeholder="Зал"></input>
                     <div class="saveable form-control form-check">
-                        <input type="checkbox" name="hidden" value='1' id="hidden-{{event.id}}" {{#if event.hidden}} checked{{/if}}>
+                        <input type="checkbox" name="hidden" value='1' id="hidden-{{event.id}}" {{#if event.hidden}}
+                            checked{{/if}}>
                         <label for="hidden-{{event.id}}" class="form-check-label">Скрыть концерт из афиши</label>
                     </div>
 
                 </form>
             </div>
         </div>
-        <div class="row card-footer text-muted">
+        <div id="info-target-{{event.id}}" class="row card-footer text-muted">
             Обновлено {{event.updated}}
         </div>
     </div>

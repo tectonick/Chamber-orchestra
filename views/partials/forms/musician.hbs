@@ -55,9 +55,9 @@
                         <option value="6">Клавишные</option>
                     </select>
                     <div class="saveable form-control form-check">
-                        <input type="checkbox" name="hidden" value='1' id="hidden-{{musician.id}}" {{#if musician.hidden}}
-                            checked{{/if}}>
-                        <label class="form-check-label" for="hidden-{{musician.id}}" >Скрыть музыканта из списка</label>
+                        <input type="checkbox" name="hidden" value='1' id="hidden-{{musician.id}}" {{#if
+                            musician.hidden}} checked{{/if}}>
+                        <label class="form-check-label" for="hidden-{{musician.id}}">Скрыть музыканта из списка</label>
                     </div>
                 </form>
                 <form action="/admin/musicians/translate" method="post" id="translate-form-{{musician.id}}">
@@ -68,7 +68,7 @@
 
             </div>
         </div>
-        <div class="row card-footer text-muted">
+        <div id="info-target-{{musician.id}}" class="row card-footer text-muted">
             Обновлено {{musician.updated}}
         </div>
     </div>

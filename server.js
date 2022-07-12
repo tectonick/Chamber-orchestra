@@ -99,6 +99,7 @@ function CreateApp() {
   app.enable("trust proxy");
 
   app.use(cookieParser());
+  app.use(express.json());
   app.use(i18n.init);
 
   //locale setting middleware
