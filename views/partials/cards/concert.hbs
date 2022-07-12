@@ -1,12 +1,11 @@
-    <div class="row event-row">
-        <div class="concert col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
+    <div class="row event-row py-3 px-5">
+        <div class="concert col-10 offset-1">
             <div id="{{concert.id}}" class="row">
-
                 <div class="col-12 col-md-4 p-0">
                     <img class="poster" loading="lazy"  src="/img/posters/{{concert.id}}.jpg" alt="">
                 </div>
-                <div class="col-12 col-md-8 p-4">
-                    <p>{{concert.title}}</p>
+                <div class="col-12 col-md-8 p-4 pr-3">
+                    <h5 class="pr-5">{{concert.title}}</h5>
                     <pre>{{{concert.description}}}</pre>
                     {{#if concert.ticket}}
                         {{#if future}}
