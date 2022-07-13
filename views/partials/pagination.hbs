@@ -6,6 +6,8 @@
                 {{/each}}
             </ul>
 
+            {{#unless noscripts}}
             <script>
                 setPaginationEvents('#update-container');
             </script>
+            {{/unless}}

@@ -40,9 +40,7 @@ let ConcertsRepository = {
     if (options.limit > 0) {
       limitClause = `LIMIT ${options.limit} OFFSET ${options.offset}`;
     }
-    console.log(
-      `SELECT * FROM concerts ${whereClause} ORDER BY date ${sqlOrderCondition} ${limitClause}`
-    );
+
     let [results] = await db.query(
       `SELECT * FROM concerts ${whereClause} ORDER BY date ${sqlOrderCondition} ${limitClause}`
     );
