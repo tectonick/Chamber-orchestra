@@ -1,0 +1,6 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=bugs)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=tectonick_Chamber-orchestra&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=tectonick_Chamber-orchestra)
