@@ -1,6 +1,5 @@
-const db = require("../db").db().promise();
 const queryOptions = require("./options");
-const viewhelpers = require("../viewhelpers");
+const db = require("../knex");
 
 const defaultOptions = {
   hidden: false,
@@ -8,60 +7,77 @@ const defaultOptions = {
   order: queryOptions.ORDER.DESC,
   limit: 0,
   offset: 0,
+  search: "",
 };
+
+
+function buildLimitAndSort(builder, options){
+  if (options.order === queryOptions.ORDER.ASC) {
+    builder.orderBy("date", "asc");
+  } else if (options.order === queryOptions.ORDER.DESC) {
+    builder.orderBy("date", "desc");
+  }
+  if (options.limit > 0) {
+    builder.limit(options.limit);
+  }
+  if (options.offset > 0) {
+    builder.offset(options.offset);
+  }
+}
 
 //news repository
 let NewsRepository = {
   async getAll(options) {
     options = Object.assign({}, defaultOptions, options);
-    let sqlOrderCondition = queryOptions.sqlOrderCondition(options.order);
 
-    let whereClause = "WHERE";
-    if (options.search) {
-      let searchclause = `(title LIKE '%${options.search}%' OR text LIKE '%${options.search}%' \
-              OR date LIKE '%${options.search}%')`;
-      if (whereClause === "WHERE") whereClause += ` ${searchclause}`;
-      else whereClause += ` AND ${searchclause}`;
-    }
-    if (whereClause === "WHERE") whereClause = "";
-
-    let limitClause = "";
-    if (options.limit > 0) {
-      limitClause = `LIMIT ${options.limit} OFFSET ${options.offset}`;
-    }
-
-    let [results] = await db.query(
-      `SELECT * FROM news ${whereClause} ORDER BY date ${sqlOrderCondition} ${limitClause}`
-    );
-    return results;
+    return db("news")
+      .select("*")
+      .where((builder) => {
+        if (options.search){
+           builder.where(function() {
+            this.where("title", "like", "%" + options.search + "%");
+            this.orWhere("text", "like", "%" + options.search + "%");
+            this.orWhere("date", "like", "%" + options.search + "%");
+          });
+        }
+      }).modify(buildLimitAndSort, options);
   },
 
   async getById(id) {
-    let [results] = await db.query(`SELECT * FROM news WHERE id=${id}`);
-    if (results.length > 0) {
-      return results[0];
-    }
-    return null;
+    let news = await db("news")
+    .select("*")
+    .where("id", id);
+
+    return news[0];
   },
+
   async add(news) {
-    let [results] = await db.query(
-      `INSERT INTO news (title, date, text, updated) VALUES ('${news.title}', '${news.date}', '${news.text}', DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}'))`
-    );
-    return results.insertId;
+    return db("news").insert({
+      title: news.title,
+      text: news.text,
+      date: news.date,
+      updated: new Date(),
+    });
   },
+
   async update(news) {
-    news.text = viewhelpers.EscapeQuotes(news.text);
-    let [results] = await db.query(
-      `UPDATE news SET title='${news.title}', date='${news.date}', text='${news.text}', updated=DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}') WHERE id=${news.id}`
-    );
-    return results.affectedRows;
+    return db("news").update({
+      title: news.title,
+      text: news.text,
+      date: news.date,
+      updated: new Date(),
+    })
+    .where("id", news.id);
   },
+
   async delete(id) {
-    let [results] = await db.query(`DELETE FROM news WHERE id=${id}`);
-    return results.affectedRows;
+    return db("news").delete().where("id", id);
   },
+
   async getCount() {
-    let [results] = await db.query(`SELECT COUNT(*) AS count FROM news`);
+    let results = await db("news")
+      .count("id as count");
+
     return results[0].count;
   },
 };

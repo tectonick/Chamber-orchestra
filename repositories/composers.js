@@ -1,84 +1,119 @@
-const db = require("../db").db().promise();
-const queryOptions = require("./options");
 const globals = require("../globals");
 const translate = require("../services/translator");
+const db = require("../knex");
 
 const defaultOptions = { langId: 0 };
 //news repository
 let ComposersRepository = {
   async getAll(options) {
     options = Object.assign({}, defaultOptions, options);
-    let [results] = await db.query(
-      `SELECT composers.id, composers.updated, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${options.langId}`
-    );
-    return results;
+    return db("composers")
+    .select(
+      "composers.id",
+      "composers.updated",
+      "isInResidence",
+      "name",
+      "country"
+    )
+    .join(
+      "composers_translate",
+      "composers.id",
+      "=",
+      "composers_translate.composerId"
+    )
+    .where("languageId", options.langId);
   },
 
   async getById(id, options) {
     options = Object.assign({}, defaultOptions, options);
-    let [results] = await db.query(
-      `SELECT composers.id, composers.updated, isInResidence, name, country FROM composers JOIN composers_translate ON composers.id=composers_translate.composerId WHERE languageId=${options.langId} AND composers.id=${id}`
-    );
-    if (results.length > 0) {
-      return results[0];
-    }
-    return null;
-  },
-  async add(composer) {
-    let insertQuery = "START TRANSACTION; ";
-    insertQuery += `INSERT INTO composers VALUES (0,${composer.isInResidence}, DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
-    let languagesCount = Object.keys(globals.languages).length - 1;
-    if (languagesCount > 0)
-      insertQuery += `INSERT INTO composers_translate VALUES `;
+    let composers = await db("composers")
+      .select(
+        "composers.id",
+        "composers.updated",
+        "isInResidence",
+        "name",
+        "country"
+      )
+      .join(
+        "composers_translate",
+        "composers.id",
+        "=",
+        "composers_translate.composerId"
+      )
+      .where("languageId", options.langId)
+      .andWhere("composers.id", id);
 
-    for (let langId = 1; langId <= languagesCount; langId++) {
-      insertQuery += `(0,@ID,${langId},'${composer.name}','${composer.country}')`;
-      insertQuery += langId < languagesCount ? `, ` : `;`;
-    }
-    insertQuery += "COMMIT";
-    let [results] = await db.query(insertQuery);
-    return results[1].insertId;
+      return composers[0];
   },
+
+  async add(composer) {
+    await db.transaction(async (trx) => {
+      let [id] = await trx("composers").insert(
+        {
+          isInResidence: composer.isInResidence,
+          updated: new Date(),
+        },
+        "id"
+      );
+      let translations = [];
+      for (let lang of globals.languages) {
+        translations.push({
+          composerId: id,
+          languageId: lang.id,
+          name: composer.name,
+          country: composer.country,
+        });
+      }
+      await trx("composers_translate").insert(translations);
+    });
+  },
+
   async update(composer, options) {
     options = Object.assign({}, defaultOptions, options);
-    let [results] = await db.query(
-      `START TRANSACTION;\
-            UPDATE composers_translate SET name = '${composer.name}', \
-            country = '${composer.country}' WHERE ${composer.id}=composerId AND ${options.langId}=languageId;\
-            UPDATE composers SET isInResidence = '${composer.isInResidence}', updated=DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}') WHERE ${composer.id}=id;\
-            COMMIT;`
-    );
-    return results[2].affectedRows;
+
+    await db.transaction(async (trx) => {
+      await trx("composers")
+        .update({
+          isInResidence: composer.isInResidence,
+          updated: new Date(),
+        })
+        .where("id", composer.id);
+      await trx("composers_translate")
+        .update({
+          name: composer.name,
+          country: composer.country,
+        })
+        .where("composerId", composer.id)
+        .andWhere("languageId", options.langId);
+    });
   },
+
   async delete(id) {
-    let [results] = await db.query(
-      `START TRANSACTION;\
-            DELETE FROM composers_translate WHERE composerId=${id};\
-            DELETE FROM composers WHERE id=${id};\
-            COMMIT;`
-    );
-    return results[2].affectedRows;
+    await db.transaction(async (trx) => {
+      await trx("composers").delete().where("id", id);
+      await trx("composers_translate").delete().where("composerId", id);
+    });
   },
-  async translate(id, currentLang) {
-    let sourceLang = globals.languages[currentLang];
-    let composer = await this.getById(id, { langId: currentLang });
-    let updateQuery = "START TRANSACTION; ";
-    for (
-      let langId = 1;
-      langId < Object.keys(globals.languages).length;
-      langId++
-    ) {
-      if (currentLang == langId) {
-        continue;
+
+  async translate(id, sourceLang) {
+    let composer = await this.getById(id, { langId: sourceLang.id });
+    await db.transaction(async (trx) => {
+      for (let lang of globals.languages) {
+        if (sourceLang.id == lang.id) {
+          continue;
+        }
+        let destLang = lang;
+        let name = await translate(composer.name, sourceLang.code, destLang.code);
+        let country = await translate(composer.country, sourceLang.code, destLang.code);
+        await trx("composers_translate")
+          .update({
+            name: name,
+            country: country,
+          })
+          .where("composerId", id)
+          .andWhere("languageId", destLang.id);
       }
-      let destLang = globals.languages.getNameById(langId);
-      let name = await translate(composer.name, sourceLang, destLang);
-      let country = await translate(composer.country, sourceLang, destLang);
-      updateQuery += `UPDATE composers_translate SET name = '${name}', \
-              country = '${country}' WHERE ${id}=composerId AND ${langId}=languageId;`;
-    }
-    updateQuery += "COMMIT;";
-    await db.query(updateQuery);
+    });
   },
 };
 

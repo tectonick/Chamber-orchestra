@@ -13,9 +13,9 @@ router.get("/conductor", (_req, res) => {
   res.render("about/conductor.hbs");
 });
 router.get("/musicians", async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
-    let results = await MusiciansRepository.getAll({ langId, hidden: false });
+    let results = await MusiciansRepository.getAll({ langId:lang.id, hidden: false });
     let musicians = [[], [], [], [], [], [], []]; //groups;
     results.forEach((musician) => {
       if (musician.groupId>0) musicians[musician.groupId - 1].push(musician);
@@ -27,10 +27,10 @@ router.get("/musicians", async (req, res, next) => {
 });
 
 router.get("/musicians/getById", async (req, res) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   let id = req.query.id;
   try {
-    let result = await MusiciansRepository.getById(id, { langId });
+    let result = await MusiciansRepository.getById(id, { langId:lang.id });
     res.json(result);
   } catch (error) {
     res.sendStatus(400);
@@ -38,9 +38,9 @@ router.get("/musicians/getById", async (req, res) => {
 });
 
 router.get("/artists", async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
-    let results = await ArtistsRepository.getAll({langId});
+    let results = await ArtistsRepository.getAll({langId:lang.id});
     let artists = [[], [], [], [], [], [], [], [], [], []];
     results.forEach((artist) => {
       if (artist.groupId > 0) artists[artist.groupId - 1].push(artist);
@@ -53,9 +53,9 @@ router.get("/artists", async (req, res, next) => {
 });
 
 router.get("/composers", async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
-    let results = await ComposersRepository.getAll({langId});
+    let results = await ComposersRepository.getAll({langId:lang.id});
     let InResidence = [];
     let Partners = [];
     results.forEach((composer) => {

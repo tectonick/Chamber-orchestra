@@ -1,98 +1,127 @@
-const db = require("../db").db().promise();
-const queryOptions = require("./options");
 const globals = require("../globals");
 const translate = require("../services/translator");
-const viewhelpers = require("../viewhelpers");
+const db = require("../knex");
 
 const defaultOptions = { langId: 0, hidden: false };
-//news repository
+
 let MusiciansRepository = {
   async getAll(options) {
     options = Object.assign({}, defaultOptions, options);
-    let sqlHiddenCondition = queryOptions.sqlHiddenCondition(options.hidden);
 
-    let whereClause = `WHERE languageId=${options.langId}`;
-    if (sqlHiddenCondition != "") {
-      whereClause += " AND " + sqlHiddenCondition;
-    }
-
-    let [results] = await db.query(
-      `SELECT musicians.id, musicians.updated, groupId, hidden, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId ${whereClause} ORDER BY groupId`
-    );
-    results.forEach(function (musician) {
-      musician.bio = viewhelpers.UnescapeQuotes(musician.bio);
-    });
-    return results;
+    return db("musicians")
+      .select(
+        "musicians.id",
+        "musicians.updated",
+        "groupId",
+        "name",
+        "bio",
+        "hidden"
+      )
+      .join(
+        "musicians_translate",
+        "musicians.id",
+        "=",
+        "musicians_translate.musicianId"
+      ).where((builder) =>{
+        builder.where("languageId", options.langId);
+        if (!options.hidden) builder.andWhere("hidden", false);
+      }).orderBy("groupId");
   },
 
   async getById(id, options) {
     options = Object.assign({}, defaultOptions, options);
-    let [results] = await db.query(
-      `SELECT musicians.id, musicians.updated, groupId, hidden, name, bio FROM musicians JOIN musicians_translate ON musicians.id=musicians_translate.musicianId WHERE languageId=${options.langId} AND musicians.id=${id}`
-    );
-    if (results.length > 0) {
-      results[0].bio = viewhelpers.UnescapeQuotes(results[0].bio);
-      return results[0];
-    }
-    return null;
-  },
-  async add(musician) {
-    musician.bio = viewhelpers.EscapeQuotes(musician.bio);
-    let insertQuery = "START TRANSACTION; ";
-    insertQuery += `INSERT INTO musicians VALUES (0,${musician.groupId},${musician.hidden} , DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}')); SELECT LAST_INSERT_ID() INTO @ID;`;
-    let languagesCount = Object.keys(globals.languages).length - 1;
-    if (languagesCount > 0)
-      insertQuery += `INSERT INTO musicians_translate VALUES `;
+    let musicians = await db("musicians")
+      .select(
+        "musicians.id",
+        "musicians.updated",
+        "groupId",
+        "name",
+        "bio",
+        "hidden"
+      )
+      .join(
+        "musicians_translate",
+        "musicians.id",
+        "=",
+        "musicians_translate.musicianId"
+      ).where((builder) =>{
+        builder.where("languageId", options.langId);
+        builder.andWhere("musicians.id", id);
+      }).orderBy("groupId");
 
-    for (let langId = 1; langId <= languagesCount; langId++) {
-      insertQuery += `(0,@ID,${langId},'${musician.name}','${musician.bio}')`;
-      insertQuery += langId < languagesCount ? `, ` : `;`;
-    }
-    insertQuery += "COMMIT";
-    let [results] = await db.query(insertQuery);
-    return results[1].insertId;
+      return musicians[0];
   },
+
+  async add(musician) {
+    await db.transaction(async (trx) => {
+      let [id] = await trx("musicians").insert(
+        {
+          groupId: musician.groupId,
+          hidden: musician.hidden,
+          updated: new Date(),
+        },
+        "id"
+      );
+      let translations = [];
+      for (let lang of globals.languages) {
+        translations.push({
+          musicianId: id,
+          languageId: lang.id,
+          name: musician.name,
+          bio: musician.bio,
+        });
+      }
+      await trx("musicians_translate").insert(translations);
+    });
+  },
+
   async update(musician, options) {
     options = Object.assign({}, defaultOptions, options);
-    musician.bio = viewhelpers.EscapeQuotes(musician.bio);
-    let [results] = await db.query(
-      `START TRANSACTION;\
-            UPDATE musicians_translate SET name = '${musician.name}', \
-            bio = '${musician.bio}' WHERE ${musician.id}=musicianId AND ${options.langId}=languageId;\
-            UPDATE musicians SET groupId = '${musician.groupId}', hidden = ${musician.hidden}, updated=DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}') WHERE ${musician.id}=id;\
-            COMMIT;`
-    );
-    return results[2].affectedRows;
+
+    await db.transaction(async (trx) => {
+      await trx("musicians")
+        .update({
+          groupId: musician.groupId,
+          hidden: musician.hidden,
+          updated: new Date(),
+        })
+        .where("id", musician.id);
+      await trx("musicians_translate")
+        .update({
+          name: musician.name,
+          bio: musician.bio,
+        })
+        .where("musicianId", musician.id)
+        .andWhere("languageId", options.langId);
+    });
   },
+
   async delete(id) {
-    let [results] = await db.query(
-      `START TRANSACTION;\
-            DELETE FROM musicians_translate WHERE musicianId=${id};\
-            DELETE FROM musicians WHERE id=${id};\
-            COMMIT;`
-    );
-    return results[2].affectedRows;
+    await db.transaction(async (trx) => {
+      await trx("musicians").delete().where("id", id);
+      await trx("musicians_translate").delete().where("musicianId", id);
+    });
   },
-  async translate(id, currentLang) {
-    let sourceLang = globals.languages[currentLang];
-    let musician = await this.getById(id, { langId: currentLang });
-    let updateQuery = "START TRANSACTION; ";
-    for (
-      let langId = 1;
-      langId < Object.keys(globals.languages).length;
-      langId++
-    ) {
-      if (currentLang == langId) {
-        continue;
+
+  async translate(id, sourceLang) {
+    let musician = await this.getById(id, { langId: sourceLang.id });
+    await db.transaction(async (trx) => {
+      for (let lang of globals.languages) {
+        if (sourceLang.id == lang.id) {
+          continue;
+        }
+        let destLang = lang;
+        let name = await translate(musician.name, sourceLang.code, destLang.code);
+        let bio = await translate(musician.bio, sourceLang.code, destLang.code);
+        await trx("musicians_translate")
+          .update({
+            name: name,
+            bio: bio,
+          })
+          .where("musicianId", id)
+          .andWhere("languageId", destLang.id);
       }
-      let destLang = globals.languages.getNameById(langId);
-      let name = await translate(musician.name, sourceLang, destLang);
-      let bio = await translate(musician.bio, sourceLang, destLang);
-      updateQuery += `UPDATE musicians_translate SET name = '${name}', \
-              bio = '${bio}' WHERE ${id}=musicianId AND ${langId}=languageId;`;
-    }
-    updateQuery += "COMMIT;";
-    await db.query(updateQuery);
+    });
   },
 };
 

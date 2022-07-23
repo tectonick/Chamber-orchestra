@@ -1,6 +1,5 @@
-const db = require("../db").db().promise();
 const queryOptions = require("./options");
-const viewhelpers = require("../viewhelpers");
+const db = require("../knex");
 
 const defaultOptions = {
   hidden: false,
@@ -11,92 +10,103 @@ const defaultOptions = {
   search: "",
 };
 
+function buildLimitAndSort(builder, options){
+    if (options.order === queryOptions.ORDER.ASC) {
+      builder.orderBy("date", "asc");
+    } else if (options.order === queryOptions.ORDER.DESC) {
+      builder.orderBy("date", "desc");
+    }
+    if (options.limit > 0) {
+      builder.limit(options.limit);
+    }
+    if (options.offset > 0) {
+      builder.offset(options.offset);
+    }
+}
+
+function buildDate(builder, options){
+  switch (options.dates) {
+    case queryOptions.DATES.ALL:
+      builder.whereRaw("date(date) = date(now())");
+      break;
+    case queryOptions.DATES.PAST:
+      builder.whereRaw("date<NOW()");
+      break;
+    case queryOptions.DATES.FUTURE:
+      builder.whereRaw("date>=NOW()");
+      break;
+  }
+}
+
 //concerts repository
 let ConcertsRepository = {
   async getAll(options) {
     options = Object.assign({}, defaultOptions, options);
-    let sqlSelectDateCondition = queryOptions.sqlSelectDateCondition(
-      options.dates
-    );
-    let sqlOrderCondition = queryOptions.sqlOrderCondition(options.order);
-    let sqlHiddenCondition = queryOptions.sqlHiddenCondition(options.hidden);
-
-    let whereClause = "WHERE";
-    if (sqlSelectDateCondition != "")
-      whereClause += ` ${sqlSelectDateCondition}`;
-    if (sqlHiddenCondition != "") {
-      if (whereClause === "WHERE") whereClause += ` ${sqlHiddenCondition}`;
-      else whereClause += ` AND ${sqlHiddenCondition}`;
-    }
-    if (options.search) {
-      let searchclause = `(title LIKE '%${options.search}%' OR description LIKE '%${options.search}%' \
-            OR date LIKE '%${options.search}%' OR ticket LIKE '%${options.search}%' OR place LIKE '%${options.search}%')`;
-      if (whereClause === "WHERE") whereClause += ` ${searchclause}`;
-      else whereClause += ` AND ${searchclause}`;
-    }
-    if (whereClause === "WHERE") whereClause = "";
-
-    let limitClause = "";
-    if (options.limit > 0) {
-      limitClause = `LIMIT ${options.limit} OFFSET ${options.offset}`;
-    }
-
-    let [results] = await db.query(
-      `SELECT * FROM concerts ${whereClause} ORDER BY date ${sqlOrderCondition} ${limitClause}`
-    );
-
-    results.forEach((element) => {
-      element.description = viewhelpers.UnescapeQuotes(element.description);
-    });
-    return results;
+    return db("concerts")
+      .select("*")
+      .modify(buildDate, options)
+      .andWhere((builder) => {
+        if (!options.hidden) builder.where("hidden", false);
+        if (options.search){
+           builder.andWhere(function() {
+            this.where("title", "like", "%" + options.search + "%");
+            this.orWhere("description", "like", "%" + options.search + "%");
+            this.orWhere("place", "like", "%" + options.search + "%");
+            this.orWhere("ticket", "like", "%" + options.search + "%");
+            this.orWhere("date", "like", "%" + options.search + "%");
+          });
+        }
+      }).modify(buildLimitAndSort, options);
   },
 
   async getById(id) {
-    let [results] = await db.query(`SELECT * FROM concerts WHERE id=${id}`);
-    if (results.length > 0) {
-      results[0].description = viewhelpers.UnescapeQuotes(
-        results[0].description
-      );
-      return results[0];
-    }
-    return null;
+    let concerts = await db("concerts")
+      .select("*")
+      .where("id", id);
+
+    return concerts[0];
   },
+
   async add(concert) {
-    concert.text = viewhelpers.EscapeQuotes(concert.description);
-    let [results] = await db.query(
-      `INSERT INTO concerts (title, date, place, description, hidden, ticket, updated) VALUES ('${concert.title}', '${concert.date}', '${concert.place}', '${concert.description}', ${concert.hidden}, '${concert.ticket}', DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}'))`
-    );
-    return results.insertId;
+    return db("concerts").insert({
+      title: concert.title,
+      description: concert.description,
+      place: concert.place,
+      ticket: concert.ticket,
+      date: concert.date,
+      hidden: concert.hidden,
+      updated: new Date(),
+    });
   },
+
   async update(concert) {
-    concert.description = viewhelpers.EscapeQuotes(concert.description);
-    let [results] = await db.query(
-      `UPDATE concerts SET title='${concert.title}', date='${concert.date}', place='${concert.place}', description='${concert.description}', hidden=${concert.hidden}, ticket='${concert.ticket}', updated=DATE_FORMAT(NOW(), '${queryOptions.UPDATED_DATE_FORMAT}') WHERE id=${concert.id}`
-    );
-    return results.affectedRows;
+    return db("concerts").update({
+      title: concert.title,
+      description: concert.description,
+      place: concert.place,
+      ticket: concert.ticket,
+      date: concert.date,
+      hidden: concert.hidden,
+      updated: new Date(),
+    })
+    .where("id", concert.id);
   },
+
   async delete(id) {
-    let [results] = await db.query(`DELETE FROM concerts WHERE id=${id}`);
-    return results.affectedRows;
+    return db("concerts").delete().where("id", id);
   },
+
   async getCount(options) {
     options = Object.assign({}, defaultOptions, options);
-    let sqlSelectDateCondition = queryOptions.sqlSelectDateCondition(
-      options.dates
-    );
-    let sqlHiddenCondition = queryOptions.sqlHiddenCondition(options.hidden);
 
-    let whereClause = "WHERE";
-    if (sqlSelectDateCondition != "")
-      whereClause += ` ${sqlSelectDateCondition}`;
-    if (sqlHiddenCondition != "") {
-      if (whereClause === "WHERE") whereClause += ` ${sqlHiddenCondition}`;
-      else whereClause += ` AND ${sqlHiddenCondition}`;
-    }
-    if (whereClause === "WHERE") whereClause = "";
-    let [results] = await db.query(
-      `SELECT COUNT(*) AS count FROM concerts ${whereClause}`
-    );
+    let results = await db("concerts")
+      .count("id as count")
+      .modify(buildDate, options)
+      .andWhere((builder) => {
+        if (!options.hidden) builder.where("hidden", false);
+        }
+      );
+
     return results[0].count;
   },
 };

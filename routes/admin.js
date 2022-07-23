@@ -371,7 +371,6 @@ router.get("/news", async (req, res, next) => {
     );
 
     events.forEach((element) => {
-      element.text = viewhelpers.UnescapeQuotes(element.text);
       element.date = viewhelpers.DateToISOLocal(element.date);
     });
     res.render("admin/news.hbs", { pages, events, layout: false });
@@ -484,8 +483,8 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 
 router.get("/artists", async (req, res, next) => {
   try {
-    let langId = globals.languages[req.getLocale()];
-    let artists = await ArtistsRepository.getAll({ langId });
+    let lang = req.getCurrentLang();
+    let artists = await ArtistsRepository.getAll({ langId:lang.id });
     artists.reverse();
     res.render("admin/artists.hbs", { layout: false, artists });
   } catch (error) {
@@ -505,10 +504,9 @@ router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
-  let currentLang = globals.languages[req.getLocale()];
   let id = Number.parseInt(req.body.id);
   try {
-    await ArtistsRepository.translate(id, currentLang);
+    await ArtistsRepository.translate(id, req.getCurrentLang());
   } catch (error) {
     logger.error(error);
     next(error);
@@ -532,7 +530,7 @@ router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
 });
 
 router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
     let id = Number.parseInt(req.body.id);
     await ArtistsRepository.update(
@@ -543,7 +541,7 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
         instrument: req.body.instrument,
         groupId: req.body.group,
       },
-      { langId }
+      { langId:lang.id }
     );
     res.json({ success: true });
   } catch (error) {
@@ -568,9 +566,9 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
 });
 
 router.get("/composers", async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
-    let composers = await ComposersRepository.getAll({ langId });
+    let composers = await ComposersRepository.getAll({ langId:lang.id });
     composers.reverse();
     res.render("admin/composers.hbs", { layout: false, composers });
   } catch (error) {
@@ -590,7 +588,7 @@ router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
 });
 
 router.post("/composers/translate", urlencodedParser, async (req, res) => {
-  let currentLang = globals.languages[req.getLocale()];
+  let currentLang = req.getCurrentLang();
   let id = Number.parseInt(req.body.id);
   try {
     await ComposersRepository.translate(id, currentLang);
@@ -616,7 +614,7 @@ router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
 });
 
 router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   let isInResidence = req.body.isInResidence ?? 0;
   try {
     let id = Number.parseInt(req.body.id);
@@ -627,7 +625,7 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
         country: req.body.country,
         isInResidence,
       },
-      { langId }
+      { langId:lang.id }
     );
     res.json({ success: true });
   } catch (error) {
@@ -652,9 +650,9 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
 });
 
 router.get("/musicians", async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   try {
-    let musicians = await MusiciansRepository.getAll({ langId, hidden: true });
+    let musicians = await MusiciansRepository.getAll({ langId:lang.id, hidden: true });
     res.render("admin/musicians.hbs", { layout: false, musicians });
   } catch (error) {
     next(error);
@@ -676,7 +674,7 @@ router.post(
   "/musicians/translate",
   urlencodedParser,
   async (req, res, next) => {
-    let currentLang = globals.languages[req.getLocale()];
+    let currentLang = req.getCurrentLang();
     let id = Number.parseInt(req.body.id);
     try {
       await MusiciansRepository.translate(id, currentLang);
@@ -703,7 +701,7 @@ router.post("/musicians/add", urlencodedParser, async (_req, res, next) => {
 });
 
 router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
-  let langId = globals.languages[req.getLocale()];
+  let lang = req.getCurrentLang();
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
     let id = Number.parseInt(req.body.id);
@@ -715,7 +713,7 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
         groupId: req.body.groupId,
         hidden,
       },
-      { langId }
+      { langId:lang.id }
     );
     res.json({ success: true });
   } catch (error) {

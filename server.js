@@ -1,5 +1,5 @@
 //basic modules
-const { locales } = require("./globals");
+const { languages } = require("./globals");
 const config = require("config");
 const logger = require("./services/logger");
 const fs = require("fs");
@@ -41,7 +41,7 @@ function CreateApp() {
 
   i18n.configure({
     // setup some locales - other locales default to en silently
-    locales: locales,
+    locales: languages.map((lang) => lang.code),
     defaultLocale: "en",
     queryParameter: "lang",
     updateFiles: false,
@@ -80,6 +80,11 @@ function CreateApp() {
   } 
 
   const app = express();
+
+  express.request.getCurrentLang = function() {
+    let langCode = this.getLocale();
+    return languages.find((l) => l.code === langCode);
+  }
 
   const hbs = handlebars.create({
     defaultLayout: "main",
@@ -130,7 +135,7 @@ function CreateApp() {
   // Full url and available locales setting for layout middleware
   app.use(function (req, res, next) {
     res.locals.fullUrl = `${req.protocol}://${req.get("host")}${req.path}`;
-    res.locals.locales = locales;
+    res.locals.locales = languages.map((l) => l.code);
     next();
   });
 

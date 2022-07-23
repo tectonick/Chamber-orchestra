@@ -1,18 +1,10 @@
-const languages = {
-  ru: 1,
-  en: 2,
-  be: 3,
-  de: 4,
-  fr: 5,
-
-  getNameById: function (value) {
-    return Object.keys(this).find((key) => this[key] === value);
-  },
-};
-
-Object.defineProperty(languages, "getNameById", {enumerable: false});
-
-const locales = [...Object.keys(languages)];
+const languages = [
+  { id: 1, name: "Russian", code: "ru" },
+  { id: 2, name: "English", code: "en" },
+  { id: 3, name: "Belarusian", code: "be" },
+  { id: 4, name: "Deutch", code: "de" },
+  { id: 5, name: "French", code: "fr" },
+];
 
 const MonthNames = [
   "month.january",
@@ -29,4 +21,4 @@ const MonthNames = [
   "month.december",
 ];
 
-module.exports = { languages, locales, MonthNames };
+module.exports = { languages, MonthNames };

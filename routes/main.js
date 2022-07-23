@@ -42,7 +42,6 @@ router.get("/news", async (req, res, next) => {
     );
 
     news.forEach((element) => {
-      element.text = viewhelpers.UnescapeQuotes(element.text);
       element.date = new Date(element.date).toDateString();
     });
     res.render("news.hbs", { news, pages, layout: false });
