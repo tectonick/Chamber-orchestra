@@ -1,32 +1,33 @@
-const globals = require("../globals");
+const { languages } = require("../globals");
 const translate = require("../services/translator");
-const db = require("../knex");
+const BaseLocalizedRepository = require("./base/baseLocalizedRepository");
 
-const defaultOptions = { langId: 0 };
-//news repository
-let ComposersRepository = {
+class ComposersRepository extends BaseLocalizedRepository {
+  tableName = "composers";
+  entityName = "composer";
+
   async getAll(options) {
-    options = Object.assign({}, defaultOptions, options);
-    return db("composers")
-    .select(
-      "composers.id",
-      "composers.updated",
-      "isInResidence",
-      "name",
-      "country"
-    )
-    .join(
-      "composers_translate",
-      "composers.id",
-      "=",
-      "composers_translate.composerId"
-    )
-    .where("languageId", options.langId);
-  },
+    options = this.prepareOptions(options);
+    return this.db("composers")
+      .select(
+        "composers.id",
+        "composers.updated",
+        "isInResidence",
+        "name",
+        "country"
+      )
+      .join(
+        "composers_translate",
+        "composers.id",
+        "=",
+        "composers_translate.composerId"
+      )
+      .where("languageId", options.langId);
+  }
 
   async getById(id, options) {
-    options = Object.assign({}, defaultOptions, options);
-    let composers = await db("composers")
+    options = this.prepareOptions(options);
+    let composers = await this.db("composers")
       .select(
         "composers.id",
         "composers.updated",
@@ -43,20 +44,18 @@ let ComposersRepository = {
       .where("languageId", options.langId)
       .andWhere("composers.id", id);
 
-      return composers[0];
-  },
+    return composers[0];
+  }
 
   async add(composer) {
-    await db.transaction(async (trx) => {
-      let [id] = await trx("composers").insert(
-        {
-          isInResidence: composer.isInResidence,
-          updated: new Date(),
-        },
-        "id"
-      );
+    let id;
+    await this.db.transaction(async (trx) => {
+      [id] = await trx("composers").insert({
+        isInResidence: composer.isInResidence,
+        updated: new Date(),
+      });
       let translations = [];
-      for (let lang of globals.languages) {
+      for (let lang of languages) {
         translations.push({
           composerId: id,
           languageId: lang.id,
@@ -66,12 +65,13 @@ let ComposersRepository = {
       }
       await trx("composers_translate").insert(translations);
     });
-  },
+    return id;
+  }
 
   async update(composer, options) {
-    options = Object.assign({}, defaultOptions, options);
+    options = this.prepareOptions(options);
 
-    await db.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx("composers")
         .update({
           isInResidence: composer.isInResidence,
@@ -86,25 +86,26 @@ let ComposersRepository = {
         .where("composerId", composer.id)
         .andWhere("languageId", options.langId);
     });
-  },
-
-  async delete(id) {
-    await db.transaction(async (trx) => {
-      await trx("composers").delete().where("id", id);
-      await trx("composers_translate").delete().where("composerId", id);
-    });
-  },
+  }
 
   async translate(id, sourceLang) {
     let composer = await this.getById(id, { langId: sourceLang.id });
-    await db.transaction(async (trx) => {
-      for (let lang of globals.languages) {
+    await this.db.transaction(async (trx) => {
+      for (let lang of languages) {
         if (sourceLang.id == lang.id) {
           continue;
         }
         let destLang = lang;
-        let name = await translate(composer.name, sourceLang.code, destLang.code);
-        let country = await translate(composer.country, sourceLang.code, destLang.code);
+        let name = await translate(
+          composer.name,
+          sourceLang.code,
+          destLang.code
+        );
+        let country = await translate(
+          composer.country,
+          sourceLang.code,
+          destLang.code
+        );
         await trx("composers_translate")
           .update({
             name: name,
@@ -114,7 +115,7 @@ let ComposersRepository = {
           .andWhere("languageId", destLang.id);
       }
     });
-  },
-};
+  }
+}
 
 module.exports = ComposersRepository;

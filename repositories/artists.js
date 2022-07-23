@@ -1,12 +1,14 @@
-const globals = require("../globals");
+const { languages } = require("../globals");
 const translate = require("../services/translator");
-const db = require("../knex");
+const BaseLocalizedRepository = require("./base/baseLocalizedRepository");
 
-const defaultOptions = { langId: 0 };
-let ArtistsRepository = {
+class ArtistsRepository extends BaseLocalizedRepository {
+  tableName = "artists";
+  entityName = "artist";
+
   async getAll(options) {
-    options = Object.assign({}, defaultOptions, options);
-    return db("artists")
+    options = this.prepareOptions(options);
+    return this.db("artists")
       .select(
         "artists.id",
         "artists.updated",
@@ -22,12 +24,12 @@ let ArtistsRepository = {
         "artists_translate.artistId"
       )
       .where("languageId", options.langId);
-  },
+  }
 
   async getById(id, options) {
-    options = Object.assign({}, defaultOptions, options);
+    options = this.prepareOptions(options);
 
-    let artists = await db("artists")
+    let artists = await this.db("artists")
       .select(
         "artists.id",
         "artists.updated",
@@ -45,20 +47,18 @@ let ArtistsRepository = {
       .where("languageId", options.langId)
       .andWhere("artists.id", id);
 
-      return artists[0];
-  },
+    return artists[0];
+  }
 
   async add(artist) {
-    await db.transaction(async (trx) => {
-      let [id] = await trx("artists").insert(
-        {
-          groupId: artist.groupId,
-          updated: new Date(),
-        },
-        "id"
-      );
+    let id;
+    await this.db.transaction(async (trx) => {
+      [id] = await trx("artists").insert({
+        groupId: artist.groupId,
+        updated: new Date(),
+      });
       let translations = [];
-      for (let lang of globals.languages) {
+      for (let lang of languages) {
         translations.push({
           artistId: id,
           languageId: lang.id,
@@ -69,12 +69,13 @@ let ArtistsRepository = {
       }
       await trx("artists_translate").insert(translations);
     });
-  },
+    return id;
+  }
 
   async update(artist, options) {
-    options = Object.assign({}, defaultOptions, options);
+    options = this.prepareOptions(options);
 
-    await db.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx("artists")
         .update({
           groupId: artist.groupId,
@@ -90,25 +91,22 @@ let ArtistsRepository = {
         .where("artistId", artist.id)
         .andWhere("languageId", options.langId);
     });
-  },
-
-  async delete(id) {
-    await db.transaction(async (trx) => {
-      await trx("artists").delete().where("id", id);
-      await trx("artists_translate").delete().where("artistId", id);
-    });
-  },
+  }
 
   async translate(id, sourceLang) {
     let artist = await this.getById(id, { langId: sourceLang.id });
-    await db.transaction(async (trx) => {
-      for (let lang of globals.languages) {
+    await this.db.transaction(async (trx) => {
+      for (let lang of languages) {
         if (sourceLang.id == lang.id) {
           continue;
         }
         let destLang = lang;
         let name = await translate(artist.name, sourceLang.code, destLang.code);
-        let country = await translate(artist.country, sourceLang.code, destLang.code);
+        let country = await translate(
+          artist.country,
+          sourceLang.code,
+          destLang.code
+        );
         let instrument = await translate(
           artist.instrument,
           sourceLang.code,
@@ -124,7 +122,7 @@ let ArtistsRepository = {
           .andWhere("languageId", destLang.id);
       }
     });
-  },
-};
+  }
+}
 
 module.exports = ArtistsRepository;

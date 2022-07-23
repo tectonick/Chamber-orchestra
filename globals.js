@@ -21,4 +21,18 @@ const MonthNames = [
   "month.december",
 ];
 
-module.exports = { languages, MonthNames };
+const SqlOptions = {
+  DATES: {
+    ALL: "all",
+    PAST: "past",
+    FUTURE: "future",
+  },
+  ORDER: {
+    ASC: "asc",
+    DESC: "desc",
+  },
+  UPDATED_DATE_FORMAT: "%Y-%m-%d %H:%i:%s",
+  DATE_FORMAT: "%Y-%m-%d %H:%i:00",
+};
+
+module.exports = { languages, MonthNames, SqlOptions };

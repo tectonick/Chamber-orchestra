@@ -7,19 +7,23 @@ const path = require("path");
 const fetch = require("node-fetch");
 const imageProcessor = require("../services/image-processing");
 const bcrypt = require("bcrypt");
-const globals = require("../globals.js");
 const config = require("config");
 const logger = require("../services/logger");
 const exportService = require("../services/export-service");
-
-//Repositories
-const QueryOptions = require("../repositories/options");
+const statService = require("../services/stat");
+const { SqlOptions } = require("../globals");
+//Repositories classes
 const ConcertsRepository = require("../repositories/concerts");
 const NewsRepository = require("../repositories/news");
-const ComposersRepository = require("../repositories/composers");
 const ArtistsRepository = require("../repositories/artists");
+const ComposersRepository = require("../repositories/composers");
 const MusiciansRepository = require("../repositories/musicians");
-const StatRepository = require("../repositories/stat");
+//Repositories instances
+const artistsRepository = new ArtistsRepository();
+const composersRepository = new ComposersRepository();
+const musiciansRepository = new MusiciansRepository();
+const concertsRepository = new ConcertsRepository();
+const newsRepository = new NewsRepository();
 
 const admin = config.get("adminUser");
 //look new password hash with this command
@@ -111,13 +115,7 @@ router.use(function (req, res, next) {
 //Routes
 router.get("/", async function (_req, res, next) {
   try {
-    let stat = await StatRepository.getAll();
-    let galleryFiles = await fs.readdir("./static/img/gallery");
-    let disksFiles = await fs.readdir("./static/img/disks");
-    let pressFiles = await fs.readdir("./static/img/press");
-    stat.gallery_count = galleryFiles.length;
-    stat.disks_count = disksFiles.length;
-    stat.press_count = pressFiles.length;
+    let stat = await statService.getFullStat();
     res.render("admin/admin", { stat });
   } catch (error) {
     next(error);
@@ -154,23 +152,21 @@ async function concertsHandler(req, res, next, pageName) {
     let viewAddress =
       pageName === "concerts" ? "admin/concerts.hbs" : "admin/archive.hbs";
     let dates =
-      pageName === "concerts"
-        ? QueryOptions.DATES.FUTURE
-        : QueryOptions.DATES.PAST;
+      pageName === "concerts" ? SqlOptions.DATES.FUTURE : SqlOptions.DATES.PAST;
 
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
     let search = req.query.search;
 
-    let events = await ConcertsRepository.getAll({
+    let events = await concertsRepository.getAll({
       hidden: true,
       dates,
       offset,
       limit: itemCount,
       search,
     });
-    let maxCount = await ConcertsRepository.getCount({ hidden: true, dates });
+    let maxCount = await concertsRepository.getCount({ hidden: true, dates });
     let pages = viewhelpers.usePagination(
       paginationAddress,
       currentPage,
@@ -191,7 +187,7 @@ async function concertsHandler(req, res, next, pageName) {
 async function concertsDeleteHandler(req, res, next) {
   try {
     let id = Number.parseInt(req.body.id);
-    await ConcertsRepository.delete(id);
+    await concertsRepository.delete(id);
     DeleteImageById(id, "/static/img/posters/").then(() => {
       res.redirect("/admin/");
     });
@@ -202,7 +198,7 @@ async function concertsDeleteHandler(req, res, next) {
 
 async function concertsExportHandler(req, res, next) {
   try {
-    let concerts = await ConcertsRepository.getAll({ hidden: true });
+    let concerts = await concertsRepository.getAll({ hidden: true });
     let file = exportService.ExportConcerts(concerts, req.hostname);
     file.write("concerts.xlsx", res);
   } catch (error) {
@@ -221,7 +217,7 @@ async function concertsEditHandler(req, res, next) {
 
     let wrongLink = ticket !== "" && !(await IsReachableLink(ticket));
 
-    await ConcertsRepository.update({
+    await concertsRepository.update({
       id,
       title: req.body.title,
       description,
@@ -245,7 +241,7 @@ async function concertsAddHandler(_req, res, next, pageName) {
     nextDate.setSeconds(0);
     let sqlDate = nextDate.toISOString().slice(0, 19).replace("T", " ");
 
-    let insertId = await ConcertsRepository.add({
+    let insertId = await concertsRepository.add({
       title: "",
       description: "",
       date: sqlDate,
@@ -263,12 +259,12 @@ async function concertsAddHandler(_req, res, next, pageName) {
 async function concertsCopyHandler(req, res, next) {
   try {
     let id = Number.parseInt(req.body.id);
-    let concertToCopy = await ConcertsRepository.getById(id);
+    let concertToCopy = await concertsRepository.getById(id);
     let tomorrowDate = new Date(Date.now() + 1000 * 60 * 60 * 24);
     tomorrowDate.setSeconds(0);
     let sqlDate = tomorrowDate.toISOString().slice(0, 19).replace("T", " ");
 
-    let insertId = await ConcertsRepository.add({
+    let insertId = await concertsRepository.add({
       title: concertToCopy.title,
       description: concertToCopy.description,
       date: sqlDate,
@@ -361,8 +357,8 @@ router.get("/news", async (req, res, next) => {
     let offset = (currentPage - 1) * itemCount;
     let search = req.query.search;
 
-    let events = await NewsRepository.getAll({ search, offset, itemCount });
-    let maxCount = await NewsRepository.getCount();
+    let events = await newsRepository.getAll({ search, offset, itemCount });
+    let maxCount = await newsRepository.getCount();
     let pages = viewhelpers.usePagination(
       "/admin/news",
       currentPage,
@@ -382,7 +378,7 @@ router.get("/news", async (req, res, next) => {
 router.post("/news/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id = Number.parseInt(req.body.id);
-    await NewsRepository.delete(id);
+    await newsRepository.delete(id);
     await DeleteImageById(id, "/static/img/news/");
     res.redirect("/admin/");
   } catch (error) {
@@ -392,7 +388,7 @@ router.post("/news/delete", urlencodedParser, async (req, res, next) => {
 
 router.post("/news/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertId = await NewsRepository.add({
+    let insertId = await newsRepository.add({
       title: "",
       text: "",
       date: "2999-01-01 00:00",
@@ -409,7 +405,7 @@ router.post("/news/edit", urlencodedParser, async (req, res, next) => {
     if (!viewhelpers.isDate(req.body.date)) throw new Error("Invalid date");
     let date = req.body.date.slice(0, 19).replace("T", " ");
     let id = Number.parseInt(req.body.id);
-    await NewsRepository.update({
+    await newsRepository.update({
       id,
       title: req.body.title,
       text: req.body.text,
@@ -484,7 +480,7 @@ router.post("/gallery/upload", urlencodedParser, (req, res) => {
 router.get("/artists", async (req, res, next) => {
   try {
     let lang = req.getCurrentLang();
-    let artists = await ArtistsRepository.getAll({ langId:lang.id });
+    let artists = await artistsRepository.getAll({ langId: lang.id });
     artists.reverse();
     res.render("admin/artists.hbs", { layout: false, artists });
   } catch (error) {
@@ -495,7 +491,7 @@ router.get("/artists", async (req, res, next) => {
 router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id = Number.parseInt(req.body.id);
-    await ArtistsRepository.delete(id);
+    await artistsRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/artists/");
     res.redirect("/admin/");
   } catch (error) {
@@ -506,7 +502,7 @@ router.post("/artists/delete", urlencodedParser, async (req, res, next) => {
 router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
   let id = Number.parseInt(req.body.id);
   try {
-    await ArtistsRepository.translate(id, req.getCurrentLang());
+    await artistsRepository.translate(id, req.getCurrentLang());
   } catch (error) {
     logger.error(error);
     next(error);
@@ -516,7 +512,7 @@ router.post("/artists/translate", urlencodedParser, async (req, res, next) => {
 
 router.post("/artists/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertId = await ArtistsRepository.add({
+    let insertId = await artistsRepository.add({
       name: "",
       country: "",
       instrument: "",
@@ -533,7 +529,7 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
   let lang = req.getCurrentLang();
   try {
     let id = Number.parseInt(req.body.id);
-    await ArtistsRepository.update(
+    await artistsRepository.update(
       {
         id,
         name: req.body.name,
@@ -541,7 +537,7 @@ router.post("/artists/edit", urlencodedParser, async (req, res, next) => {
         instrument: req.body.instrument,
         groupId: req.body.group,
       },
-      { langId:lang.id }
+      { langId: lang.id }
     );
     res.json({ success: true });
   } catch (error) {
@@ -568,7 +564,7 @@ router.post("/artists/posterupload", urlencodedParser, async (req, res) => {
 router.get("/composers", async (req, res, next) => {
   let lang = req.getCurrentLang();
   try {
-    let composers = await ComposersRepository.getAll({ langId:lang.id });
+    let composers = await composersRepository.getAll({ langId: lang.id });
     composers.reverse();
     res.render("admin/composers.hbs", { layout: false, composers });
   } catch (error) {
@@ -579,7 +575,7 @@ router.get("/composers", async (req, res, next) => {
 router.post("/composers/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id = Number.parseInt(req.body.id);
-    await ComposersRepository.delete(id);
+    await composersRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/composers/");
     res.redirect("/admin/");
   } catch (error) {
@@ -591,7 +587,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
   let currentLang = req.getCurrentLang();
   let id = Number.parseInt(req.body.id);
   try {
-    await ComposersRepository.translate(id, currentLang);
+    await composersRepository.translate(id, currentLang);
   } catch (error) {
     logger.error(error);
     res.sendStatus(500);
@@ -601,7 +597,7 @@ router.post("/composers/translate", urlencodedParser, async (req, res) => {
 
 router.post("/composers/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertId = await ComposersRepository.add({
+    let insertId = await composersRepository.add({
       name: "",
       country: "",
       isInResidence: 0,
@@ -618,14 +614,14 @@ router.post("/composers/edit", urlencodedParser, async (req, res, next) => {
   let isInResidence = req.body.isInResidence ?? 0;
   try {
     let id = Number.parseInt(req.body.id);
-    await ComposersRepository.update(
+    await composersRepository.update(
       {
         id,
         name: req.body.name,
         country: req.body.country,
         isInResidence,
       },
-      { langId:lang.id }
+      { langId: lang.id }
     );
     res.json({ success: true });
   } catch (error) {
@@ -652,7 +648,10 @@ router.post("/composers/posterupload", urlencodedParser, async (req, res) => {
 router.get("/musicians", async (req, res, next) => {
   let lang = req.getCurrentLang();
   try {
-    let musicians = await MusiciansRepository.getAll({ langId:lang.id, hidden: true });
+    let musicians = await musiciansRepository.getAll({
+      langId: lang.id,
+      hidden: true,
+    });
     res.render("admin/musicians.hbs", { layout: false, musicians });
   } catch (error) {
     next(error);
@@ -662,7 +661,7 @@ router.get("/musicians", async (req, res, next) => {
 router.post("/musicians/delete", urlencodedParser, async (req, res, next) => {
   try {
     let id = Number.parseInt(req.body.id);
-    await MusiciansRepository.delete(id);
+    await musiciansRepository.delete(id);
     await DeleteImageById(id, "/static/img/about/musicians/");
     res.render("admin/musicians");
   } catch (error) {
@@ -677,7 +676,7 @@ router.post(
     let currentLang = req.getCurrentLang();
     let id = Number.parseInt(req.body.id);
     try {
-      await MusiciansRepository.translate(id, currentLang);
+      await musiciansRepository.translate(id, currentLang);
       res.json({ success: true });
     } catch (error) {
       next(error);
@@ -687,7 +686,7 @@ router.post(
 
 router.post("/musicians/add", urlencodedParser, async (_req, res, next) => {
   try {
-    let insertId = await MusiciansRepository.add({
+    let insertId = await musiciansRepository.add({
       name: "",
       bio: "",
       groupId: 0,
@@ -705,7 +704,7 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
   let hidden = typeof req.body.hidden == "undefined" ? 0 : 1;
   try {
     let id = Number.parseInt(req.body.id);
-    await MusiciansRepository.update(
+    await musiciansRepository.update(
       {
         id,
         name: req.body.name,
@@ -713,7 +712,7 @@ router.post("/musicians/edit", urlencodedParser, async (req, res, next) => {
         groupId: req.body.groupId,
         hidden,
       },
-      { langId:lang.id }
+      { langId: lang.id }
     );
     res.json({ success: true });
   } catch (error) {

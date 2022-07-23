@@ -1,13 +1,13 @@
 const mysql = require("mysql2");
 const config = require("config");
 const logger = require("./services/logger");
+let dbConfig = config.get("db");
 
-//db connection
+//Classic mysql2 connection pool
 let pool = null;
 function db() {
-  if(pool!=null) return pool;
+  if (pool != null) return pool;
   try {
-    let dbConfig = config.get("db");
     pool = mysql.createPool({
       host: dbConfig.host,
       user: dbConfig.user,
@@ -28,4 +28,30 @@ function db() {
   }
 }
 
-module.exports = {db};
+//Knex Builder mysql2 connection pool
+const knex = require("knex")({
+  client: "mysql2",
+  connection: {
+    host: dbConfig.host,
+    user: dbConfig.user,
+    password: dbConfig.password,
+    database: dbConfig.database,
+    port: 3306,
+  },
+  log: {
+    warn(message) {
+      logger.warn(message);
+    },
+    error(message) {
+      logger.error(message);
+    },
+    deprecate(message) {
+      logger.info(message);
+    },
+    debug(message) {
+      logger.debug(message);
+    },
+  },
+});
+
+module.exports = { db, knex };

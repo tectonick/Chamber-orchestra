@@ -3,14 +3,15 @@ const router = express.Router();
 const viewhelpers = require("../viewhelpers");
 const config = require("config");
 
-const QueryOptions = require("../repositories/options");
+const { SqlOptions } = require("../globals");
 const ConcertsRepository = require("../repositories/concerts");
+const concertsRepository = new ConcertsRepository();
 
 router.get("/", async (_req, res, next) => {
   try {
-    let results = await ConcertsRepository.getAll({
+    let results = await concertsRepository.getAll({
       hidden: false,
-      dates: QueryOptions.DATES.FUTURE,
+      dates: SqlOptions.DATES.FUTURE,
     });
     let months = viewhelpers.OrganizeConcertsInMonths(results);
     res.render("events/events.hbs", { months });
@@ -25,7 +26,7 @@ router.get("/archive", async (req, res, next) => {
     let results;
     let months;
     if (!isNaN(id)) {
-      results = [await ConcertsRepository.getById(id)];
+      results = [await concertsRepository.getById(id)];
       if (results.length > 0) {
         months = viewhelpers.OrganizeConcertsInMonths(results);
         res.render("events/archive.hbs", { pages: [], months });
@@ -36,15 +37,15 @@ router.get("/archive", async (req, res, next) => {
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
 
-    results = await ConcertsRepository.getAll({
+    results = await concertsRepository.getAll({
       hidden: false,
-      dates: QueryOptions.DATES.PAST,
+      dates: SqlOptions.DATES.PAST,
       offset,
       limit: itemCount,
     });
-    let maxCount = await ConcertsRepository.getCount({
+    let maxCount = await concertsRepository.getCount({
       hidden: false,
-      dates: QueryOptions.DATES.PAST,
+      dates: SqlOptions.DATES.PAST,
     });
 
     let pages = viewhelpers.usePagination(

@@ -3,15 +3,19 @@ const viewhelpers = require("../viewhelpers");
 const router = express.Router();
 const config = require("config");
 
-const QueryOptions = require("../repositories/options");
+const { SqlOptions } = require("../globals");
+//Repositories classes
 const ConcertsRepository = require("../repositories/concerts");
 const NewsRepository = require("../repositories/news");
+//Repositories instances
+const concertsRepository = new ConcertsRepository();
+const newsRepository = new NewsRepository();
 
 router.get("/", async (_req, res, next) => {
   try {
-    let results = await ConcertsRepository.getAll({
+    let results = await concertsRepository.getAll({
       hidden: false,
-      dates: QueryOptions.DATES.FUTURE,
+      dates: SqlOptions.DATES.FUTURE,
       limit: 6,
     });
     let triplets = viewhelpers.OrganizeConcertsInTriplets(results);
@@ -27,12 +31,12 @@ router.get("/news", async (req, res, next) => {
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
 
-    let news = await NewsRepository.getAll({
+    let news = await newsRepository.getAll({
       hidden: false,
       offset,
       limit: itemCount,
     });
-    let maxCount = await NewsRepository.getCount();
+    let maxCount = await newsRepository.getCount();
 
     let pages = viewhelpers.usePagination(
       "/news",
@@ -56,9 +60,9 @@ router.get("/contacts", (_req, res) => {
 
 router.get("/api/concerts", async (_req, res, next) => {
   try {
-    let concerts = await ConcertsRepository.getAll({
+    let concerts = await concertsRepository.getAll({
       hidden: false,
-      dates: QueryOptions.DATES.ALL,
+      dates: SqlOptions.DATES.ALL,
     });
     res.statusCode = 200;
     res.json(concerts);
