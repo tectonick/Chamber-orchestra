@@ -52,7 +52,6 @@ class BaseRepository {
   buildDate(builder, options) {
     switch (options.dates) {
       case SqlOptions.DATES.ALL:
-        builder.whereRaw("date(date) = date(now())");
         break;
       case SqlOptions.DATES.PAST:
         builder.whereRaw("date<NOW()");
