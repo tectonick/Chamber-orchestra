@@ -6,19 +6,24 @@
                 </div>
                 <div class="col-12 col-md-8 p-4 pr-3">
                     <h5 class="pr-5">{{concert.title}}</h5>
+                    <div>
+                        <span class="concert-place">{{concert.place}},</span>
+                        <span class="concert-time"><span class="concert-day-small d-md-none">{{concert.day}}.{{concert.month}}</span> {{concert.time}}</span>
+                    </div>
+
                     <pre>{{{concert.description}}}</pre>
+                    {{> addtocalendar concert = concert}}
                     {{#if concert.ticket}}
                         {{#if future}}
-                             <a class="btn buy btn-sm btn-success mb-3" href="{{concert.ticket}}">{{@root.__ 'events.buy'}}</a>
+                             <a class="btn bottom-btn buy-btn btn-sm btn-success mb-3" href="{{concert.ticket}}">
+                                <i class="fa-solid fa-ticket"></i> 
+                                <span>{{@root.__ 'events.buy'}}</span>                                
+                            </a>
                          {{/if}}                    
                     {{/if}}
                     <div class="ya-share2 ml-4" data-image="http://belsco.net/img/posters/{{concert.id}}.jpg"
-                        data-title="{{concert.title}}" data-url="http://belsco.net/events#{{concert.id}}"
+                        data-title="{{{concert.json.title}}}" data-url="http://belsco.net/events#{{concert.id}}"
                         data-services="vkontakte,twitter,facebook,odnoklassniki,viber,telegram"></div>
-                    <div class="concert-day d-none d-md-block">{{concert.day}}</div>
-                    
-                    <div class="concert-time"><span class="concert-day-small d-md-none">{{concert.day}}.{{concert.month}}</span> {{concert.time}}</div>
-                    <div class="concert-place">{{concert.place}}</div>
                 </div>
             </div>
         </div>

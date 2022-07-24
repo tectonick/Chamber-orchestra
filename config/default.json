@@ -17,6 +17,9 @@
         "news":5,
         "archive":17,
         "admin":17
+    },
+    "concerts":{
+        "defaultDuration":2
     }
 
 }

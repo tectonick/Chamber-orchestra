@@ -1,12 +1,14 @@
 const BaseRepository = require("./base/baseRepository");
+const config = require("config");
 
 class ConcertsRepository extends BaseRepository {
   tableName = "concerts";
   entityName = "concert";
+  defaultDuration = config.get("concerts.defaultDuration");
 
   async getAll(options) {
     options = this.prepareOptions(options);
-    return this.db("concerts")
+    let concerts = await this.db("concerts")
       .select("*")
       .modify(this.buildDate, options)
       .andWhere((builder) => {
@@ -22,11 +24,16 @@ class ConcertsRepository extends BaseRepository {
         }
       })
       .modify(this.buildLimitAndSort, options);
+
+    this.setDuration(concerts);
+    return concerts;
   }
 
   async getById(id) {
     let concerts = await this.db("concerts").select("*").where("id", id);
-
+    this.setDuration(concerts);
+    //todo generate duration in hours
+    concerts[0].duration = 2;
     return concerts[0];
   }
 
@@ -67,6 +74,13 @@ class ConcertsRepository extends BaseRepository {
       });
 
     return results[0].count;
+  }
+
+  setDuration(concerts) {
+    //generate duration in hours
+    for (const concert of concerts) {
+      concert.duration = this.defaultDuration;
+    }
   }
 }
 

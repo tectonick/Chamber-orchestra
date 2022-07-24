@@ -1,0 +1,31 @@
+<a id="add-to-calendar-{{concert.id}}" class="btn bottom-btn add-to-calendar-btn btn-sm btn-info mb-3">
+  <i class="fa-solid fa-calendar-plus"></i>
+  <span>{{@root.__ 'events.addtocalendar'}}</span>
+</a>
+<script type="application/javascript">
+(function (){
+  let config = {
+    "name":`{{{concert.json.title}}}`,
+    "description":`{{{concert.json.description}}}`,
+    "startDate":"{{concert.json.date}}",
+    "endDate":"{{concert.json.endDate}}",
+    "location":`{{concert.place}}`,
+    "options":[
+      "Apple",
+      "Google",
+      "iCal",
+      "Microsoft365",
+      "MicrosoftTeams",
+      "Outlook.com",
+      "Yahoo"
+    ],
+    "timeZone":"currentBrowser",
+    "trigger":"click",
+    "listStyle":"modal",
+    "iCalFileName":"Concert"
+  }
+  let button = document.querySelector("#add-to-calendar-{{concert.id}}");
+  button.addEventListener('click', () => atcb_action(config, button));
+})();
+
+</script>

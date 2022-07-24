@@ -43,16 +43,72 @@ label {
   font-size: 1rem;
 }
 
-.buy {
+.bottom-btn {
   position: absolute;
   bottom: 8px;
-  left: 165px;
   margin-bottom: 0 !important;
   height: 24px;
   padding: 0 0.75rem;
   font-size: 1rem;
   border: none;
   opacity: 0.8;
+
+  $base-indent-left: 165px;
+  $add-width: 220px;
+  $after-btn-margin: 5px;
+  $small-width: 40px;
+
+  &.buy-btn {
+    left: $base-indent-left + $add-width + $after-btn-margin;
+  }
+
+  &.add-to-calendar-btn {
+    width: $add-width;
+    left: $base-indent-left;
+  }
+
+  .fa-solid {
+    color: white;
+  }
+
+  // Normal buy btn, short calendar btn
+  @media (min-width: 770px) and (max-width: 1020px), (min-width: 500px) and (max-width: 620px) {
+    &.add-to-calendar-btn {
+      width: $small-width;
+
+      & span {
+        display: none;
+      }
+    }
+
+    &.buy-btn {
+      left: $base-indent-left + $small-width + $after-btn-margin;
+    }
+  }
+
+  // Short buy and calendar btn
+  @media (min-width: 0) and (max-width: 500px) {
+    width: $small-width !important;
+
+    span {
+      display: none;
+    }
+
+    &.buy-btn {
+      left: $base-indent-left + $small-width + $after-btn-margin;
+    }
+  }
+
+  // Normal buy and calendar btns
+  @media (min-width: 620px) and (max-width: 770px) {
+    &.add-to-calendar-btn {
+      width: $add-width;
+    }
+
+    & span {
+      display: inline;
+    }
+  }
 }
 
 .poster {
@@ -133,7 +189,7 @@ label {
 }
 
 .fc-header-toolbar {
-  >div {
+  > div {
     max-width: 33%;
   }
 
@@ -184,21 +240,22 @@ label {
   color: #aaa;
 }
 
-.concert-place {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
+.concert-place,
+.concert-time {
+  // position: absolute;
+  // bottom: 8px;
+  // right: 8px;
   font-size: 100%;
-  color: #aaa;
+  color: #bbb;
 }
 
-.concert-time {
-  position: absolute;
-  bottom: 32px;
-  right: 8px;
-  font-size: 100%;
-  color: #aaa;
-}
+//  {
+//   // position: absolute;
+//   // bottom: 32px;
+//   // right: 8px;
+//   font-size: 100%;
+//   color: #aaa;
+// }
 
 pre {
   font-family: Cambria, serif;

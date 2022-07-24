@@ -13,6 +13,7 @@ router.get("/", async (_req, res, next) => {
       hidden: false,
       dates: SqlOptions.DATES.FUTURE,
     });
+    viewhelpers.PrepareJsonValues(results);    
     let months = viewhelpers.OrganizeConcertsInMonths(results);
     res.render("events/events.hbs", { months });
   } catch (error) {
@@ -43,6 +44,7 @@ router.get("/archive", async (req, res, next) => {
       offset,
       limit: itemCount,
     });
+    viewhelpers.PrepareJsonValues(results);   
     let maxCount = await concertsRepository.getCount({
       hidden: false,
       dates: SqlOptions.DATES.PAST,

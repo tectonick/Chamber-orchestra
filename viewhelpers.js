@@ -121,6 +121,22 @@ function DateToISOLocal(date) {
   return new Date(localDate).toISOString().slice(0, 19);
 }
 
+function PrepareJsonValues(events){
+  for (let event of events) {
+    event.json={};
+    event.json.date = DateToISOLocal(event.date);
+    let endDate = new Date(event.date);
+    endDate.setHours(endDate.getHours() + event.duration);
+    event.json.endDate = DateToISOLocal(endDate);
+    event.json.title=EscapeQuotes(event.title);
+    event.json.description=EscapeQuotes(event.description);
+    // Calendar create link sent as GET, so we need to trim links which are too large
+    if (event.json.description.length>200){
+      event.json.description = event.json.description.substring(0, 2000) + "...";
+    }
+  }
+}
+
 module.exports = {
   isDate,
   OrganizeConcertsInMonths,
@@ -130,4 +146,5 @@ module.exports = {
   UnescapeQuotes,
   usePagination,
   DateToISOLocal,
+  PrepareJsonValues,
 };
