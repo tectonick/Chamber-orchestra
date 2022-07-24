@@ -7,13 +7,14 @@ const { SqlOptions } = require("../globals");
 const ConcertsRepository = require("../repositories/concerts");
 const concertsRepository = new ConcertsRepository();
 
-router.get("/", async (_req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     let results = await concertsRepository.getAll({
       hidden: false,
       dates: SqlOptions.DATES.FUTURE,
     });
-    viewhelpers.PrepareJsonValues(results);    
+    let basePath = req.fullUrl;
+    viewhelpers.PrepareJsonValues(results, basePath);    
     let months = viewhelpers.OrganizeConcertsInMonths(results);
     res.render("events/events.hbs", { months });
   } catch (error) {
@@ -44,7 +45,8 @@ router.get("/archive", async (req, res, next) => {
       offset,
       limit: itemCount,
     });
-    viewhelpers.PrepareJsonValues(results);   
+    let basePath = req.fullUrl;
+    viewhelpers.PrepareJsonValues(results, basePath);   
     let maxCount = await concertsRepository.getCount({
       hidden: false,
       dates: SqlOptions.DATES.PAST,

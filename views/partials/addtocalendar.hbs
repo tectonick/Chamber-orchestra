@@ -6,7 +6,7 @@
 (function (){
   let config = {
     "name":`{{{concert.json.title}}}`,
-    "description":`{{{concert.json.description}}}`,
+    "description":`<a href="{{{concert.json.link}}}">{{{concert.json.link}}}</a>\n{{{concert.json.description}}}`,
     "startDate":"{{concert.json.date}}",
     "endDate":"{{concert.json.endDate}}",
     "location":`{{concert.place}}`,

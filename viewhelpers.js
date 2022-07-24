@@ -121,9 +121,10 @@ function DateToISOLocal(date) {
   return new Date(localDate).toISOString().slice(0, 19);
 }
 
-function PrepareJsonValues(events){
+function PrepareJsonValues(events, basePath){
   for (let event of events) {
     event.json={};
+    event.json.link=basePath+"?id="+event.id;
     event.json.date = DateToISOLocal(event.date);
     let endDate = new Date(event.date);
     endDate.setHours(endDate.getHours() + event.duration);

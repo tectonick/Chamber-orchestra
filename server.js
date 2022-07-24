@@ -137,7 +137,8 @@ function CreateApp() {
 
   // Full url and available locales setting for layout middleware
   app.use(function (req, res, next) {
-    res.locals.fullUrl = `${req.protocol}://${req.get("host")}${req.path}`;
+    req.fullUrl = `${req.protocol}://${req.get("host")}${req.path}`;
+    res.locals.fullUrl = req.fullUrl;
     res.locals.locales = languages.map((l) => l.code);
     next();
   });
