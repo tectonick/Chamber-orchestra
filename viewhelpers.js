@@ -133,7 +133,7 @@ function PrepareJsonValues(events, basePath){
     event.json.description=EscapeQuotes(event.description);
     // Calendar create link sent as GET, so we need to trim links which are too large
     if (event.json.description.length>200){
-      event.json.description = event.json.description.substring(0, 2000) + "...";
+      event.json.description = event.json.description.substring(0, 550) + "...";
     }
   }
 }
