@@ -1,5 +1,6 @@
 User-Agent: * 
 Allow: /
 Disallow: /admin
+Disallow: /news*
 Clean-param: p&_ym_status-check
 Sitemap: https://belsco.net/sitemap.xml
