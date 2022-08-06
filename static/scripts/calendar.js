@@ -1,13 +1,9 @@
-let localePosInCookie = document.cookie.indexOf("locale=") + 7;
-var pageLocale = document.cookie.slice(
-  localePosInCookie,
-  localePosInCookie + 2
-);
-var calendar;
+let calendar;
 let newMonthElement;
 let monthElement;
 document.addEventListener("DOMContentLoaded", async function () {
-  var calendarEl = document.getElementById("calendar");
+  let calendarEl = document.getElementById("calendar");
+  // eslint-disable-next-line no-undef
   calendar = new FullCalendar.Calendar(calendarEl, {
     locale: "en",
     lazyFetching: false,
@@ -59,18 +55,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   setPosters();
 });
 
-function DateToISOLocal(date) {
-  // JS interprets db date as local and converts to UTC
-  var localDate = date - date.getTimezoneOffset() * 60 * 1000;
-  return new Date(localDate).toISOString().slice(0, 19);
-}
-
 function setPosters() {
   document.querySelectorAll(".fc-event-title").forEach((idEl) => {
-    var id = idEl.innerHTML;
-    var cell = idEl.closest(".fc-day");
-    var frame = cell.querySelector(".fc-daygrid-day-frame");
-    var link = frame.querySelector(".fc-daygrid-event").href;
+    let id = idEl.innerHTML;
+    let cell = idEl.closest(".fc-day");
+    let frame = cell.querySelector(".fc-daygrid-day-frame");
+    let link = frame.querySelector(".fc-daygrid-event").href;
     cell.style.backgroundImage = `url("/img/posters/${id}.jpg")`;
     cell.style.cursor = "pointer";
     frame.style.backgroundColor = "rgb(255,255,255)";
@@ -80,20 +70,18 @@ function setPosters() {
     });
   });
 }
+
 async function initCalend() {
-  response = await fetch("/api/concerts");
-  if (response.ok) {
-    var concerts = await response.json();
-  } else {
+  let response = await fetch("/api/concerts");
+  let concerts = await response.json();
+  if (!response.ok) {
     alert("Ошибка HTTP: " + response.status);
+    return;
   }
   concerts.forEach((concert) => {
-    concertDate = new Date(concert.date);
+    let concertDate = new Date(concert.date);
     concertDate -= concertDate.getTimezoneOffset() * 60 * 1000;
-
-    let concertUrl =
-      (concertDate >= Date.now() ? "/events#" : "/events/archive?id=") +
-      concert.id;
+    let concertUrl = (concertDate >= Date.now() ? "/events#" : "/events/archive?id=") + concert.id;
     calendar.addEvent({
       title: concert.id,
       id: concert.id,
