@@ -1,6 +1,5 @@
 
 <div class="container-fluid gallery-container">
-    
     <div class="tz-gallery">
         <div class="separator container"><h3>{{__ 'press.title'}}</h3></div>
         <div class="card-columns">
@@ -15,12 +14,14 @@
             </div>
             {{/each}}
         </div>
-
     </div>
-
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
 <script>
     baguetteBox.run('.tz-gallery');
 </script>
+
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
+{{/section}}

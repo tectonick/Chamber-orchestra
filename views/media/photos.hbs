@@ -1,15 +1,15 @@
-
 <div class="container-fluid gallery-container">
-    
     <div class="tz-gallery">
-        <div class="separator container"><h3>{{__ 'photo.title'}}</h3></div>
+        <div class="separator container">
+            <h3>{{__ 'photo.title'}}</h3>
+        </div>
         <div class="card-columns">
-            
             {{#each photos}}
             <div class="card photo-card">
                 <div class="thumbnail">
-                    <a class="lightbox " style="overflow:hidden;"  href="{{this.url}}">
-                        <img class="card-img-top" loading=lazy style=" width: 100%;" src="{{this.thumbnail}}" alt="{{this.name}}">
+                    <a class="lightbox " style="overflow:hidden;" href="{{this.url}}">
+                        <img class="card-img-top" loading=lazy style=" width: 100%;" src="{{this.thumbnail}}"
+                            alt="{{this.name}}">
                     </a>
                     <div class="caption card-body">
                         <p>{{this.name}}</p>
@@ -18,12 +18,14 @@
             </div>
             {{/each}}
         </div>
-
     </div>
-
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
 <script>
     baguetteBox.run('.tz-gallery');
 </script>
+
+{{#section 'head'}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
+{{/section}}

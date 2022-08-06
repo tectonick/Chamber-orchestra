@@ -1,6 +1,4 @@
 <div rowId="{{event.id}}" class="row searchable event-row">
-
-
     <div class="card col-xl-8 col-md-10 offset-xl-2 offset-md-1 col-10 offset-1">
         <div class="row card-header text-muted">
             Новость {{event.id}}
@@ -22,14 +20,10 @@
                 </div>
             </div>
             <div class="col-12 col-md-8 p-0">
-
                 <form class='form-group' action="/admin/news/edit" id="edit-form-{{event.id}}" method="POST">
                     <input type="hidden" name="id" value="{{event.id}}">
                     <textarea name="title" class="saveable form-control w-100" placeholder="Название"
                         rows="1">{{event.title}}</textarea>
-
-
-
                     <div class="saveable description-container form-group">
                         <textarea name="text" class="saveable form-control w-100" placeholder="Текст"
                             rows="10">{{event.text}}</textarea>
@@ -37,19 +31,13 @@
                             onclick="extendedEditorToggle('edit-form-{{event.id}}','text')"
                             value="Расширенный редактор" />
                     </div>
-
-
-                    {{!-- <textarea name="date" class="form-control w-100" rows="1">{{event.date}}</textarea> --}}
                     <input type="datetime-local" max="9999-12-31T23:59" class="form-control" name="date"
                         value="{{event.date}}">
                 </form>
-
             </div>
         </div>
         <div id="info-target-{{event.id}}" class="row card-footer text-muted">
             Обновлено {{event.updated}}
         </div>
     </div>
-
-
 </div>

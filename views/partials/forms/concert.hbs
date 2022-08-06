@@ -39,10 +39,8 @@
                             value="Расширенный редактор" />
                     </div>
 
-
                     <textarea name="ticket" class="saveable form-control w-100" rows="2"
                         placeholder="Ссылка на сайт с билетами">{{event.ticket}}</textarea>
-
                     <input type="datetime-local" max="9999-12-31T23:59" class="saveable form-control" name="date"
                         value="{{event.date}}">
                     <input type="text" list="places" name="place" class="saveable form-control w-100"
@@ -52,7 +50,6 @@
                             checked{{/if}}>
                         <label for="hidden-{{event.id}}" class="form-check-label">Скрыть концерт из афиши</label>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -60,5 +57,4 @@
             Обновлено {{event.updated}}
         </div>
     </div>
-
 </div>

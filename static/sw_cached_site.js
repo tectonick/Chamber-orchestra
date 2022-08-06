@@ -1,8 +1,5 @@
 const cacheName = 'v1';
 
-// Call Install Event
-self.addEventListener('install');
-
 // Call Activate Event
 self.addEventListener('activate', e => {
   // Remove unwanted caches

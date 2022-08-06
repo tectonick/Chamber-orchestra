@@ -1,15 +1,12 @@
-var editor;
+let editor;
 
 window.addEventListener('editor', function(e) { 
-    
     editor=ContentTools.EditorApp.get();
     editor.init('*[data-editable]', 'data-name');
     let file=e.detail;
-
     document.querySelector('#logo').style.visibility="hidden";
     editor.addEventListener('saved', function (ev) {
         var name, payload, regions, xhr;
-    
         // Check that something changed
         regions = ev.detail().regions;
         if (Object.keys(regions).length == 0) {
@@ -17,7 +14,6 @@ window.addEventListener('editor', function(e) {
         }
         // Set the editor as busy while we save our changes
         this.busy(true);
-    
         // Collect the contents of each region into a FormData instance
         payload = new FormData();
         for (name in regions) {
@@ -28,11 +24,11 @@ window.addEventListener('editor', function(e) {
         }
     
         // Send the update content to the server to be saved
-        function onStateChange(ev) {
+        function onStateChange(eve) {
             // Check if the request is finished
-            if (ev.target.readyState == 4) {
+            if (eve.target.readyState == 4) {
                 editor.busy(false);
-                if (ev.target.status == '200') {
+                if (eve.target.status == '200') {
                     // Save was successful, notify the user with a flash
                     new ContentTools.FlashUI('ok');
                 } else {
@@ -40,8 +36,8 @@ window.addEventListener('editor', function(e) {
                     new ContentTools.FlashUI('no');
                 }
             }
-        };
-    
+        }
+
         xhr = new XMLHttpRequest();
         xhr.addEventListener('readystatechange', onStateChange);
         xhr.open('POST', '/admin/updatestatichtml');

@@ -1,23 +1,21 @@
 <div class="container-fluid">
-    <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
-    <script src="https://yastatic.net/share2/share.js" async="async"></script>
-
     {{#unless months}}
-        {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
+    {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
     {{/unless}}
-    
-    {{#each months}}
 
+    {{#each months}}
     <div class="separator container">
         <h3>{{../__ this.name}} {{this.year}}</h3>
     </div>
     <div class="month-events">
         {{#each this.concerts}}{{> cards/concert concert=this future=true}}{{/each}}
     </div>
-
     {{/each}}
 
     {{> banner text='contacts.tickets' icon='fa-solid fa-ticket'}}
-
-
 </div>
+
+{{#section 'head'}}
+<script defer src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+<script defer src="https://yastatic.net/share2/share.js"></script>
+{{/section}}

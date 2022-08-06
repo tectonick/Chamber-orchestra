@@ -1,5 +1,3 @@
- 
+{{#each news}}{{> cards/news news=this}}{{/each}}
 
-    {{#each news}}{{> cards/news news=this}}{{/each}}
-
-       {{> pagination pages=pages}}
+{{> pagination pages=pages}}

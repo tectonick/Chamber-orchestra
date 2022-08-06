@@ -1,24 +1,20 @@
 <img id="main_orchestra" srcset="img/optimized/main_orchestra/main_orchestra.jpg 2328w,
-             img/optimized/main_orchestra/main_orchestra@0,75x.jpg 1747w, img/optimized/main_orchestra/main_orchestra@0,5x.jpg 1164w,
-             img/optimized/main_orchestra/main_orchestra@0,25x.jpg 584w" src="img/main_orchestra.jpg"
+             img/optimized/main_orchestra/main_orchestra@0,75x.jpg 1747w, img/optimized/main_orchestra/main_orchestra@0,5x.jpg 815w,
+             img/optimized/main_orchestra/main_orchestra@0,25x.jpg 350w" src="img/main_orchestra.jpg"
     alt="Main orchestra photo" sizes="100vw">
 
 <div class="container  mt-3">
-
     <div class="my-3">
-
-        <div class="separator container"><h3>{{__ 'layout.index.nextevents'}}</h3></div>
-
+        <div class="separator container">
+            <h3>{{__ 'layout.index.nextevents'}}</h3>
+        </div>
         <div class="row mx-auto my-auto">
             {{#unless triplets}}
-                {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
+            {{> banner text='events.noevents' icon='fa-solid fa-calendar' textclass='text-center py-md-4'}}
             {{/unless}}
             {{#if triplets}}
             <div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel" data-interval="5000">
-                <div class="carousel-inner w-100" role="listbox">
-
-
-
+                <div class="carousel-inner w-100">
                     {{#each triplets}}
                     <div class="carousel-item">
                         <div class="row">
@@ -34,18 +30,12 @@
                         </div>
                     </div>
                     {{/each}}
-
-                    <script>
-                        document.getElementsByClassName("carousel-item")?.item(0)?.classList?.add("active");
-                    </script>
-
-
                 </div>
-                <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
+                <a class="carousel-control-prev w-auto" href="#recipeCarousel" data-slide="prev">
                     <span class="carousel-control-prev-icon " aria-hidden="true"></span>
                     <span class="sr-only">Previous</span>
                 </a>
-                <a class="carousel-control-next w-auto" href="#recipeCarousel" role="button" data-slide="next">
+                <a class="carousel-control-next w-auto" href="#recipeCarousel" data-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
@@ -54,14 +44,12 @@
         </div>
     </div>
 
-    <div class="separator container"><h3>{{__ 'layout.index.news'}}</h3></div>    
+    <div class="separator container">
+        <h3>{{__ 'layout.index.news'}}</h3>
+    </div>
     <div id="update-container" class="news-container"></div>
-
-
-
-    <script>
-
-        var newsContainer = $("#update-container").load("news");
-    </script>
-
 </div>
+
+<script>
+    document.getElementsByClassName("carousel-item")?.item(0)?.classList?.add("active");
+</script>

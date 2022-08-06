@@ -1,13 +1,13 @@
-            <ul class="pagination justify-content-center">
-                {{#each pages}}
-                <li class="page-item {{this.activeClass}}">
-                    <a href="{{this.href}}" class="page-link">{{this.number}}</a>
-                </li>
-                {{/each}}
-            </ul>
+<ul class="pagination justify-content-center">
+    {{#each pages}}
+    <li class="page-item {{this.activeClass}}">
+        <a href="{{this.href}}" class="page-link">{{this.number}}</a>
+    </li>
+    {{/each}}
+</ul>
 
-            {{#unless noscripts}}
-            <script>
-                setPaginationEvents('#update-container');
-            </script>
-            {{/unless}}
+{{#unless noscripts}}
+<script>
+    setPaginationEvents('#update-container');
+</script>
+{{/unless}}

@@ -1,22 +1,16 @@
 <div class="disks">
-
     <div class="separator container">
         <h3>{{__ 'disks.streaming'}}</h3>
     </div>
 
-
-
     <div id="spotify" class="container-fluid">
-
         <iframe class="album" src="https://open.spotify.com/embed/album/6mCeyidSmmDpttIBkZmXJH" width="483" height="400"
             frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         <iframe class="album" src="https://open.spotify.com/embed/album/75lrMD6PpLD4EwpfIuVOw1" width="483" height="400"
             frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         <iframe class="album" src="https://open.spotify.com/embed/album/4dJ0gkfgMVlymMCCgICCLi" width="483" height="400"
             frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-
     </div>
-
 
     <div id="streaming-links" class="container">
         <div class="block row my-1 p-3 px-2 d-flex justify-content-center">
@@ -34,18 +28,17 @@
             <a class="streaming-link"
                 href="https://www.deezer.com/en/artist/4208064"><img height='56'
                     src="/img/deezer_logo.png" alt=""></a>
-
         </div>
     </div>
 
     <div class="separator container">
         <h3>{{__ 'disks.title'}}</h3>
     </div>
+    
     <div class="card-columns">
         {{#each photos}}
         <div class="card "> <img class="card-img-top" loading=lazy src='{{this.url}}' alt="{{this.name}}">
         </div>
         {{/each}}
     </div>
-
 </div>

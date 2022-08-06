@@ -29,13 +29,13 @@ function setPaginationEvents(selector) {
   document.querySelectorAll(".page-link").forEach((link) => {
     link.addEventListener("click", async (e) => {
       e.preventDefault();
-      let search = (document.getElementById("search-input")?.value);
+      let search = document.getElementById("search-input")?.value;
       if (search) {
         search = "&search=" + search;
       } else {
         search = "";
       }
-      let response = await fetch(link.href+search);
+      let response = await fetch(link.href + search);
       let pageData = await response.text();
       container.innerHTML = pageData;
       let scripts = container.querySelectorAll("script");
@@ -53,16 +53,17 @@ function scrollFunction() {
       document.documentElement.scrollTop > 40
     ) {
       document.getElementById("logo").style.width = "100px";
-      document.querySelector(".navbar").style.backgroundColor = "rgb(253 253 253 / 92%)";
+      document.querySelector(".navbar").style.backgroundColor =
+        "rgb(253 253 253 / 92%)";
     } else {
       $(document.body).trigger("sticky_kit:recalc");
 
       document.getElementById("logo").style.width = "180px";
-      document.querySelector(".navbar").style.backgroundColor = "rgb(253 253 253 / 100%)";
+      document.querySelector(".navbar").style.backgroundColor =
+        "rgb(253 253 253 / 100%)";
     }
   }
 }
-
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -74,11 +75,31 @@ function getCookie(name) {
   }
 }
 
-
-
-document.querySelectorAll('.locale-change').forEach((link) => {
+document.querySelectorAll(".locale-change").forEach((link) => {
   link.addEventListener("click", (e) => {
     document.cookie = `locale=${e.target.id}; expires=Thu, 18 Dec 2999 12:00:00 UTC; path=/`;
-  }
-  )
-})
+  });
+});
+
+$(document).ready(async function () {
+  let lang = getCookie("locale");
+  $(".navbar").stick_in_parent();
+  $("#update-container")?.load("news");
+  $("#history-text-container")?.load(`/html/${lang}/history.html`);
+  $("#conductor-text-container")?.load(`/html/${lang}/conductor.html`);
+  $("#allMusiciansList")?.load(`/html/${lang}/musicians.html`);
+  $("#contacts-container")?.load(`/html/${lang}/contacts.html`);
+  $(".bio-button")?.click(async function (event) {
+    event.preventDefault();
+    let modal = $("#bio-modal");
+    modal.attr("name", $(this).attr("name"));
+    let id = $(this).attr("id");
+    let response = await fetch("/about/musicians/getById?id=" + id);
+    let musician = await response.json();
+    document.getElementById("bio").innerHTML = musician.bio;
+    document.getElementById("bio-pic").src =
+      "/img/about/musicians/" + id + ".jpg";
+    document.getElementById("modal-label").innerHTML = musician.name;
+    modal.modal();
+  });
+});

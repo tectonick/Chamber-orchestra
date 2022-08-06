@@ -1,50 +1,62 @@
 <div class="container-fluid">
 
-        <div class="row bg-light">
-            <div class="col-12 col-sm-4 col-md-2 mb-3 p-0">
-                <div class="bg-light border-right sidebar-wrapper">
-                    <div class="sidebar-heading">Кабинет администратора</div>
-                    <div class="list-group list-group-flush">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">&#8981;</span>
-                            </div>
-                            <input type="text" id="search-input" class="form-control" placeholder="Поиск" aria-label="search"
-                                aria-describedby="basic-addon1">
+    <div class="row bg-light">
+        <div class="col-12 col-sm-4 col-md-2 mb-3 p-0">
+            <div class="bg-light border-right sidebar-wrapper">
+                <div class="sidebar-heading">Кабинет администратора</div>
+                <div class="list-group list-group-flush">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">&#8981;</span>
                         </div>
-                        <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши <span>{{stat.new_concerts_count}}</span></a>
-                        <a href="/admin/news" class="menu-link list-group-item list-group-item-action bg-light">Новости<span>{{stat.news_count}}</span></a>
-                        <a href="/admin/gallery" class="menu-link list-group-item list-group-item-action bg-light">Галерея<span>{{stat.gallery_count}}</span></a>
-                        <a href="/admin/artists" class="menu-link list-group-item list-group-item-action bg-light">Приглашенные артисты<span>{{stat.artists_count}}</span></a>
-                        <a href="/admin/composers" class="menu-link list-group-item list-group-item-action bg-light">Композиторы<span>{{stat.composers_count}}</span></a>
-                        <a href="/admin/musicians" class="menu-link list-group-item list-group-item-action bg-light">Музыканты<span>{{stat.musicians_count}}</span></a>
-                        <a href="/admin/press" class="menu-link list-group-item list-group-item-action bg-light">Пресса<span>{{stat.press_count}}</span></a>
-                        <a href="/admin/archive" class="menu-link list-group-item list-group-item-action bg-light">Архив<span>{{stat.old_concerts_count}}</span></a>
-                        <a href="/admin/disks" class="menu-link list-group-item list-group-item-action bg-light">Дискография<span>{{stat.disks_count}}</span></a>
-                        <a href="/admin/about" class="menu-link list-group-item list-group-item-action bg-light">Об оркестре</a>
-                        <a href="/admin/conductor" class="menu-link list-group-item list-group-item-action bg-light">О дирижере</a>
-                        <a href="/admin/pastmusicians" class="menu-link list-group-item list-group-item-action bg-light">Бывшие работники</a>
-                        <a href="/admin/contacts" class="menu-link list-group-item list-group-item-action bg-light">Контакты</a>
-                        <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
+                        <input type="text" id="search-input" class="form-control" placeholder="Поиск"
+                            aria-label="search" aria-describedby="basic-addon1">
                     </div>
+                    <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши
+                        <span>{{stat.new_concerts_count}}</span></a>
+                    <a href="/admin/news"
+                        class="menu-link list-group-item list-group-item-action bg-light">Новости<span>{{stat.news_count}}</span></a>
+                    <a href="/admin/gallery"
+                        class="menu-link list-group-item list-group-item-action bg-light">Галерея<span>{{stat.gallery_count}}</span></a>
+                    <a href="/admin/artists"
+                        class="menu-link list-group-item list-group-item-action bg-light">Приглашенные
+                        артисты<span>{{stat.artists_count}}</span></a>
+                    <a href="/admin/composers"
+                        class="menu-link list-group-item list-group-item-action bg-light">Композиторы<span>{{stat.composers_count}}</span></a>
+                    <a href="/admin/musicians"
+                        class="menu-link list-group-item list-group-item-action bg-light">Музыканты<span>{{stat.musicians_count}}</span></a>
+                    <a href="/admin/press"
+                        class="menu-link list-group-item list-group-item-action bg-light">Пресса<span>{{stat.press_count}}</span></a>
+                    <a href="/admin/archive"
+                        class="menu-link list-group-item list-group-item-action bg-light">Архив<span>{{stat.old_concerts_count}}</span></a>
+                    <a href="/admin/disks"
+                        class="menu-link list-group-item list-group-item-action bg-light">Дискография<span>{{stat.disks_count}}</span></a>
+                    <a href="/admin/about" class="menu-link list-group-item list-group-item-action bg-light">Об
+                        оркестре</a>
+                    <a href="/admin/conductor" class="menu-link list-group-item list-group-item-action bg-light">О
+                        дирижере</a>
+                    <a href="/admin/pastmusicians"
+                        class="menu-link list-group-item list-group-item-action bg-light">Бывшие работники</a>
+                    <a href="/admin/contacts"
+                        class="menu-link list-group-item list-group-item-action bg-light">Контакты</a>
+                    <a href="/admin/logout" class="list-group-item list-group-item-action bg-light">Выйти</a>
                 </div>
             </div>
-
-            <div id="update-container" class="edit-container col-12 col-sm-8 col-md-10 ">
-               
-            </div>
         </div>
+
+        <div id="update-container" class="edit-container col-12 col-sm-8 col-md-10 ">
+
+        </div>
+    </div>
 </div>
 
 
 {{#section 'head'}}
-    <!-- stuff that goes in head...example: -->
-    <link rel="stylesheet" type="text/css" href="/scripts/contenttools/content-tools.min.css">
+<link rel="stylesheet" type="text/css" href="/scripts/contenttools/content-tools.min.css">
+<script defer src="/scripts/contenttools/content-tools.min.js"></script>
+<script defer src="/scripts/contenttools/editor.js"></script>
+<script defer src="https://cdn.tiny.cloud/1/1sb38u376a8ulm88ac0aab6gulkw3lx4avevpvcg3dglkqn0/tinymce/6/tinymce.min.js"
+    referrerpolicy="origin"></script>
+<script defer type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+<script defer type="text/javascript" src="/scripts/admin.js"></script>
 {{/section}}
-
-
-<script src="/scripts/contenttools/content-tools.min.js"></script>
-<script src="/scripts/contenttools/editor.js"></script>
-<script src="https://cdn.tiny.cloud/1/1sb38u376a8ulm88ac0aab6gulkw3lx4avevpvcg3dglkqn0/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
-<script type="text/javascript" src="/scripts/admin.js"></script>

@@ -1,10 +1,9 @@
 <div rowId="{{artist.id}}" class="row card-columns col-lg-6 col-12 searchable event-row">
-
-
     <div class="card col-11 offset-1">
         <div class="row card-header text-muted">
             Артист {{artist.id}}
         </div>
+
         <div class="row card-body">
             <div class="col-12 col-md-4 p-0">
                 <img class="poster" loading="lazy" src="/img/about/artists/{{artist.id}}.jpg" alt="">
@@ -15,10 +14,9 @@
                         name="fileToUpload">
                     <label class="form-control text-center" for="file-{{artist.id}}">Загрузить изображение</label>
                 </form>
-
             </div>
-            <div class="col-12 col-md-8 p-0 form-container">
 
+            <div class="col-12 col-md-8 p-0 form-container">
                 <form class='form-group' action="/admin/artists/edit" id="edit-form-{{artist.id}}" method="POST">
                     <input type="hidden" name="id" value="{{artist.id}}">
                     <textarea name="name" class="saveable form-control w-100" placeholder="Имя"
@@ -49,20 +47,18 @@
                     </div>
                 </form>
 
-
             </div>
+            
             <div class="form-group d-flex w-100">
                 <input name='{{artist.id}}' class='delete-button form-control' class="btn btn-sm btn-secondary"
                     type="submit" value="Удалить артиста"></input>
                 <input name='edit-form-{{artist.id}}' class='save-button form-control' type="submit"
                     value="Сохранить артиста"></input>
             </div>
-
         </div>
+
         <div id="info-target-{{artist.id}}" class="row card-footer text-muted">
             Обновлено {{artist.updated}}
         </div>
     </div>
-
-
 </div>

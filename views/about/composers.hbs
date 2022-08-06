@@ -1,6 +1,6 @@
 <div class="artists">
-
     <div class="separator container"><h3>{{__ 'composers.inResidence'}}</h3></div>
+
     <div class="card-columns">
         {{#each composers.InResidence}}
         {{> cards/composer composer=this}}
@@ -9,10 +9,10 @@
     <br>
 
     <div class="separator container"><h3>{{__ 'composers.Partners'}}</h3></div>
+
     <div class="card-columns">        
         {{#each composers.Partners}}
         {{> cards/composer composer=this}}
         {{/each}}     
     </div>
-
 </div>

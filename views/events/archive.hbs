@@ -1,7 +1,4 @@
 <div class="container-fluid">
-    <script src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
-    <script src="https://yastatic.net/share2/share.js" async="async"></script>
-    
     {{#each months}}
     <div class="separator container">
         <h3>{{../__ this.name}} {{this.year}}</h3>
@@ -10,11 +7,12 @@
     <div class="month-events">
         {{#each this.concerts}}{{> cards/concert concert=this}}{{/each}}
     </div>
-    
-
     {{/each}}
 
     {{> pagination pages=pages noscripts=true}}
-
-
 </div>
+
+{{#section 'head'}}
+<script defer src="https://yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+<script defer src="https://yastatic.net/share2/share.js"></script>
+{{/section}}

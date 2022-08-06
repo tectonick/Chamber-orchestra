@@ -21,21 +21,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(async function () {
-        $(".bio-button").click(async function (event) {
-            event.preventDefault();
-            var modal = $('#bio-modal');
-            modal.attr('name', $(this).attr('name'));
-            var id = $(this).attr('id');
-            var response = await fetch('/about/musicians/getById?id=' + id);
-            var musician = await response.json();
-            var modalBody = document.getElementById('modal-body');
-            document.getElementById('bio').innerHTML = musician.bio;
-            document.getElementById('bio-pic').src = '/img/about/musicians/' + id + '.jpg';
-            document.getElementById('modal-label').innerHTML = musician.name;
-            modal.modal();
-        });
-    })
-</script>
