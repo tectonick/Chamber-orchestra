@@ -16,6 +16,7 @@ router.get("/", async (_req, res, next) => {
     let results = await concertsRepository.getAll({
       hidden: false,
       dates: SqlOptions.DATES.FUTURE,
+      order: SqlOptions.ORDER.ASC,
       limit: 6,
     });
     let triplets = viewhelpers.OrganizeConcertsInTriplets(results);
@@ -34,7 +35,7 @@ router.get("/news", async (req, res, next) => {
     let news = await newsRepository.getAll({
       hidden: false,
       offset,
-      limit: itemCount,
+      limit: itemCount
     });
     let maxCount = await newsRepository.getCount();
 
@@ -63,6 +64,7 @@ router.get("/api/concerts", async (_req, res, next) => {
     let concerts = await concertsRepository.getAll({
       hidden: false,
       dates: SqlOptions.DATES.ALL,
+      order: SqlOptions.ORDER.ASC
     });
     res.statusCode = 200;
     res.json(concerts);

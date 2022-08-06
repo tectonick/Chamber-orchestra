@@ -147,13 +147,18 @@ router.get("/logout", function (req, res) {
 
 async function concertsHandler(req, res, next, pageName) {
   try {
-    let paginationAddress =
-      pageName === "concerts" ? "/admin/concerts" : "/admin/archive";
-    let viewAddress =
-      pageName === "concerts" ? "admin/concerts.hbs" : "admin/archive.hbs";
-    let dates =
-      pageName === "concerts" ? SqlOptions.DATES.FUTURE : SqlOptions.DATES.PAST;
+    let paginationAddress = "/admin/archive";
+    let viewAddress = "admin/archive.hbs";
+    let dates = SqlOptions.DATES.PAST;
+    let order = SqlOptions.ORDER.DESC;
 
+    if (pageName === "concerts") {
+      paginationAddress = "/admin/concerts";
+      viewAddress = "admin/concerts.hbs";
+      dates = SqlOptions.DATES.FUTURE;
+      order = SqlOptions.ORDER.ASC;
+    }
+    
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
@@ -162,6 +167,7 @@ async function concertsHandler(req, res, next, pageName) {
     let events = await concertsRepository.getAll({
       hidden: true,
       dates,
+      order,
       offset,
       limit: itemCount,
       search,

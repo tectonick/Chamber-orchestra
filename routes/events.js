@@ -12,6 +12,7 @@ router.get("/", async (req, res, next) => {
     let results = await concertsRepository.getAll({
       hidden: false,
       dates: SqlOptions.DATES.FUTURE,
+      order: SqlOptions.ORDER.ASC,
     });
     let basePath = req.fullUrl;
     viewhelpers.PrepareJsonValues(results, basePath);    
