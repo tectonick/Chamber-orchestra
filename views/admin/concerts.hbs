@@ -1,33 +1,24 @@
 <div>
     {{> placeslist}}
     
-        <div class="d-flex ml-auto my-3">
+    <div class="d-flex ml-auto my-3">
         <form action="/admin/concerts/add" method="post" style="display:contents">
             <input class='form-control' type="submit" value="Добавить концерт" name="submit">
         </form>
         <a class='form-control' href="/admin/concerts/export" style="flex-basis: content;">Экспорт</a>
-
     </div>
 
-        {{> pagination pages=pages}}
-    {{#each events}}{{> forms/concert event=this}}{{/each}}
+    {{> pagination pages=pages}}
 
+    {{#each events}}{{> forms/concert event=this templates=../templates }}{{/each}}
 
-
-
-{{> modals/delete}}
-
-
+    {{> modals/delete}}
 </div>
 
-
-
-
-
 <script>
-      copyConcertSetEvent();
-        posterUploadSetEvent('/admin/concerts/posterupload');
-        deleteWithModalSetEvent('/admin/concerts/delete');       
-        saveSetEvent("/admin/concerts/edit");
-    
+    copyConcertSetEvent();
+    posterUploadSetEvent('/admin/concerts/posterupload');
+    deleteWithModalSetEvent('/admin/concerts/delete');
+    saveSetEvent("/admin/concerts/edit");
+    posterFromTemplateSetEvent("/admin/concerts/posterfromtemplate");
 </script>

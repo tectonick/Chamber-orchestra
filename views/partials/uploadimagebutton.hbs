@@ -1,0 +1,11 @@
+<div class="ml-auto my-3">
+    <form id="file-gallery-form" action="{{action}}" method="post" enctype="multipart/form-data">
+        <input class="form-control d-none" type="file" name="files" id="files" multiple />
+        <label id="upload-button" for="files" class="form-control btn btn-light text-center">Загрузить
+            изображения</label>
+    </form>
+    
+    <script>
+        imageUploadSetEvent();
+    </script>
+</div>

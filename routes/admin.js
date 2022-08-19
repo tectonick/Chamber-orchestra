@@ -86,6 +86,18 @@ async function SaveTmpPoster(tmpfile, dstFolder, newId, thumbnailFolder) {
     });
 }
 
+async function GetTemplates() {
+  let templateFileNames = await fs.readdir(path.join(__dirname, "..", "static/img/posters/templates"));
+  let templates = templateFileNames.map((fileName) => {
+    return {
+      fileName,
+      name: fileName.replace(".jpg", "")
+    }
+  });
+
+  return templates;
+}
+
 async function PosterUpload(fileToUpload, folder, id, imageProcessorFunction) {
   let tmpfile = path.join(__dirname, "..", "/tmp/", fileToUpload.name);
   await fileToUpload.mv(tmpfile);
@@ -158,6 +170,8 @@ async function concertsHandler(req, res, next, pageName) {
       dates = SqlOptions.DATES.FUTURE;
       order = SqlOptions.ORDER.ASC;
     }
+
+    let templates = await GetTemplates();
     
     let itemCount = config.get("paginationSize").admin;
     let currentPage = Number(req.query.page) || 1;
@@ -184,7 +198,7 @@ async function concertsHandler(req, res, next, pageName) {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render(viewAddress, { pages, events, layout: false });
+    res.render(viewAddress, { pages, events, templates, layout: false });
   } catch (error) {
     next(error);
   }
@@ -304,6 +318,21 @@ async function concertsPosterUploadHandler(req, res) {
   }
 }
 
+async function concertsPosterFromTemplateHandler(req, res) {
+  try {
+    let id = Number.parseInt(req.body.id);
+    let fileName = req.body.template;
+    await fs.copyFile(
+      path.join(__dirname, "..", "static", "img", "posters", "templates", fileName),
+      path.join(__dirname, "..", "static", "img", "posters", `${id}.jpg`)
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.statusCode = 400;
+    res.json({ error: error.message });
+  }
+}
+
 //#endregion
 
 //#region ConcertsAndArchiveRoutes
@@ -335,6 +364,10 @@ router.post("/concerts/posterupload", urlencodedParser, async (req, res) => {
   await concertsPosterUploadHandler(req, res);
 });
 
+router.post("/concerts/posterfromtemplate", urlencodedParser, async (req, res) => {
+  await concertsPosterFromTemplateHandler(req, res);
+});
+
 router.get("/archive", async (req, res, next) => {
   await concertsHandler(req, res, next, "archive");
 });
@@ -353,6 +386,10 @@ router.post("/archive/edit", urlencodedParser, async (req, res, next) => {
 
 router.post("/archive/posterupload", urlencodedParser, async (req, res) => {
   await concertsPosterUploadHandler(req, res);
+});
+
+router.post("/archive/posterfromtemplate", urlencodedParser, async (req, res) => {
+  await concertsPosterFromTemplateHandler(req, res);
 });
 //#endregion
 
@@ -795,6 +832,33 @@ router.post("/disks/upload", urlencodedParser, (req, res) => {
       imageProcessor.smallImage(tmpfile).then(() => {
         let name = path.basename(tmpfile, path.extname(tmpfile));
         return SaveTmpPoster(tmpfile, "/static/img/disks/", name);
+      });
+    });
+  });
+  res.redirect("/admin/");
+});
+
+router.get("/templates", async (_req, res) => {
+  let names = await viewhelpers.NamesOfDirFilesWOExtension("/static/img/posters/templates");
+  res.render("admin/templates.hbs", { names, layout: false });
+});
+
+router.post("/templates/delete", urlencodedParser, (req) => {
+  deleteImageHandler(req, { withThumbnail: false });
+});
+
+router.post("/templates/upload", urlencodedParser, (req, res) => {
+  if (!req.files) {
+    return res.status(400);
+  }
+  let files = FilesToArray(req.files);
+
+  files.forEach((fileToUpload) => {
+    let tmpfile = path.join(__dirname, "..", "/tmp/", fileToUpload.name);
+    fileToUpload.mv(tmpfile, function () {
+      imageProcessor.posterImage(tmpfile).then(() => {
+        let name = path.basename(tmpfile, path.extname(tmpfile));
+        return SaveTmpPoster(tmpfile, "/static/img/posters/templates", name);
       });
     });
   });

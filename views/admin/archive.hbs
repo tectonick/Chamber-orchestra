@@ -1,5 +1,5 @@
 <div>
-{{> placeslist}}
+    {{> placeslist}}
 
     <div class="d-flex ml-auto my-3">
         <form action="/admin/archive/add" method="post" style="display:contents">
@@ -11,22 +11,16 @@
 
     {{> pagination pages=pages}}
 
-    {{#each events}}{{> forms/concert event=this}}{{/each}}
-
+    {{#each events}}{{> forms/concert event=this templates=../templates}}{{/each}}
+    
     {{> modals/delete}}
-
-
 </div>
-
-
-
-
-
 
 <script>
     copyConcertSetEvent();
     posterUploadSetEvent('/admin/concerts/posterupload');
     deleteWithModalSetEvent('/admin/archive/delete');
     saveSetEvent("/admin/archive/edit");
+    posterFromTemplateSetEvent("/admin/concerts/posterfromtemplate");
 
 </script>

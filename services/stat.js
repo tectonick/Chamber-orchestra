@@ -17,10 +17,12 @@ let Stat = {
     let galleryFiles = await fs.readdir("./static/img/gallery");
     let disksFiles = await fs.readdir("./static/img/disks");
     let pressFiles = await fs.readdir("./static/img/press");
+    let templatesFiles = await fs.readdir("./static/img/posters/templates");
     return {
       gallery_count: galleryFiles.length,
       disks_count: disksFiles.length,
       press_count: pressFiles.length,
+      templates_count: templatesFiles.length,
     };
   },
 };

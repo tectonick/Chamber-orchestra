@@ -1,40 +1,18 @@
 <div class="container-fluid">
-
-    <div class="ml-auto my-3" >
-        <form action="/admin/disks/upload" method="post" enctype="multipart/form-data">
-            <input class='form-control' type="file" name="files" id="files" multiple/>
-            <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
-        </form>
-
-    </div>
-    
-
+    {{> uploadimagebutton action="/admin/disks/upload"}}
 
     <div>
         <div class="card-columns">
             {{#each names}}
-                {{> forms/image name=this imageFolder="/img/disks/" thumbnailFolder="/img/disks/"}}
+            {{> forms/image name=this imageFolder="/img/disks/" thumbnailFolder="/img/disks/"}}
             {{/each}}
         </div>
-
     </div>
 
-
-<script>
-
-
-  $(".delete-button").click(function(){
-    this.parentNode.parentNode.style.display='none';
-    $.post("/admin/disks/delete", {filename:$(this).attr('id')});
-  });
-
-    $("#files").change(function(){
-      if ($(this).val().length>0){
-            $(this).siblings('.form-control').prop('disabled', false);
-
-      }
-  });
-</script>
-
-
+    <script>
+        $(".delete-button").click(function () {
+            this.closest(".image-card").style.display = 'none';
+            $.post("/admin/disks/delete", { filename: $(this).attr('id') });
+        });
+    </script>
 </div>

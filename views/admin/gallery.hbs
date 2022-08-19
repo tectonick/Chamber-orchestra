@@ -1,13 +1,5 @@
 <div class="container-fluid">
-
-    <div class="ml-auto my-3">
-        <form action="/admin/gallery/upload" method="post" enctype="multipart/form-data">
-            <input class='form-control' type="file" name="files" id="files" multiple>
-            <input disabled="true" class='form-control' type="submit" value="Загрузить изображение" name="submit">
-        </form>
-
-    </div>
-
+    {{> uploadimagebutton action="/admin/gallery/upload"}}
 
     <div>
         <div class="card-columns">
@@ -15,28 +7,14 @@
                 {{> forms/image name=this imageFolder="/img/gallery/" thumbnailFolder="/thumbnails/img/gallery/"}}
             {{/each}}
         </div>
-
     </div>
 
-
     <script>
-
         $(document).ready(function () {
             $(".delete-button").click(function () {
-                this.parentNode.parentNode.style.display = 'none';
+                this.closest(".image-card").style.display = 'none';
                 $.post("/admin/gallery/delete", { filename: $(this).attr('id') });
             });
-            $("#files").change(function () {
-                if ($(this).val().length > 0) {
-                    $(this).siblings('.form-control').prop('disabled', false);
-                }
-            });
         });
-
-
-
-
     </script>
-
-
 </div>

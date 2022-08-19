@@ -1,0 +1,20 @@
+<div class="container-fluid">
+    {{> uploadimagebutton action="/admin/templates/upload"}}
+
+    <div>
+        <div class="card-columns">
+            {{#each names}}
+            {{> forms/image name=this imageFolder="/img/posters/templates/" thumbnailFolder="/img/posters/templates/"}}
+            {{/each}}
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".delete-button").click(function () {
+                this.closest(".image-card").style.display = 'none';
+                $.post("/admin/templates/delete", { filename: $(this).attr('id') });
+            });
+        });
+    </script>
+</div>

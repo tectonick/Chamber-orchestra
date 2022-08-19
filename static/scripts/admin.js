@@ -163,8 +163,8 @@ function posterUploadSetEvent(path) {
     if (/.*(\.jpg|\.jpeg|\.png|\.gif)/i.test(filename)) {
       this.style.backgroundColor = "white";
       let image = new FormData(this.form);
-      let formdiv = this.parentNode.parentNode;
-      let poster = formdiv.querySelector(".poster");
+      let formsdiv = this.closest(".poster-forms");
+      let poster = formsdiv.querySelector(".poster");
       let imgsrc = poster.src;
       poster.src = "/img/spinner.svg";
       fetch(path, {
@@ -188,6 +188,43 @@ function posterUploadSetEvent(path) {
     } else {
       alert("Image should be jpg, png or gif");
     }
+  });
+}
+
+function posterFromTemplateSetEvent(path) {
+  $(".template-select").change(function () {
+    let fileName = this.value;
+    console.log(fileName);
+
+    if (fileName == "0") return;
+    if (
+      !confirm(
+        "Текущее изображение будет удалено и заменено выбранным шаблоном. Продолжить?"
+      )
+    )
+      return;
+
+    let formsdiv = this.closest(".poster-forms");
+    let formData = new FormData(this.form);
+    let poster = formsdiv.querySelector(".poster");
+    let imgsrc = poster.src;
+    fetch(path, {
+      method: "post",
+      body: formData,
+    })
+      .then(async (res) => {
+        if (res.status == 200) {
+          poster.src = imgsrc + "?random=" + new Date().getTime();
+        }
+        if (res.status == 400) {
+          let errorResponse = await res.json();
+          alert(errorResponse.error);
+          poster.src = imgsrc;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 }
 
@@ -285,8 +322,26 @@ function saveSetEvent(path) {
   });
 }
 
+function imageUploadSetEvent() {
+  $("#files").change(function () {
+    if ($(this).val().length == 0) return;
+    document.getElementById(
+      "upload-button"
+    ).innerHTML = `<object class='three-dots-loader' type='image/svg+xml' data="/img/three-dots.svg"></object>`;
+    document.forms["file-gallery-form"].submit();
+    document.getElementById("files").disabled = true;
+  });
+}
+
 function translateSetEvent(path) {
   $(".translate-button").click(function (ev) {
+    if (
+      !confirm(
+        "Автоматический перевод заменит все текущие переводы. Вы уверены?"
+      )
+    )
+      return;
+
     let target = ev.target;
     target.setAttribute("disabled", "disabled");
     let formName = $(this).attr("name");

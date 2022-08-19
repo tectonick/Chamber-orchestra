@@ -4,15 +4,25 @@
             Концерт {{event.id}}
         </div>
         <div class="row card-body">
-            <div class="col-12 col-md-4 p-0">
+            <div class="poster-forms col-12 col-md-4 p-0">
                 <img class="poster" loading="lazy" src="/img/posters/{{event.id}}.jpg" alt="">
-                <form class="form-group" action="/admin/concerts/posterupload" method="post"
-                    enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="{{event.id}}">
-                    <input class='form-control fileToUpload d-none' type="file" id="file-{{event.id}}"
-                        name="fileToUpload">
-                    <label class="form-control text-center" for="file-{{event.id}}">Загрузить изображение</label>
-                </form>
+                <div class="mb-2">
+                    <form action="/admin/concerts/posterupload" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <input class='form-control fileToUpload d-none' type="file" id="file-{{event.id}}"
+                            name="fileToUpload">
+                        <label class="form-control text-center mb-0" for="file-{{event.id}}">Загрузить изображение</label>
+                    </form>
+                    <form action="/admin/concerts/posterfromtemplate" method="post">
+                        <input type="hidden" name="id" value="{{event.id}}">
+                        <select name="template" class="form-control text-center template-select" id="template-{{event.id}}">
+                            <option value="0">Выбрать из шаблона</option>
+                            {{#each templates}}
+                            <option value="{{this.fileName}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </form>
+                </div>
                 <div class="form-group">
                     <form class="form-group" action="/admin/concerts/copy" method="post">
                         <input type="hidden" name="id" value="{{event.id}}">

@@ -8,7 +8,7 @@ config/local.json
 sec/
 
 #posters
-static/img/posters
+static/img/posters/
 !static/img/posters/placeholder.jpg
 static/img/news
 !static/img/news/placeholder.jpg
