@@ -34,6 +34,7 @@ const eventsRouter = require("./routes/events");
 const environment = process.env.NODE_ENV || "production";
 const PORT = process.env.PORT || 80;
 const isDevelopment = environment === "development";
+const MAX_HTTPS_CONNECTION_TRIES = 10;
 
 function CreateApp() {
   const pool = db();
@@ -203,8 +204,26 @@ function StartServer(app) {
     cert: fs.readFileSync(ssl.cert),
   };
   // eslint-disable-next-line no-unused-vars
-  let httpsServer = https.createServer(sslOptions, app).listen(ssl.httpsport);
+  let httpsServer = TryCreateHttpsServer(app, sslOptions);
   return { httpServer, httpsServer };
+}
+
+// Port collision fix for https server
+function TryCreateHttpsServer(app, sslOptions){
+  let httpsport = sslOptions.httpsport;
+  let httpsServer;
+
+  for (let i = 0; i < MAX_HTTPS_CONNECTION_TRIES; i++) {
+    try {
+      httpsServer = https.createServer(sslOptions, app).listen(httpsport);
+      break;
+    } catch (err) {
+      logger.error(err);
+      httpsport++;
+    }
+  }
+
+  return httpsServer;
 }
 
 module.exports = { StartServer, CreateApp };
