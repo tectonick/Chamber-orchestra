@@ -10,6 +10,7 @@
     </div>
 
     <script>
+        renameSetEvent();
         $(".delete-button").click(function () {
             this.closest(".image-card").style.display = 'none';
             $.post("/admin/press/delete", { filename: $(this).attr('id') });

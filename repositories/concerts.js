@@ -6,6 +6,14 @@ class ConcertsRepository extends BaseRepository {
   entityName = "concert";
   defaultDuration = config.get("concerts.defaultDuration");
 
+  buildSearch (builder, options) {
+    builder.where("title", "like", "%" + options.search + "%");
+    builder.orWhere("description", "like", "%" + options.search + "%");
+    builder.orWhere("place", "like", "%" + options.search + "%");
+    builder.orWhere("ticket", "like", "%" + options.search + "%");
+    builder.orWhere("date", "like", "%" + options.search + "%");
+  }
+
   async getAll(options) {
     options = this.prepareOptions(options);
     let concerts = await this.db("concerts")
@@ -14,13 +22,7 @@ class ConcertsRepository extends BaseRepository {
       .andWhere((builder) => {
         if (!options.hidden) builder.where("hidden", false);
         if (options.search) {
-          builder.andWhere(function () {
-            this.where("title", "like", "%" + options.search + "%");
-            this.orWhere("description", "like", "%" + options.search + "%");
-            this.orWhere("place", "like", "%" + options.search + "%");
-            this.orWhere("ticket", "like", "%" + options.search + "%");
-            this.orWhere("date", "like", "%" + options.search + "%");
-          });
+          builder.modify(this.buildSearch, options);
         }
       })
       .modify(this.buildLimitAndSort, options);
@@ -71,6 +73,9 @@ class ConcertsRepository extends BaseRepository {
       .modify(this.buildDate, options)
       .andWhere((builder) => {
         if (!options.hidden) builder.where("hidden", false);
+        if (options.search) {
+          builder.modify(this.buildSearch, options);
+        }
       });
 
     return results[0].count;

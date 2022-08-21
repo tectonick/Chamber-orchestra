@@ -186,7 +186,7 @@ async function concertsHandler(req, res, next, pageName) {
       limit: itemCount,
       search,
     });
-    let maxCount = await concertsRepository.getCount({ hidden: true, dates });
+    let maxCount = await concertsRepository.getCount({ hidden: true, dates, search });
     let pages = viewhelpers.usePagination(
       paginationAddress,
       currentPage,
@@ -889,6 +889,27 @@ router.post("/updatestatichtml", async (req, res) => {
     let file = req.body.file;
     let html = req.body.content;
     await fs.writeFile(path.join("static", file), html);
+    res.json({ success: true });
+  } catch (error) {
+    res.sendStatus(400);
+  }
+});
+
+router.post("/rename", async function (req, res) {
+  try {
+    let oldName = req.body.oldName;
+    let newName = req.body.newName;
+    if (oldName == newName) {
+      res.json({ success: false, reason: "Same" });
+      return;
+    }
+    let imageFolder = req.body.imageFolder;
+    let thumbnailFolder = req.body.thumbnailFolder;
+
+    await fs.rename(path.join("static",imageFolder, oldName+".jpg"), path.join("static",imageFolder, newName+".jpg"));
+    (thumbnailFolder) && (thumbnailFolder !== "") && (imageFolder !== thumbnailFolder) && 
+      await fs.rename(path.join("static",thumbnailFolder, oldName+".jpg"), path.join("static",thumbnailFolder, newName+".jpg"));
+    
     res.json({ success: true });
   } catch (error) {
     res.sendStatus(400);

@@ -192,39 +192,31 @@ function posterUploadSetEvent(path) {
 }
 
 function posterFromTemplateSetEvent(path) {
-  $(".template-select").change(function () {
+  $(".template-select").change(async function () {
     let fileName = this.value;
-    console.log(fileName);
-
     if (fileName == "0") return;
-    if (
-      !confirm(
-        "Текущее изображение будет удалено и заменено выбранным шаблоном. Продолжить?"
-      )
-    )
+    if (!confirm("Текущее изображение будет удалено и заменено выбранным шаблоном. Продолжить?"))
       return;
 
     let formsdiv = this.closest(".poster-forms");
     let formData = new FormData(this.form);
     let poster = formsdiv.querySelector(".poster");
     let imgsrc = poster.src;
-    fetch(path, {
-      method: "post",
-      body: formData,
-    })
-      .then(async (res) => {
-        if (res.status == 200) {
-          poster.src = imgsrc + "?random=" + new Date().getTime();
-        }
-        if (res.status == 400) {
-          let errorResponse = await res.json();
-          alert(errorResponse.error);
-          poster.src = imgsrc;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+    try {
+      let result = await fetch(path, {
+        method: "post",
+        body: formData, 
       });
+      if (result.status == 200) {
+        poster.src = imgsrc + "?random=" + new Date().getTime();
+      } else {
+        let errorResponse = await res.json();
+        alert(errorResponse.error);
+        poster.src = imgsrc;
+      }
+    } catch (error) {
+      console.log(error);
+    }    
   });
 }
 
@@ -323,8 +315,15 @@ function saveSetEvent(path) {
 }
 
 function imageUploadSetEvent() {
-  $("#files").change(function () {
-    if ($(this).val().length == 0) return;
+  document.getElementById("files").addEventListener("change", function () {
+    if (this.files.length == 0) return;
+    console.dir(this.files);
+
+    if (Array.from(this.files).some((file) => !/.*(\.jpg|\.jpeg|\.png|\.gif)/i.test(file.name))) {
+      alert("Image should be jpg, png or gif");
+      return;
+    }
+
     document.getElementById(
       "upload-button"
     ).innerHTML = `<object class='three-dots-loader' type='image/svg+xml' data="/img/three-dots.svg"></object>`;
@@ -361,5 +360,31 @@ function translateSetEvent(path) {
         translateButton.setAttribute("disabled", "disabled");
       });
     });
+  });
+}
+
+function renameSetEvent() {
+  document.querySelectorAll(".rename-form").forEach((form) => {
+    let input = form.querySelector(".name-input");
+    let oldName = form.querySelector(".old-name-input");
+    let imageFolder = form.querySelector(".image-folder-input");
+    let deleteButton = form.closest(".image-card").querySelector(".delete-button");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (input.value.length == 0) {
+        input.classList.add("wrong");
+        return;
+      }
+      let formData = new FormData(form);
+      let result = await fetch(form.action, { method: "POST", body: formData });
+      if (result.ok) {
+        input.classList.remove("wrong");
+        deleteButton.setAttribute("id", imageFolder.value + input.value + ".jpg");
+        oldName.value = input.value;
+      }
+    });
+
+    input.addEventListener("blur", () => input.form.requestSubmit());
   });
 }
