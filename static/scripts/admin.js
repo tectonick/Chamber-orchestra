@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+const DEFAULT_ADMIN_PAGE = "/admin/concerts";
+
 let container = document.querySelector("#update-container");
 
 function evalAllScripts() {
@@ -40,7 +42,8 @@ document.querySelectorAll(".menu-link").forEach((link) => {
 });
 
 window.addEventListener("load", async () => {
-  let page = sessionStorage.getItem("current-admin-page") ?? "/admin/concerts";
+  sessionStorage.getItem("current-admin-page") ?? sessionStorage.setItem("current-admin-page", DEFAULT_ADMIN_PAGE);
+  let page = sessionStorage.getItem("current-admin-page");
   document
     .querySelector(`a.menu-link[href="${page}"]`)
     .classList.add("menu-link-active");
