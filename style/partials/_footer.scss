@@ -61,3 +61,18 @@ footer {
 .social-img {
   border-radius: 4px;
 }
+
+.me {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  opacity: 0.15;
+
+  &:hover {
+    opacity: 0.3;
+  }
+
+  img {
+    height: auto;
+  }
+}
