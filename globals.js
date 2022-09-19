@@ -6,6 +6,11 @@ const languages = [
   { id: 5, name: "French", code: "fr" },
 ];
 
+const Timezone = {
+   Name: "UTC+3",
+   Shift: 3
+};
+
 const MonthNames = [
   "month.january",
   "month.february",
@@ -35,4 +40,4 @@ const SqlOptions = {
   DATE_FORMAT: "%Y-%m-%d %H:%i:00",
 };
 
-module.exports = { languages, MonthNames, SqlOptions };
+module.exports = { languages, MonthNames, SqlOptions, Timezone };

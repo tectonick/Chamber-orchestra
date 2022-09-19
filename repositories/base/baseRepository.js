@@ -12,6 +12,8 @@ class BaseRepository {
     limit: 0,
     offset: 0,
     search: "",
+    dateRange: null,
+    datePattern: null
   };
 
   async getAll() {

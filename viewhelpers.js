@@ -1,6 +1,8 @@
 const fs = require("fs").promises;
 const path = require("path");
 const MonthNames = require("./globals").MonthNames;
+const Timezone = require('./globals').Timezone;
+const chrono = require('chrono-node');
 
 function usePagination(baseUrl, currentPage, maxCount, itemCount = 10) {
   let maxPages = Math.ceil(maxCount / itemCount);
@@ -118,7 +120,35 @@ async function NamesOfDirFilesWOExtension(basepath) {
 function DateToISOLocal(date) {
   // JS interprets db date as local and converts to UTC
   let localDate = date - date.getTimezoneOffset() * 60 * 1000;
+
   return new Date(localDate).toISOString().slice(0, 19);
+}
+
+function ParseSingleDatePattern(dateString) {
+  let parsedResult = chrono.ru.parse(dateString, {timezone: Timezone.Name})[0] 
+                  ?? chrono.en.parse(dateString, {timezone: Timezone.Name})[0];
+
+  if (!parsedResult || parsedResult.end) return undefined;
+
+  let date = parsedResult.start;
+  let yearPattern = date.isCertain('year') ? date.get('year').toString().padStart(4, '0') : ".{4}";
+  let monthPattern = date.isCertain('month') ? date.get('month').toString().padStart(2, '0') : ".{2}";
+  let dayPattern = date.isCertain('day') ? date.get('day').toString().padStart(2, '0') : ".{2}";
+  let pattern = `^${yearPattern}-${monthPattern}-${dayPattern}.*`;
+
+  return pattern;
+}
+
+function ParseDateRange(dateString) {
+  let parsedResult = chrono.ru.parse(dateString, {timezone: Timezone.Name})[0] 
+                  ?? chrono.en.parse(dateString, {timezone: Timezone.Name})[0];
+
+  if (!parsedResult || !parsedResult.end) return undefined;
+
+  return {
+    start: DateToISOLocal(parsedResult.start.date()),
+    end: DateToISOLocal(parsedResult.end.date())
+  };
 }
 
 function PrepareJsonValues(events, basePath){
@@ -148,4 +178,6 @@ module.exports = {
   usePagination,
   DateToISOLocal,
   PrepareJsonValues,
+  ParseSingleDatePattern,
+  ParseDateRange
 };

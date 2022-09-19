@@ -5,24 +5,15 @@
         </form>
 
     </div>
-  {{> pagination pages=pages}}
+    {{> pagination pages=pages}}
     {{#each events}}{{> forms/event event=this}}{{/each}}
 
-{{> modals/delete}}
-
-
+    {{> modals/delete}}
 </div>
 
-
-
-
-
-
 <script>
-        posterUploadSetEvent('/admin/news/posterupload');
-        deleteWithModalSetEvent('/admin/news/delete');
-
-        saveSetEvent("/admin/news/edit");
-
-
+    setItemsFoundCount({{ maxCount }});
+    posterUploadSetEvent('/admin/news/posterupload');
+    deleteWithModalSetEvent('/admin/news/delete');
+    saveSetEvent("/admin/news/edit");
 </script>

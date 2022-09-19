@@ -3,6 +3,8 @@
 const DEFAULT_ADMIN_PAGE = "/admin/concerts";
 
 let container = document.querySelector("#update-container");
+let itemsFound = document.querySelector("#items-found");
+let searchInput = document.querySelector("#search-input");
 
 function evalAllScripts() {
   let scripts = container.querySelectorAll("script");
@@ -75,6 +77,7 @@ async function searchHandler() {
   } else {
     //if page doesn't have pagination
     let searchables = document.querySelectorAll(".searchable");
+    let countFound = searchables.length;
     searchables.forEach((element) => {
       element.style.display = element.classList.contains("card")
         ? "inline-block"
@@ -83,11 +86,20 @@ async function searchHandler() {
         let regex = new RegExp(this.value, "i");
         if (!element.innerHTML.match(regex)) {
           element.style.display = "none";
+          countFound--;
         }
       }
     });
+    setItemsFoundCount(countFound);
   }
   searchAddon.classList.remove("blink");
+}
+
+function setItemsFoundCount(itemsCount) {
+  if (!searchInput.value || searchInput.value === "")
+    itemsFound.innerHTML="";
+  else 
+    itemsFound.innerHTML = `Найдено элементов: ${itemsCount}`;
 }
 
 document.getElementById("search-input").addEventListener(

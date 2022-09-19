@@ -11,13 +11,16 @@
                         </div>
                         <input type="text" id="search-input" class="form-control" placeholder="Поиск"
                             aria-label="search" aria-describedby="basic-addon1">
+                        <i title="Любой текст из названия или описания &#10;Дата или диапазон дат: &#10;   19.09.2021&#10;   25 Мая 2022&#10;   Сентябрь 2020 &#10;   1 Ноября 2019 - 14 Февраля 2020 &#10;   И.т.п.&#10;Место концерта"
+                            id="search-help" class="fa-regular fa-circle-question"></i>
+                        <p id="items-found"></p>
                     </div>
                     <a href="/admin/concerts" class="menu-link list-group-item list-group-item-action bg-light">Афиши
                         <span>{{stat.new_concerts_count}}</span></a>
                     <a href="/admin/archive"
                         class="menu-link list-group-item list-group-item-action bg-light">Архив<span>{{stat.old_concerts_count}}</span></a>
-                    <a href="/admin/templates"
-                        class="menu-link list-group-item list-group-item-action bg-light">Шаблоны афиш<span>{{stat.templates_count}}</span></a>
+                    <a href="/admin/templates" class="menu-link list-group-item list-group-item-action bg-light">Шаблоны
+                        афиш<span>{{stat.templates_count}}</span></a>
                     <a href="/admin/news"
                         class="menu-link list-group-item list-group-item-action bg-light">Новости<span>{{stat.news_count}}</span></a>
                     <a href="/admin/gallery"

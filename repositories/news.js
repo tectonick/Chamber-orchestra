@@ -4,20 +4,20 @@ class NewsRepository extends BaseRepository {
   tableName = "news";
   entityName = "news";
 
+  buildSearch (builder, options) {
+    builder.where(function () {
+      this.where("title", "like", "%" + options.search + "%");
+      this.orWhere("text", "like", "%" + options.search + "%");
+      this.orWhere("date", "like", "%" + options.search + "%");
+    });
+  }
+
   async getAll(options) {
     options = this.prepareOptions(options);
 
     return this.db("news")
       .select("*")
-      .where((builder) => {
-        if (options.search) {
-          builder.where(function () {
-            this.where("title", "like", "%" + options.search + "%");
-            this.orWhere("text", "like", "%" + options.search + "%");
-            this.orWhere("date", "like", "%" + options.search + "%");
-          });
-        }
-      })
+      .where((builder) => options.search && this.buildSearch(builder, options))
       .modify(this.buildLimitAndSort, options);
   }
 
@@ -47,8 +47,11 @@ class NewsRepository extends BaseRepository {
       .where("id", news.id);
   }
 
-  async getCount() {
-    let results = await this.db("news").count("id as count");
+  async getCount(options) {
+    options = this.prepareOptions(options);
+    let results = await this.db("news")
+    .count("id as count")
+    .where((builder) => options.search && builder.modify(this.buildSearch, options));
 
     return results[0].count;
   }

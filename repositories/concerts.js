@@ -11,7 +11,13 @@ class ConcertsRepository extends BaseRepository {
     builder.orWhere("description", "like", "%" + options.search + "%");
     builder.orWhere("place", "like", "%" + options.search + "%");
     builder.orWhere("ticket", "like", "%" + options.search + "%");
-    builder.orWhere("date", "like", "%" + options.search + "%");
+
+    if (options.dateRange)
+      builder.orWhereBetween("date", [options.dateRange.start, options.dateRange.end]);
+    else if (options.datePattern)
+      builder.orWhere("date", "regexp", options.datePattern);
+    else
+      builder.orWhere("date", "like", "%" + options.search + "%");
   }
 
   async getAll(options) {
@@ -20,10 +26,8 @@ class ConcertsRepository extends BaseRepository {
       .select("*")
       .modify(this.buildDate, options)
       .andWhere((builder) => {
-        if (!options.hidden) builder.where("hidden", false);
-        if (options.search) {
-          builder.modify(this.buildSearch, options);
-        }
+        !options.hidden && builder.where("hidden", false);
+        options.search && builder.modify(this.buildSearch, options);
       })
       .modify(this.buildLimitAndSort, options);
 
@@ -72,10 +76,8 @@ class ConcertsRepository extends BaseRepository {
       .count("id as count")
       .modify(this.buildDate, options)
       .andWhere((builder) => {
-        if (!options.hidden) builder.where("hidden", false);
-        if (options.search) {
-          builder.modify(this.buildSearch, options);
-        }
+        !options.hidden && builder.where("hidden", false);
+        options.search && builder.modify(this.buildSearch, options);
       });
 
     return results[0].count;

@@ -19,6 +19,7 @@ describe("Server starting", () => {
         expect(server.httpServer).toBeTruthy();
         expect(server.httpsServer).toBeTruthy();
     })
+    
     afterAll(() => { 
         dbsource.db().end();
         server.httpServer.close();

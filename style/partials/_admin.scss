@@ -152,3 +152,22 @@
   width: 100%;
   border: none;
 }
+
+#search-help {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  font-size: 15px;
+  color: #ced4da;
+}
+
+#search-help:hover {
+  color: #495057;
+}
+
+#items-found {
+  color: #ced4da;
+  margin-bottom: -10px;
+  font-size: 0.9rem;
+  flex-basis: 100%;
+}

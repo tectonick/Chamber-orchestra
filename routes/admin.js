@@ -177,6 +177,8 @@ async function concertsHandler(req, res, next, pageName) {
     let currentPage = Number(req.query.page) || 1;
     let offset = (currentPage - 1) * itemCount;
     let search = req.query.search;
+    let dateRange = viewhelpers.ParseDateRange(req.query.search);
+    let datePattern = viewhelpers.ParseSingleDatePattern(req.query.search);
 
     let events = await concertsRepository.getAll({
       hidden: true,
@@ -185,8 +187,10 @@ async function concertsHandler(req, res, next, pageName) {
       offset,
       limit: itemCount,
       search,
+      dateRange,
+      datePattern
     });
-    let maxCount = await concertsRepository.getCount({ hidden: true, dates, search });
+    let maxCount = await concertsRepository.getCount({ hidden: true, dates, search, dateRange, datePattern });
     let pages = viewhelpers.usePagination(
       paginationAddress,
       currentPage,
@@ -198,7 +202,7 @@ async function concertsHandler(req, res, next, pageName) {
       element.description = viewhelpers.UnescapeQuotes(element.description);
       element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render(viewAddress, { pages, events, templates, layout: false });
+    res.render(viewAddress, { pages, events, templates, maxCount, layout: false });
   } catch (error) {
     next(error);
   }
@@ -401,7 +405,7 @@ router.get("/news", async (req, res, next) => {
     let search = req.query.search;
 
     let events = await newsRepository.getAll({ search, offset, itemCount });
-    let maxCount = await newsRepository.getCount();
+    let maxCount = await newsRepository.getCount({search});
     let pages = viewhelpers.usePagination(
       "/admin/news",
       currentPage,
@@ -412,7 +416,7 @@ router.get("/news", async (req, res, next) => {
     events.forEach((element) => {
       element.date = viewhelpers.DateToISOLocal(element.date);
     });
-    res.render("admin/news.hbs", { pages, events, layout: false });
+    res.render("admin/news.hbs", { pages, events, maxCount, layout: false });
   } catch (error) {
     next(error);
   }
