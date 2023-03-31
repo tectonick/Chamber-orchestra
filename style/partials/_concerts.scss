@@ -276,3 +276,9 @@ pre {
 .atcb-list-item {
   box-shadow: none !important;
 }
+
+@media (min-width: 1500px) {
+  .concert h5 {
+    font-size: 1.7rem;
+  }
+}
